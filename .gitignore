@@ -1,5 +1,9 @@
-bin/
-target/
-.settings/
+out/
+packages
+pubspec.lock
+
+.idea/
+csparse.iml
+
 .project
-.classpath
+/.settings/
