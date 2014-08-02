@@ -8,8 +8,8 @@ by Richard Lincoln.
 License and Copyright
 ---------------------
 
-Copyright (C) 2006-2011, Timothy A. Davis.
-Copyright (C) 2009, Piotr Wendykier.
+Copyright (C) 2006-2011, Timothy A. Davis.  
+Copyright (C) 2009, Piotr Wendykier.  
 Copyright (C) 2011-2012, Richard Lincoln.
 
 CSparse is free software; you can redistribute it and/or
