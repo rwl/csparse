@@ -24,6 +24,7 @@
 
 library edu.emory.mathcs.csparse.cs_print;
 
+import 'dart:typed_data';
 import 'dart:io' show stdout;
 import 'csparse.dart';
 
@@ -36,8 +37,8 @@ import 'csparse.dart';
  */
 bool cs_print(Dcs A, bool brief) {
   int p, j, m, n, nzmax, nz;
-  List<int> Ap, Ai;
-  List<double> Ax;
+  Int32List Ap, Ai;
+  Float64List Ax;
   if (A == null) {
     stdout.write("(null)\n");
     return (false);

@@ -33,9 +33,9 @@ part of edu.emory.mathcs.csparse;
 //public class Dcs_dmperm {
 
 /* breadth-first search for coarse decomposition (C0,C1,R1 or R0,R3,C3) */
-bool cs_bfs(Dcs A, int n, List<int> wi, List<int> wj, List<int> queue, List<int> imatch, int imatch_offset,
-        List<int> jmatch, int jmatch_offset, int mark) {
-    List<int> Ap, Ai;
+bool cs_bfs(Dcs A, int n, Int32List wi, Int32List wj, Int32List queue, Int32List imatch, int imatch_offset,
+        Int32List jmatch, int jmatch_offset, int mark) {
+    Int32List Ap, Ai;
     int head = 0, tail = 0, j, i, p, j2;
     Dcs C;
     for (j = 0; j < n; j++) /* place all unmatched nodes in queue */
@@ -73,8 +73,8 @@ bool cs_bfs(Dcs A, int n, List<int> wi, List<int> wj, List<int> queue, List<int>
 }
 
 /* collect matched rows and columns into p and q */
-void cs_matched(int n, List<int> wj, List<int> imatch, int imatch_offset, List<int> p, List<int> q, List<int> cc,
-        List<int> rr, int set, int mark) {
+void cs_matched(int n, Int32List wj, Int32List imatch, int imatch_offset, Int32List p, Int32List q, Int32List cc,
+        Int32List rr, int set, int mark) {
     int kc = cc[set], j;
     int kr = rr[set - 1];
     for (j = 0; j < n; j++) {
@@ -88,7 +88,7 @@ void cs_matched(int n, List<int> wj, List<int> imatch, int imatch_offset, List<i
 }
 
 /* collect unmatched rows into the permutation vector p */
-void cs_unmatched(int m, List<int> wi, List<int> p, List<int> rr, int set) {
+void cs_unmatched(int m, Int32List wi, Int32List p, Int32List rr, int set) {
     int i, kr = rr[set];
     for (i = 0; i < m; i++)
         if (wi[i] == 0)
@@ -100,7 +100,7 @@ void cs_unmatched(int m, List<int> wi, List<int> p, List<int> rr, int set) {
 class Cs_rprune implements Dcs_ifkeep {
 
     bool fkeep(int i, int j, double aij, Object other) {
-        List<int> rr = other as List<int>;
+        Int32List rr = other as Int32List;
         return (i >= rr[1] && i < rr[2]);
     }
 }
@@ -117,9 +117,9 @@ class Cs_rprune implements Dcs_ifkeep {
  */
 Dcsd cs_dmperm(Dcs A, int seed) {
     int m, n, i, j, k, cnz, nc;
-    List<int> jmatch, imatch, wi, wj, pinv, Cp, Ci, ps, rs;
+    Int32List jmatch, imatch, wi, wj, pinv, Cp, Ci, ps, rs;
     int nb1, nb2;
-    List<int> p, q, cc, rr, r, s;
+    Int32List p, q, cc, rr, r, s;
     bool ok;
     Dcs C;
     Dcsd D, scc;

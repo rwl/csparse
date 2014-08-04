@@ -43,10 +43,10 @@ part of edu.emory.mathcs.csparse;
  */
 Dcs cs_multiply(Dcs A, Dcs B) {
     int p, j, nz = 0, anz;
-    List<int> Cp, Ci, Bp;
+    Int32List Cp, Ci, Bp;
     int m, n, bnz;
-    List<int> w, Bi;
-    List<double> x, Bx, Cx;
+    Int32List w, Bi;
+    Float64List x, Bx, Cx;
     bool values;
     Dcs C;
     if (!CS_CSC(A) || !CS_CSC(B))
@@ -60,9 +60,9 @@ Dcs cs_multiply(Dcs A, Dcs B) {
     Bi = B.i;
     Bx = B.x;
     bnz = Bp[n];
-    w = new List<int>.filled(m, 0); /* get workspace */
+    w = new Int32List(m); /* get workspace */
     values = (A.x != null) && (Bx != null);
-    x = values ? new List<double>.filled(m, 0.0) : null; /* get workspace */
+    x = values ? new Float64List(m) : null; /* get workspace */
     C = cs_spalloc(m, n, anz + bnz, values, false); /* allocate result */
     Cp = C.p;
     for (j = 0; j < n; j++) {

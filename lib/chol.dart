@@ -42,17 +42,17 @@ part of edu.emory.mathcs.csparse;
  */
 Dcsn cs_chol(Dcs A, Dcss S) {
     double d, lki;
-    List<double> Lx, x, Cx;
+    Float64List Lx, x, Cx;
     int top, i, p, k, n;
-    List<int> Li, Lp, cp, pinv, s, c, parent, Cp, Ci;
+    Int32List Li, Lp, cp, pinv, s, c, parent, Cp, Ci;
     Dcs L, C;
     Dcsn N;
     if (!CS_CSC(A) || S == null || S.cp == null || S.parent == null)
         return (null);
     n = A.n;
     N = new Dcsn(); /* allocate result */
-    c = new List<int>.filled(2 * n, 0); /* get int workspace */
-    x = new List<double>.filled(n, 0.0); /* get double workspace */
+    c = new Int32List(2 * n); /* get int workspace */
+    x = new Float64List(n); /* get double workspace */
     cp = S.cp;
     pinv = S.pinv;
     parent = S.parent;

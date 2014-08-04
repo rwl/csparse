@@ -51,9 +51,9 @@ part of edu.emory.mathcs.csparse;
  *
  * @return top in successful, -1 on error
  */
-int cs_ereach(Dcs A, int k, List<int> parent, List<int> s, int s_offset, List<int> w) {
+int cs_ereach(Dcs A, int k, Int32List parent, Int32List s, int s_offset, Int32List w) {
     int i, p, n, len, top;
-    List<int> Ap, Ai;
+    Int32List Ap, Ai;
     if (!CS_CSC(A) || parent == null || s == null || w == null)
         return (-1); /* check inputs */
     top = n = A.n;

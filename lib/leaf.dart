@@ -50,8 +50,8 @@ part of edu.emory.mathcs.csparse;
  * @param jleaf
  * @return lca(jprev,j)
  */
-int cs_leaf(int i, int j, List<int> first, int first_offset, List<int> maxfirst, int maxfirst_offset,
-            List<int> prevleaf, int prevleaf_offset, List<int> ancestor, int ancestor_offset, List<int> jleaf) {
+int cs_leaf(int i, int j, Int32List first, int first_offset, Int32List maxfirst, int maxfirst_offset,
+            Int32List prevleaf, int prevleaf_offset, Int32List ancestor, int ancestor_offset, Int32List jleaf) {
     int q, s, sparent, jprev;
     if (first == null || maxfirst == null || prevleaf == null || ancestor == null || jleaf == null)
         return (-1);

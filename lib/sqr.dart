@@ -35,10 +35,10 @@ part of edu.emory.mathcs.csparse;
 /* compute nnz(V) = S->lnz, S->pinv, S->leftmost, S->m2 from A and S->parent */
 bool cs_vcount(Dcs A, Dcss S) {
     int i, k, p, pa, n = A.n, m = A.m;
-    List<int> Ap = A.p, Ai = A.i, next, head, tail, nque, pinv, leftmost, w, parent = S.parent;
-    S.pinv = pinv = new List<int>.filled(m + n, 0); /* allocate pinv, */
-    S.leftmost = leftmost = new List<int>.filled(m, 0); /* and leftmost */
-    w = new List<int>.filled(m + 3 * n, 0); /* get workspace */
+    Int32List Ap = A.p, Ai = A.i, next, head, tail, nque, pinv, leftmost, w, parent = S.parent;
+    S.pinv = pinv = new Int32List(m + n); /* allocate pinv, */
+    S.leftmost = leftmost = new Int32List(m); /* and leftmost */
+    w = new Int32List(m + 3 * n); /* get workspace */
     next = w;
     head = w;
     int head_offset = m;
@@ -111,7 +111,7 @@ bool cs_vcount(Dcs A, Dcss S) {
  */
 Dcss cs_sqr(int order, Dcs A, bool qr) {
     int n, k;
-    List<int> post;
+    Int32List post;
     Dcss S;
     bool ok = true;
     if (!CS_CSC(A))

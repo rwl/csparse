@@ -41,17 +41,17 @@ part of edu.emory.mathcs.csparse;
  *            analyze A if false, A'A oterwise
  * @return elimination tree, null on error
  */
-List<int> cs_etree(Dcs A, bool ata) {
+Int32List cs_etree(Dcs A, bool ata) {
     int i, k, p, m, n, inext;
-    List<int> Ap, Ai, w, parent, ancestor, prev;
+    Int32List Ap, Ai, w, parent, ancestor, prev;
     if (!CS_CSC(A))
         return (null); /* check inputs */
     m = A.m;
     n = A.n;
     Ap = A.p;
     Ai = A.i;
-    parent = new List<int>.filled(n, 0); /* allocate result */
-    w = new List<int>.filled(n + (ata ? m : 0), 0); /* get workspace */
+    parent = new Int32List(n); /* allocate result */
+    w = new Int32List(n + (ata ? m : 0)); /* get workspace */
     ancestor = w;
     prev = w;
     int prev_offset = n;

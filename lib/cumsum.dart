@@ -43,7 +43,7 @@ part of edu.emory.mathcs.csparse;
  *            length of c
  * @return sum (c), null on error
  */
-int cs_cumsum(List<int> p, List<int> c, int n) {
+int cs_cumsum(Int32List p, Int32List c, int n) {
     int i, nz = 0;
     double nz2 = 0.0;
     if (p == null || c == null)

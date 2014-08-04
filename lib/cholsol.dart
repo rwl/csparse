@@ -45,8 +45,8 @@ part of edu.emory.mathcs.csparse;
  *            right hand side, b is overwritten with solution
  * @return true if successful, false on error
  */
-bool cs_cholsol(int order, Dcs A, List<double> b) {
-    List<double> x;
+bool cs_cholsol(int order, Dcs A, Float64List b) {
+    Float64List x;
     Dcss S;
     Dcsn N;
     int n;
@@ -56,7 +56,7 @@ bool cs_cholsol(int order, Dcs A, List<double> b) {
     n = A.n;
     S = cs_schol(order, A); /* ordering and symbolic analysis */
     N = cs_chol(A, S); /* numeric Cholesky factorization */
-    x = new List<double>.filled(n, 0.0); /* get workspace */
+    x = new Float64List(n); /* get workspace */
     ok = (S != null && N != null);
     if (ok) {
         cs_ipvec(S.pinv, b, x, n); /* x = P*b */

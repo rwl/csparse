@@ -55,10 +55,10 @@ part of edu.emory.mathcs.csparse;
  *            the index of the first element in array pinv
  * @return new value of top, -1 on error
  */
-int cs_dfs(int j, Dcs G, int top, List<int> xi, int xi_offset, List<int> pstack, int pstack_offset,
-        List<int> pinv, int pinv_offset) {
+int cs_dfs(int j, Dcs G, int top, Int32List xi, int xi_offset, Int32List pstack, int pstack_offset,
+        Int32List pinv, int pinv_offset) {
     int i, p, p2, jnew, head = 0;
-    List<int> Gp, Gi;
+    Int32List Gp, Gi;
     bool done;
     if (!CS_CSC(G) || xi == null || pstack == null)
         return (-1); /* check inputs */

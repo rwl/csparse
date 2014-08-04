@@ -53,9 +53,9 @@ Dcs cs_spalloc(int m, int n, int nzmax, bool values, bool triplet) {
     A.n = n;
     A.nzmax = nzmax = math.max(nzmax, 1);
     A.nz = triplet ? 0 : -1; /* allocate triplet or comp.col */
-    A.p = triplet ? new List<int>.filled(nzmax, 0) : new List<int>.filled(n + 1, 0);
-    A.i = new List<int>.filled(nzmax, 0);
-    A.x = values ? new List<double>.filled(nzmax, 0.0) : null;
+    A.p = triplet ? new Int32List(nzmax) : new Int32List(n + 1);
+    A.i = new Int32List(nzmax);
+    A.x = values ? new Float64List(nzmax) : null;
     return A;
 }
 
@@ -73,14 +73,14 @@ bool cs_sprealloc(Dcs A, int nzmax) {
         return (false);
     if (nzmax <= 0)
         nzmax = (CS_CSC(A)) ? (A.p[A.n]) : A.nz;
-    List<int> Ainew = new List<int>.filled(nzmax, 0);
+    Int32List Ainew = new Int32List(nzmax);
     int length = math.min(nzmax, A.i.length);
     //System.arraycopy(A.i, 0, Ainew, 0, length);
     for (int i = 0; i < length; i++) Ainew[i] = A.i[i];
     //Ainew.setAll(0, length, A.i);
     A.i = Ainew;
     if (CS_TRIPLET(A)) {
-        List<int> Apnew = new List<int>.filled(nzmax, 0);
+        Int32List Apnew = new Int32List(nzmax);
         length = math.min(nzmax, A.p.length);
         //System.arraycopy(A.p, 0, Apnew, 0, length);
         //Apnew.replaceRange(0, length, A.p);
@@ -88,7 +88,7 @@ bool cs_sprealloc(Dcs A, int nzmax) {
         A.p = Apnew;
     }
     if (A.x != null) {
-        List<double> Axnew = new List<double>.filled(nzmax, 0.0);
+        Float64List Axnew = new Float64List(nzmax);
         length = math.min(nzmax, A.x.length);
         //System.arraycopy(A.x, 0, Axnew, 0, length);
         //Axnew.replaceRange(0, length, A.x);
@@ -111,12 +111,12 @@ bool cs_sprealloc(Dcs A, int nzmax) {
 Dcsd cs_dalloc(int m, int n) {
     Dcsd D;
     D = new Dcsd();
-    D.p = new List<int>.filled(m, 0);
-    D.r = new List<int>.filled(m + 6, 0);
-    D.q = new List<int>.filled(n, 0);
-    D.s = new List<int>.filled(n + 6, 0);
-    D.cc = new List<int>.filled(5, 0);
-    D.rr = new List<int>.filled(5, 0);
+    D.p = new Int32List(m);
+    D.r = new Int32List(m + 6);
+    D.q = new Int32List(n);
+    D.s = new Int32List(n + 6);
+    D.cc = new Int32List(5);
+    D.rr = new Int32List(5);
     return D;
 }
 
@@ -128,11 +128,11 @@ int CS_UNFLIP(int i) {
     return (((i) < 0) ? CS_FLIP(i) : (i));
 }
 
-bool CS_MARKED(List<int> w, int j) {
+bool CS_MARKED(Int32List w, int j) {
     return (w[j] < 0);
 }
 
-void CS_MARK(List<int> w, int j) {
+void CS_MARK(Int32List w, int j) {
     w[j] = CS_FLIP(w[j]);
 }
 

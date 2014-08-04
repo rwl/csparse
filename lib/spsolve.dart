@@ -53,10 +53,10 @@ part of edu.emory.mathcs.csparse;
  *            true if lower triangular, false if upper
  * @return top, -1 in error
  */
-int cs_spsolve(Dcs G, Dcs B, int k, List<int> xi, List<double> x, List<int> pinv, bool lo) {
+int cs_spsolve(Dcs G, Dcs B, int k, Int32List xi, Float64List x, Int32List pinv, bool lo) {
     int j, J, p, q, px, top, n;
-    List<int> Gp, Gi, Bp, Bi;
-    List<double> Gx, Bx;
+    Int32List Gp, Gi, Bp, Bi;
+    Float64List Gx, Bx;
     if (!CS_CSC(G) || !CS_CSC(B) || xi == null || x == null)
         return (-1);
     Gp = G.p;

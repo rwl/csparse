@@ -41,13 +41,13 @@ part of edu.emory.mathcs.csparse;
  *            length of parent
  * @return post[k]=i, null on error
  */
-List<int> cs_post(List<int> parent, int n) {
+Int32List cs_post(Int32List parent, int n) {
     int j, k = 0;
-    List<int> post, w, head, next, stack;
+    Int32List post, w, head, next, stack;
     if (parent == null)
         return (null); /* check inputs */
-    post = new List<int>.filled(n, 0); /* allocate result */
-    w = new List<int>.filled(3 * n, 0); /* get workspace */
+    post = new Int32List(n); /* allocate result */
+    w = new Int32List(3 * n); /* get workspace */
     head = w;
     next = w;
     int next_offset = n;

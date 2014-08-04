@@ -42,8 +42,8 @@ part of edu.emory.mathcs.csparse;
  */
 Dcs cs_compress(Dcs T) {
     int m, n, nz, p, k;
-    List<int> Cp, Ci, w, Ti, Tj;
-    List<double> Cx, Tx;
+    Int32List Cp, Ci, w, Ti, Tj;
+    Float64List Cx, Tx;
     Dcs C;
     if (!CS_TRIPLET(T))
         return (null); /* check inputs */
@@ -54,7 +54,7 @@ Dcs cs_compress(Dcs T) {
     Tx = T.x;
     nz = T.nz;
     C = cs_spalloc(m, n, nz, Tx != null, false); /* allocate result */
-    w = new List<int>.filled(n, 0); /* get workspace */
+    w = new Int32List(n); /* get workspace */
     Cp = C.p;
     Ci = C.i;
     Cx = C.x;

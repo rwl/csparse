@@ -44,8 +44,8 @@ part of edu.emory.mathcs.csparse;
  *            size max(m,n), b (size m) on input, x(size n) on output
  * @return true if successful, false on error
  */
-bool cs_qrsol(int order, Dcs A, List<double> b) {
-    List<double> x;
+bool cs_qrsol(int order, Dcs A, Float64List b) {
+    Float64List x;
     Dcss S;
     Dcsn N;
     Dcs AT = null;
@@ -58,7 +58,7 @@ bool cs_qrsol(int order, Dcs A, List<double> b) {
     if (m >= n) {
         S = cs_sqr(order, A, true); /* ordering and symbolic analysis */
         N = cs_qr(A, S); /* numeric QR factorization */
-        x = new List<double>.filled(S != null ? S.m2 : 1, 0.0); /* get workspace */
+        x = new Float64List(S != null ? S.m2 : 1); /* get workspace */
         ok = (S != null && N != null);
         if (ok) {
             cs_ipvec(S.pinv, b, x, m); /* x(0:m-1) = b(p(0:m-1) */
@@ -73,7 +73,7 @@ bool cs_qrsol(int order, Dcs A, List<double> b) {
         AT = cs_transpose(A, true); /* Ax=b is underdetermined */
         S = cs_sqr(order, AT, true); /* ordering and symbolic analysis */
         N = cs_qr(AT, S); /* numeric QR factorization of A' */
-        x = new List<double>.filled(S != null ? S.m2 : 1, 0.0); /* get workspace */
+        x = new Float64List(S != null ? S.m2 : 1); /* get workspace */
         ok = (AT != null && S != null && N != null);
         if (ok) {
             cs_pvec(S.q, b, x, m); /* x(q(0:m-1)) = b(0:m-1) */

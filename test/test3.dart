@@ -21,6 +21,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
  *
  */
+
+import 'dart:typed_data';
 import 'dart:math' as math;
 import 'package:unittest/unittest.dart';
 import 'package:csparse/csparse.dart';
@@ -43,13 +45,13 @@ main() {
         E = null,
         W2;
     int n, k, p1, p2;
-    List<int> Li,
+    Int32List Li,
         Lp,
         Wi,
         Wp,
         p = null;
     bool ok;
-    List<double> b,
+    Float64List b,
         x,
         resid,
         y = null,
@@ -71,7 +73,7 @@ main() {
     rhs(x, b, n);
     print("\nchol then update/downdate ");
     print_order(1);
-    y = new List<double>(n);
+    y = new Float64List(n);
     t = tic();
     /* symbolic Chol, amd(A+A') */
     S = cs_schol(1, C);

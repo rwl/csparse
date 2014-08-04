@@ -42,10 +42,10 @@ part of edu.emory.mathcs.csparse;
  *            size n, right hand side on input, solution on output
  * @return true if successful, false on error
  */
-bool cs_ltsolve(Dcs L, List<double> x) {
+bool cs_ltsolve(Dcs L, Float64List x) {
     int p, j, n;
-    List<int> Lp, Li;
-    List<double> Lx;
+    Int32List Lp, Li;
+    Float64List Lx;
     if (!CS_CSC(L) || x == null)
         return (false); /* check inputs */
     n = L.n;

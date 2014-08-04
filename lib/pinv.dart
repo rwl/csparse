@@ -41,12 +41,12 @@ part of edu.emory.mathcs.csparse;
  *            length of p
  * @return pinv, null on error
  */
-List<int> cs_pinv(List<int> p, int n) {
+Int32List cs_pinv(Int32List p, int n) {
     int k;
-    List<int> pinv;
+    Int32List pinv;
     if (p == null)
         return (null); /* p = NULL denotes identity */
-    pinv = new List<int>.filled(n, 0); /* allocate result */
+    pinv = new Int32List(n); /* allocate result */
     for (k = 0; k < n; k++)
         pinv[p[k]] = k;/* invert the permutation */
     return (pinv); /* return result */

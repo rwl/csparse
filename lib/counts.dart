@@ -32,20 +32,20 @@ part of edu.emory.mathcs.csparse;
  */
 //public class Dcs_counts {
 
-int HEAD(int k, int j, List<int> head, int head_offset, bool ata) {
+int HEAD(int k, int j, Int32List head, int head_offset, bool ata) {
     return ata ? head[head_offset + k] : j;
 }
 
-int NEXT(int J, List<int> next, int next_offset, bool ata) {
+int NEXT(int J, Int32List next, int next_offset, bool ata) {
     return ata ? next[next_offset + J] : -1;
 }
 
-List<int> init_ata(Dcs AT, List<int> post, List<int> w) {
+Int32List init_ata(Dcs AT, Int32List post, Int32List w) {
     int i, k, p, m = AT.n, n = AT.m;
     final ATp = AT.p, ATi = AT.i;
-    List<int> head = w;
+    Int32List head = w;
     int head_offset = 4 * n;
-    List<int> next = w;
+    Int32List next = w;
     int next_offset = 5 * n + 1;
     for (k = 0; k < n; k++)
         w[post[k]] = k; /* invert post */
@@ -72,11 +72,11 @@ List<int> init_ata(Dcs AT, List<int> post, List<int> w) {
  *            analyze A if false, A'A otherwise
  * @return column counts of LL'=A or LL'=A'A, null on error
  */
-List<int> cs_counts(Dcs A, List<int> parent, List<int> post, bool ata) {
+Int32List cs_counts(Dcs A, Int32List parent, Int32List post, bool ata) {
     int i, j, k, n, m, J, s, p, q;
-    List<int> ATp, ATi, maxfirst, prevleaf, ancestor, colcount, w, first, delta;
-    List<int> head = null, next = null;
-    List<int> jleaf = new List<int>(1);
+    Int32List ATp, ATi, maxfirst, prevleaf, ancestor, colcount, w, first, delta;
+    Int32List head = null, next = null;
+    Int32List jleaf = new Int32List(1);
     int head_offset = 0, next_offset = 0;
     Dcs AT;
     if (!CS_CSC(A) || parent == null || post == null)
@@ -84,8 +84,8 @@ List<int> cs_counts(Dcs A, List<int> parent, List<int> post, bool ata) {
     m = A.m;
     n = A.n;
     s = 4 * n + (ata ? (n + m + 1) : 0);
-    delta = colcount = new List<int>.filled(n, 0); /* allocate result */
-    w = new List<int>.filled(s, 0); /* get workspace */
+    delta = colcount = new Int32List(n); /* allocate result */
+    w = new Int32List(s); /* get workspace */
     AT = cs_transpose(A, false); /* AT = A' */
     ancestor = w;
     maxfirst = w;
@@ -106,7 +106,7 @@ List<int> cs_counts(Dcs A, List<int> parent, List<int> post, bool ata) {
     ATp = AT.p;
     ATi = AT.i;
     if (ata) {
-        List<int> offsets = init_ata(AT, post, w);
+        Int32List offsets = init_ata(AT, post, w);
         head = w;
         head_offset = offsets[0];
         next = w;

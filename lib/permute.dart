@@ -45,10 +45,10 @@ part of edu.emory.mathcs.csparse;
  *            allocate pattern only if false, values and pattern otherwise
  * @return C = PAQ, null on error
  */
-Dcs cs_permute(Dcs A, List<int> pinv, List<int> q, bool values) {
+Dcs cs_permute(Dcs A, Int32List pinv, Int32List q, bool values) {
     int t, j, k, nz = 0, m, n;
-    List<int> Ap, Ai, Cp, Ci;
-    List<double> Cx, Ax;
+    Int32List Ap, Ai, Cp, Ci;
+    Float64List Cx, Ax;
     Dcs C;
     if (!CS_CSC(A))
         return (null); /* check inputs */

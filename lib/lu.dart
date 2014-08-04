@@ -47,8 +47,8 @@ Dcsn cs_lu(Dcs A, Dcss S, double tol) {
     Dcs L, U;
     Dcsn N;
     double pivot, a, t;
-    List<double> Lx, Ux, x;
-    List<int> Lp, Li, Up, Ui, pinv, xi, q;
+    Float64List Lx, Ux, x;
+    Int32List Lp, Li, Up, Ui, pinv, xi, q;
     int n, ipiv, k, top, p, i, col, lnz, unz;
     if (!CS_CSC(A) || S == null)
         return (null); /* check inputs */
@@ -56,12 +56,12 @@ Dcsn cs_lu(Dcs A, Dcss S, double tol) {
     q = S.q;
     lnz = S.lnz;
     unz = S.unz;
-    x = new List<double>.filled(n, 0.0); /* get double workspace */
-    xi = new List<int>.filled(2 * n, 0); /* get int workspace */
+    x = new Float64List(n); /* get double workspace */
+    xi = new Int32List(2 * n); /* get int workspace */
     N = new Dcsn(); /* allocate result */
     N.L = L = cs_spalloc(n, n, lnz, true, false); /* allocate result L */
     N.U = U = cs_spalloc(n, n, unz, true, false); /* allocate result U */
-    N.pinv = pinv = new List<int>.filled(n, 0); /* allocate result pinv */
+    N.pinv = pinv = new Int32List(n); /* allocate result pinv */
     Lp = L.p;
     Up = U.p;
     for (i = 0; i < n; i++)

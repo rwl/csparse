@@ -1,6 +1,7 @@
 
 library edu.emory.mathcs.csparse;
 
+import 'dart:typed_data' show Int32List, Float64List;
 import 'dart:math' as math;
 
 part 'add.dart';

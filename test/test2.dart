@@ -22,6 +22,7 @@
  *
  */
 
+import 'dart:typed_data';
 import 'dart:io' show stdout;
 import 'package:unittest/unittest.dart';
 import 'package:csparse/csparse.dart';
@@ -38,10 +39,10 @@ main() {
 	 */
   bool test2(Dproblem prob) {
     Dcs A, C;
-    List<double> b, x, resid;
+    Float64List b, x, resid;
     double tol;
     int t, k, m, n, order, nb, ns, sprank;
-    List<int> r, s, rr;
+    Int32List r, s, rr;
     bool ok;
     Dcsd D;
     if (prob == null) return (false);

@@ -43,10 +43,10 @@ part of edu.emory.mathcs.csparse;
  */
 Dcs cs_transpose(Dcs A, bool values) {
     int p, q, j;
-    List<int> Cp, Ci;
+    Int32List Cp, Ci;
     int n, m;
-    List<int> Ap, Ai, w;
-    List<double> Cx, Ax;
+    Int32List Ap, Ai, w;
+    Float64List Cx, Ax;
     Dcs C;
     if (!CS_CSC(A))
         return (null); /* check inputs */
@@ -56,7 +56,7 @@ Dcs cs_transpose(Dcs A, bool values) {
     Ai = A.i;
     Ax = A.x;
     C = cs_spalloc(n, m, Ap[n], values && (Ax != null), false); /* allocate result */
-    w = new List<int>.filled(m, 0); /* get workspace */
+    w = new Int32List(m); /* get workspace */
     Cp = C.p;
     Ci = C.i;
     Cx = C.x;

@@ -63,17 +63,17 @@ class Dcs {
     /**
      * column pointers (size n+1) or col indices (size nzmax)
      */
-    List<int> p;
+    Int32List p;
 
     /**
      * row indices, size nzmax
      */
-    List<int> i;
+    Int32List i;
 
     /**
      * numerical values, size nzmax
      */
-    List<double> x;
+    Float64List x;
 
     /**
      * # of entries in triplet matrix, -1 for compressed-col
@@ -95,27 +95,27 @@ class Dcss {
     /**
      * inverse row perm. for QR, fill red. perm for Chol
      */
-    List<int> pinv;
+    Int32List pinv;
 
     /**
      * fill-reducing column permutation for LU and QR
      */
-    List<int> q;
+    Int32List q;
 
     /**
      * elimination tree for Cholesky and QR
      */
-    List<int> parent;
+    Int32List parent;
 
     /**
      * column pointers for Cholesky, row counts for QR
      */
-    List<int> cp;
+    Int32List cp;
 
     /**
      * leftmost[i] = min(find(A(i,:))), for QR
      */
-    List<int> leftmost;
+    Int32List leftmost;
 
     /**
      * # of rows for QR, after adding fictitious rows
@@ -155,12 +155,12 @@ class Dcsn {
     /**
      * partial pivoting for LU
      */
-    List<int> pinv;
+    Int32List pinv;
 
     /**
      * beta [0..n-1] for QR
      */
-    List<double> B;
+    Float64List B;
 
     Dcsn() {
     }
@@ -177,22 +177,22 @@ class Dcsd {
     /**
      * size m, row permutation
      */
-    List<int> p;
+    Int32List p;
 
     /**
      * size n, column permutation
      */
-    List<int> q;
+    Int32List q;
 
     /**
      * size nb+1, block k is rows r[k] to r[k+1]-1 in A(p,q)
      */
-    List<int> r;
+    Int32List r;
 
     /**
      * size nb+1, block k is cols s[k] to s[k+1]-1 in A(p,q)
      */
-    List<int> s;
+    Int32List s;
 
     /**
      * # of blocks in fine dmperm decomposition
@@ -202,11 +202,11 @@ class Dcsd {
     /**
      * coarse row decomposition
      */
-    List<int> rr;
+    Int32List rr;
 
     /**
      * coarse column decomposition
      */
-    List<int> cc;
+    Int32List cc;
 }
 

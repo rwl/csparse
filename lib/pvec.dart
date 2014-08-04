@@ -45,7 +45,7 @@ part of edu.emory.mathcs.csparse;
  *            length of p, b and x
  * @return true if successful, false otherwise
  */
-bool cs_pvec(List<int> p, List<double> b, List<double> x, int n) {
+bool cs_pvec(Int32List p, Float64List b, Float64List x, int n) {
     int k;
     if (x == null || b == null)
         return (false); /* check inputs */

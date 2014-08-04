@@ -43,10 +43,10 @@ part of edu.emory.mathcs.csparse;
  *            allocate pattern only if false, values and pattern otherwise
  * @return C = PAP', null on error
  */
-Dcs cs_symperm(Dcs A, List<int> pinv, bool values) {
+Dcs cs_symperm(Dcs A, Int32List pinv, bool values) {
     int i, j, p, q, i2, j2, n;
-    List<int> Ap, Ai, Cp, Ci, w;
-    List<double> Cx, Ax;
+    Int32List Ap, Ai, Cp, Ci, w;
+    Float64List Cx, Ax;
     Dcs C;
     if (!CS_CSC(A))
         return (null); /* check inputs */
@@ -55,7 +55,7 @@ Dcs cs_symperm(Dcs A, List<int> pinv, bool values) {
     Ai = A.i;
     Ax = A.x;
     C = cs_spalloc(n, n, Ap[n], values && (Ax != null), false); /* alloc result*/
-    w = new List<int>.filled(n, 0); /* get workspace */
+    w = new Int32List(n); /* get workspace */
     Cp = C.p;
     Ci = C.i;
     Cx = C.x;

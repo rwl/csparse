@@ -42,9 +42,9 @@ part of edu.emory.mathcs.csparse;
  * @return numeric QR factorization, null on error
  */
 Dcsn cs_qr(Dcs A, Dcss S) {
-    List<double> Rx, Vx, Ax, x, Beta;
+    Float64List Rx, Vx, Ax, x, Beta;
     int i, k, p, n, vnz, p1, top, m2, len, col, rnz;
-    List<int> s, leftmost, Ap, Ai, parent, Rp, Ri, Vp, Vi, w, pinv, q;
+    Int32List s, leftmost, Ap, Ai, parent, Rp, Ri, Vp, Vi, w, pinv, q;
     Dcs R, V;
     Dcsn N;
     if (!CS_CSC(A) || S == null)
@@ -60,8 +60,8 @@ Dcsn cs_qr(Dcs A, Dcss S) {
     vnz = S.lnz;
     rnz = S.unz;
     leftmost = S.leftmost;
-    w = new List<int>.filled(m2 + n, 0); /* get int workspace */
-    x = new List<double>.filled(m2, 0.0); /* get double workspace */
+    w = new Int32List(m2 + n); /* get int workspace */
+    x = new Float64List(m2); /* get double workspace */
     N = new Dcsn(); /* allocate result */
     s = w;
     int s_offset = m2; /* s is size n */
@@ -69,7 +69,7 @@ Dcsn cs_qr(Dcs A, Dcss S) {
         x[k] = 0.0; /* clear workspace x */
     N.L = V = cs_spalloc(m2, n, vnz, true, false); /* allocate result V */
     N.U = R = cs_spalloc(m2, n, rnz, true, false); /* allocate result R */
-    N.B = Beta = new List<double>.filled(n, 0.0); /* allocate result Beta */
+    N.B = Beta = new Float64List(n); /* allocate result Beta */
     Rp = R.p;
     Ri = R.i;
     Rx = R.x;
@@ -122,7 +122,7 @@ Dcsn cs_qr(Dcs A, Dcss S) {
             x[Vi[p]] = 0.0;
         }
         Ri[rnz] = k; /* R(k,k) = norm (x) */
-        List<double> beta = new List<double>(1);
+        Float64List beta = new Float64List(1);
         beta[0] = Beta[k];
         Rx[rnz++] = cs_house(Vx, p1, beta, vnz - p1); /* [v,beta]=house(x) */
         Beta[k] = beta[0];

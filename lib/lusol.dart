@@ -46,8 +46,8 @@ part of edu.emory.mathcs.csparse;
  *            partial pivoting tolerance
  * @return true if successful, false on error
  */
-bool cs_lusol(int order, Dcs A, List<double> b, double tol) {
-    List<double> x;
+bool cs_lusol(int order, Dcs A, Float64List b, double tol) {
+    Float64List x;
     Dcss S;
     Dcsn N;
     int n;
@@ -57,7 +57,7 @@ bool cs_lusol(int order, Dcs A, List<double> b, double tol) {
     n = A.n;
     S = cs_sqr(order, A, false); /* ordering and symbolic analysis */
     N = cs_lu(A, S, tol); /* numeric LU factorization */
-    x = new List<double>.filled(n, 0.0); /* get workspace */
+    x = new Float64List(n); /* get workspace */
     ok = (S != null && N != null);
     if (ok) {
         cs_ipvec(N.pinv, b, x, n); /* x = b(p) */

@@ -47,9 +47,9 @@ part of edu.emory.mathcs.csparse;
  *            mapping of rows to columns of G, ignored if null
  * @return top, -1 on error
  */
-int cs_reach(Dcs G, Dcs B, int k, List<int> xi, List<int> pinv) {
+int cs_reach(Dcs G, Dcs B, int k, Int32List xi, Int32List pinv) {
     int p, n, top;
-    List<int> Bp, Bi, Gp;
+    Int32List Bp, Bi, Gp;
     if (!CS_CSC(G) || !CS_CSC(B) || xi == null)
         return (-1); /* check inputs */
     n = G.n;

@@ -43,10 +43,10 @@ part of edu.emory.mathcs.csparse;
  *            size m, vector y
  * @return true if successful, false on error
  */
-bool cs_gaxpy(Dcs A, List<double> x, List<double> y) {
+bool cs_gaxpy(Dcs A, Float64List x, Float64List y) {
     int p, j, n;
-    List<int> Ap, Ai;
-    List<double> Ax;
+    Int32List Ap, Ai;
+    Float64List Ax;
     if (!CS_CSC(A) || x == null || y == null)
         return (false); /* check inputs */
     n = A.n;

@@ -41,8 +41,8 @@ part of edu.emory.mathcs.csparse;
  */
 bool cs_dupl(Dcs A) {
     int i, j, p, q, nz = 0, n, m;
-    List<int> Ap, Ai, w;
-    List<double> Ax;
+    Int32List Ap, Ai, w;
+    Float64List Ax;
     if (!CS_CSC(A))
         return (false);
     /* check inputs */
@@ -51,7 +51,7 @@ bool cs_dupl(Dcs A) {
     Ap = A.p;
     Ai = A.i;
     Ax = A.x;
-    w = new List<int>.filled(m, 0); /* get workspace */
+    w = new Int32List(m); /* get workspace */
     for (i = 0; i < m; i++)
         w[i] = -1; /* row i not yet seen */
     for (j = 0; j < n; j++) {

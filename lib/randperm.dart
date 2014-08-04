@@ -43,12 +43,12 @@ part of edu.emory.mathcs.csparse;
  *            0: natural, -1: reverse, random p oterwise
  * @return p, null on error or for natural order
  */
-List<int> cs_randperm(int n, int seed) {
-    List<int> p;
+Int32List cs_randperm(int n, int seed) {
+    Int32List p;
     int k, j, t;
     if (seed == 0)
         return (null); /* return p = NULL (identity) */
-    p = new List<int>.filled(n, 0); /* allocate result */
+    p = new Int32List(n); /* allocate result */
     for (k = 0; k < n; k++)
         p[k] = n - k - 1;
     if (seed == -1)

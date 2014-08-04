@@ -24,6 +24,7 @@
 
 library edu.emory.mathcs.csparse.cs_load.test_util;
 
+import 'dart:typed_data';
 import 'dart:math' as math;
 import 'dart:io' show stdout, File, Platform;
 
@@ -156,11 +157,11 @@ class Dproblem {
   Dcs A;
   Dcs C;
   int sym;
-  List<double> x;
-  List<double> b;
-  List<double> resid;
+  Float64List x;
+  Float64List b;
+  Float64List resid;
 
-  List<double> norms = new List<double>();
+  final norms = new List<double>();
 
   int nb;
   int ns;
@@ -181,7 +182,7 @@ int is_sym(Dcs A) {
       p,
       n = A.n,
       m = A.m;
-  List<int> Ap = A.p,
+  Int32List Ap = A.p,
       Ai = A.i;
   bool is_upper, is_lower;
   if (m != n) return (0);
@@ -225,7 +226,7 @@ Dcs make_sym(Dcs A) {
 /**
  * create a right-hand side
  */
-void rhs(List<double> x, List<double> b, int m) {
+void rhs(Float64List x, Float64List b, int m) {
   int i;
   for (i = 0; i < m; i++) b[i] = 1 + i.toDouble() / m;
   for (i = 0; i < m; i++) x[i] = b[i];
@@ -234,7 +235,7 @@ void rhs(List<double> x, List<double> b, int m) {
 /**
  * infinity-norm of x
  */
-double norm(List<double> x, int n) {
+double norm(Float64List x, int n) {
   int i;
   double normx = 0.0;
   for (i = 0; i < n; i++) {
@@ -246,7 +247,7 @@ double norm(List<double> x, int n) {
 /**
  * compute residual, norm(A*x-b,inf) / (norm(A,1)*norm(x,inf) + norm(b,inf))
  */
-void print_resid(bool ok, Dcs A, List<double> x, List<double> b, List<double> resid, Dproblem prob) {
+void print_resid(bool ok, Dcs A, Float64List x, Float64List b, Float64List resid, Dproblem prob) {
   int i, m, n;
   if (!ok) {
     stdout.write("    (failed)\n");
@@ -336,8 +337,8 @@ Dproblem get_problem(File file, [double tol = 0.0, int base = 0]) {
   if (nz1 != nz2) stdout.write("zero entries dropped: ${nz1 - nz2}\n");
   prob.dropped_tiny = nz2 - A.p[n];
   if (nz2 != A.p[n]) stdout.write("tiny entries dropped: ${nz2 - A.p[n]}\n");
-  prob.b = new List<double>.filled(mn, 0.0);
-  prob.x = new List<double>.filled(mn, 0.0);
-  prob.resid = new List<double>.filled(mn, 0.0);
+  prob.b = new Float64List(mn);
+  prob.x = new Float64List(mn);
+  prob.resid = new Float64List(mn);
   return prob;
 }

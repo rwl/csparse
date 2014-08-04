@@ -43,7 +43,7 @@ part of edu.emory.mathcs.csparse;
  */
 Dcss cs_schol(int order, Dcs A) {
     int n;
-    List<int> c, post, P;
+    Int32List c, post, P;
     Dcs C;
     Dcss S;
     if (!CS_CSC(A))
@@ -58,7 +58,7 @@ Dcss cs_schol(int order, Dcs A) {
     S.parent = cs_etree(C, false); /* find etree of C */
     post = cs_post(S.parent, n); /* postorder the etree */
     c = cs_counts(C, S.parent, post, false); /* find column counts of chol(C) */
-    S.cp = new List<int>.filled(n + 1, 0); /* allocate result S.cp */
+    S.cp = new Int32List(n + 1); /* allocate result S.cp */
     S.unz = S.lnz = cs_cumsum(S.cp, c, n); /* find column pointers for L */
     return ((S.lnz >= 0) ? S : null);
 }

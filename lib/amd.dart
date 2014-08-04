@@ -32,7 +32,7 @@ part of edu.emory.mathcs.csparse;
 //public class Dcs_amd {
 
 /* clear w */
-int cs_wclear(int mark, int lemax, List<int> w, int w_offset, int n) {
+int cs_wclear(int mark, int lemax, Int32List w, int w_offset, int n) {
   int k;
   if (mark < 2 || (mark + lemax < 0)) {
     for (k = 0; k < n; k++)
@@ -60,9 +60,9 @@ class Cs_diag implements Dcs_ifkeep {
  * @return amd(A+A') if A is symmetric, or amd(A'A) otherwise, null on error
  *         or for natural ordering
  */
-List<int> cs_amd(int order, Dcs A) {
+Int32List cs_amd(int order, Dcs A) {
     Dcs C, A2, AT;
-    List<int> Cp, Ci, last, W, len, nv, next, P, head, elen, degree, w, hhead, ATp, ATi;
+    Int32List Cp, Ci, last, W, len, nv, next, P, head, elen, degree, w, hhead, ATp, ATi;
     int d, dk, dext, lemax = 0, e, elenk, eln, i, j, k, k1, k2, k3, jlast, ln, dense, nzmax, mindeg = 0, nvi, nvj, nvk, mark, wnvi, cnz, nel = 0, p, p1, p2, p3, p4, pj, pk, pk1, pk2, pn, q, n, m, t;
     int h;
     bool ok;
@@ -103,8 +103,8 @@ List<int> cs_amd(int order, Dcs A) {
     cs_fkeep(C, new Cs_diag(), null); /* drop diagonal entries */
     Cp = C.p;
     cnz = Cp[n];
-    P = new List<int>.filled(n + 1, 0); /* allocate result */
-    W = new List<int>.filled(8 * (n + 1), 0); /* get workspace */
+    P = new Int32List(n + 1); /* allocate result */
+    W = new Int32List(8 * (n + 1)); /* get workspace */
     t = cnz + cnz ~/ 5 + 2 * n; /* add elbow room to C */
     cs_sprealloc(C, t);
     len = W;

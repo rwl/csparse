@@ -33,10 +33,10 @@ part of edu.emory.mathcs.csparse;
 //public class Dcs_maxtrans {
 
 /* find an augmenting path starting at column k and extend the match if found */
-void cs_augment(int k, Dcs A, List<int> jmatch, int jmatch_offset, List<int> cheap, int cheap_offset,
-                List<int> w, int w_offset, List<int> js, int js_offset, List<int> _is, int is_offset, List<int> ps, int ps_offset) {
+void cs_augment(int k, Dcs A, Int32List jmatch, int jmatch_offset, Int32List cheap, int cheap_offset,
+                Int32List w, int w_offset, Int32List js, int js_offset, Int32List _is, int is_offset, Int32List ps, int ps_offset) {
     int p, i = -1;
-    List<int> Ap = A.p, Ai = A.i;
+    Int32List Ap = A.p, Ai = A.i;
     int head = 0, j;
     bool found = false;
     js[js_offset + 0] = k; /* start with just node k in jstack */
@@ -85,10 +85,10 @@ void cs_augment(int k, Dcs A, List<int> jmatch, int jmatch_offset, List<int> che
  *            0: natural, -1: reverse, randomized otherwise
  * @return row and column matching, size m+n
  */
-List<int> cs_maxtrans(Dcs A, int seed) /*[jmatch [0..m-1]; imatch [0..n-1]]*/
+Int32List cs_maxtrans(Dcs A, int seed) /*[jmatch [0..m-1]; imatch [0..n-1]]*/
 {
     int i, j, k, n, m, p, n2 = 0, m2 = 0;
-    List<int> Ap, jimatch, w, cheap, js, _is, ps, Ai, Cp, jmatch, imatch, q;
+    Int32List Ap, jimatch, w, cheap, js, _is, ps, Ai, Cp, jmatch, imatch, q;
     Dcs C;
     if (!CS_CSC(A))
         return (null); /* check inputs */
@@ -96,7 +96,7 @@ List<int> cs_maxtrans(Dcs A, int seed) /*[jmatch [0..m-1]; imatch [0..n-1]]*/
     m = A.m;
     Ap = A.p;
     Ai = A.i;
-    w = jimatch = new List<int>.filled(m + n, 0); /* allocate result */
+    w = jimatch = new Int32List(m + n); /* allocate result */
 
     k = 0;
     for (j = 0; j < n; j++) /* count nonempty rows and columns */
@@ -141,7 +141,7 @@ List<int> cs_maxtrans(Dcs A, int seed) /*[jmatch [0..m-1]; imatch [0..n-1]]*/
     } else {
         imatch_offset = m;
     }
-    w = new List<int>.filled(5 * n, 0); /* get workspace */
+    w = new Int32List(5 * n); /* get workspace */
     cheap = w;
     int cheap_offset = n;
     js = w;

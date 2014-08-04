@@ -46,10 +46,10 @@ part of edu.emory.mathcs.csparse;
  *            the elimination tree of L
  * @return true if successful, false on error
  */
-bool cs_updown(Dcs L, int sigma, Dcs C, List<int> parent) {
+bool cs_updown(Dcs L, int sigma, Dcs C, Int32List parent) {
     int n, p, f, j;
-    List<int> Lp, Li, Cp, Ci;
-    List<double> Lx, Cx, w;
+    Int32List Lp, Li, Cp, Ci;
+    Float64List Lx, Cx, w;
     double alpha, beta = 1.0, delta, gamma, w1, w2, beta2 = 1.0;
     if (!CS_CSC(L) || !CS_CSC(C) || parent == null)
         return (false); /* check inputs */
@@ -62,7 +62,7 @@ bool cs_updown(Dcs L, int sigma, Dcs C, List<int> parent) {
     Cx = C.x;
     if ((p = Cp[0]) >= Cp[1])
         return (true); /* return if C empty */
-    w = new List<double>.filled(n, 0.0); /* get workspace */
+    w = new Float64List(n); /* get workspace */
     f = Ci[p];
     for (; p < Cp[1]; p++)
         f = math.min(f, Ci[p]); /* f = min (find (C)) */

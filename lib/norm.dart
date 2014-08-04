@@ -42,8 +42,8 @@ part of edu.emory.mathcs.csparse;
  */
 double cs_norm(Dcs A) {
     int p, j, n;
-    List<int> Ap;
-    List<double> Ax;
+    Int32List Ap;
+    Float64List Ax;
     double norm = 0.0, s;
     if (!CS_CSC(A) || A.x == null)
         return (-1.0); /* check inputs */

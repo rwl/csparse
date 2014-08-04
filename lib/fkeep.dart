@@ -45,8 +45,8 @@ part of edu.emory.mathcs.csparse;
  */
 int cs_fkeep(Dcs A, Dcs_ifkeep fkeep, Object other) {
     int j, p, nz = 0, n;
-    List<int> Ap, Ai;
-    List<double> Ax;
+    Int32List Ap, Ai;
+    Float64List Ax;
     if (!CS_CSC(A))
         return (-1); /* check inputs */
     n = A.n;

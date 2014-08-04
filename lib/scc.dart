@@ -41,7 +41,7 @@ part of edu.emory.mathcs.csparse;
  */
 Dcsd cs_scc(Dcs A) {
     int n, i, k, b, nb = 0, top;
-    List<int> xi, pstack, p, r, Ap, ATp, rcopy, Blk;
+    Int32List xi, pstack, p, r, Ap, ATp, rcopy, Blk;
     Dcs AT;
     Dcsd D;
     if (!CS_CSC(A))
@@ -50,7 +50,7 @@ Dcsd cs_scc(Dcs A) {
     Ap = A.p;
     D = cs_dalloc(n, 0); /* allocate result */
     AT = cs_transpose(A, false); /* AT = A' */
-    xi = new List<int>.filled(2 * n + 1, 0); /* get workspace */
+    xi = new Int32List(2 * n + 1); /* get workspace */
     if (D == null || AT == null)
         return (null);
     Blk = xi;

@@ -54,10 +54,10 @@ part of edu.emory.mathcs.csparse;
  *            pattern of x placed in C starting at C.i[nz]
  * @return new value of nz, -1 on error
  */
-int cs_scatter(Dcs A, int j, double beta, List<int> w, List<double> x, int mark, Dcs C, int nz) {
+int cs_scatter(Dcs A, int j, double beta, Int32List w, Float64List x, int mark, Dcs C, int nz) {
     int i, p;
-    List<int> Ap, Ai, Ci;
-    List<double> Ax;
+    Int32List Ap, Ai, Ci;
+    Float64List Ax;
     if (!CS_CSC(A) || w == null || !CS_CSC(C))
         return (-1); /* check inputs */
     Ap = A.p;

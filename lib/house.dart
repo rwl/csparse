@@ -46,7 +46,7 @@ part of edu.emory.mathcs.csparse;
  *            the length of x
  * @return norm2(x), -1 on error
  */
-double cs_house(List<double> x, int x_offset, List<double> beta, int n) {
+double cs_house(Float64List x, int x_offset, Float64List beta, int n) {
     double s, sigma = 0.0;
     int i;
     if (x == null || beta == null)

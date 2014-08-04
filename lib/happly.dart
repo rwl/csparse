@@ -46,10 +46,10 @@ part of edu.emory.mathcs.csparse;
  *            vector x of size m
  * @return true if successful, false on error
  */
-bool cs_happly(Dcs V, int i, double beta, List<double> x) {
+bool cs_happly(Dcs V, int i, double beta, Float64List x) {
     int p;
-    List<int> Vp, Vi;
-    List<double> Vx;
+    Int32List Vp, Vi;
+    Float64List Vx;
     double tau = 0.0;
     if (!CS_CSC(V) || x == null)
         return (false); /* check inputs */
