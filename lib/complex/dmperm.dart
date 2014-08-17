@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsd ;
@@ -140,8 +140,9 @@ class Cs_rprune implements DZcs_ifkeep
  * @return Dulmage-Mendelsohn analysis, null on error
  */
 DZcsd cs_dmperm(DZcs A, int seed) {
-	int m, n, i, j, k, cnz, nc, jmatch[], imatch[], wi[], wj[], pinv[], Cp[], Ci[],
-		ps[], rs[], nb1, nb2, p[], q[], cc[], rr[], r[], s[] ;
+	int m, n, i, j, k, cnz, nc, nb1, nb2;
+	Int32List jmatch, imatch, wi, wj, pinv, Cp, Ci,
+		ps, rs, p, q, cc, rr, r, s ;
 	bool ok ;
 	DZcs C ;
 	DZcsd D, scc ;
@@ -159,14 +160,14 @@ DZcsd cs_dmperm(DZcs A, int seed) {
 	wi = r ; wj = s ;			/* use r and s as workspace */
 	for (j = 0 ; j < n ; j++) wj [j] = -1 ;	/* unmark all cols for bfs */
 	for (i = 0 ; i < m ; i++) wi [i] = -1 ;	/* unmark all rows for bfs */
-	cs_bfs (A, n, wi, wj, q, imatch, imatch_offset, jmatch, 0, 1) ;  /* find C1, R1 from C0*/
-	ok = cs_bfs (A, m, wj, wi, p, jmatch, 0, imatch, imatch_offset, 3) ;  /* find R3, C3 from R0*/
+	_cs_bfs (A, n, wi, wj, q, imatch, imatch_offset, jmatch, 0, 1) ;  /* find C1, R1 from C0*/
+	ok = _cs_bfs (A, m, wj, wi, p, jmatch, 0, imatch, imatch_offset, 3) ;  /* find R3, C3 from R0*/
 	if (!ok) return (cs_ddone (D, null, jmatch, false)) ;
-	cs_unmatched (n, wj, q, cc, 0) ;	/* unmatched set C0 */
-	cs_matched (n, wj, imatch, imatch_offset, p, q, cc, rr, 1, 1) ; /* set R1 and C1 */
-	cs_matched (n, wj, imatch, imatch_offset, p, q, cc, rr, 2, -1) ; /* set R2 and C2 */
-	cs_matched (n, wj, imatch, imatch_offset, p, q, cc, rr, 3, 3) ; /* set R3 and C3 */
-	cs_unmatched (m, wi, p, rr, 3) ; /* unmatched set R0 */
+	_cs_unmatched (n, wj, q, cc, 0) ;	/* unmatched set C0 */
+	_cs_matched (n, wj, imatch, imatch_offset, p, q, cc, rr, 1, 1) ; /* set R1 and C1 */
+	_cs_matched (n, wj, imatch, imatch_offset, p, q, cc, rr, 2, -1) ; /* set R2 and C2 */
+	_cs_matched (n, wj, imatch, imatch_offset, p, q, cc, rr, 3, 3) ; /* set R3 and C3 */
+	_cs_unmatched (m, wi, p, rr, 3) ; /* unmatched set R0 */
 	jmatch = null ;
 	/* --- Fine decomposition ----------------------------------------------- */
 	pinv = cs_pinv (p, m) ;			/* pinv=p' */

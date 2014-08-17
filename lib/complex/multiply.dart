@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa ;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
@@ -65,7 +65,7 @@ DZcs cs_multiply(DZcs A, DZcs B)
 	n = B.n ; Bp = B.p ; Bi = B.i ; Bx.x = B.x ; bnz = Bp [n] ;
 	w = new Int32List(m) ;					/* get workspace */
 	values = (A.x != null) && (Bx.x != null) ;
-	x = values ? new DZcsa (m) : null ;			/* get workspace */
+	x = values ? new DZcsa.sized (m) : null ;			/* get workspace */
 	C = cs_spalloc (m, n, anz + bnz, values, false);	/* allocate result */
 	if (C == null || w == null || (values && x == null)) return (cs_done (C, w, x, false)) ;
 	Cp = C.p ;
@@ -81,7 +81,7 @@ DZcs cs_multiply(DZcs A, DZcs B)
 		{
 			nz = cs_scatter (A, Bi[p], (Bx.x != null) ? Bx.get(p) : cs_cone(), w, x, j+1, C, nz) ;
 		}
-		if (values) for (p = Cp [j]; p < nz; p++) Cx.set(p, x.get(Ci [p])) ;
+		if (values) for (p = Cp [j]; p < nz; p++) Cx.set_list(p, x.get(Ci [p])) ;
 	}
 	Cp [n] = nz ; 						/* finalize the last column of C */
 	cs_sprealloc (C, 0);					/* remove extra space from C */

@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 /**
  * Determine if j is a leaf of the skeleton matrix and find lowest common

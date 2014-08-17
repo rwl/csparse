@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
 

@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import java.util.Random;
 
@@ -50,13 +50,13 @@ Int32List cs_randperm(int n, int seed)
 {
 	Int32List p;
 	int k, j, t ;
-	Random r ;
+	math.Random r ;
 	if (seed == 0) return (null) ;		/* return p = NULL (identity) */
 	p = new Int32List(n) ;			/* allocate result */
 	if (p == null) return (null) ;		/* out of memory */
 	for (k = 0 ; k < n ; k++) p [k] = n-k-1 ;
 	if (seed == -1) return (p) ;		/* return reverse permutation */
-	r = new Random(seed) ;			/* get new random number seed */
+	r = new math.Random(seed) ;			/* get new random number seed */
 	for (k = 0 ; k < n ; k++)
 	{
 		j = k + r.nextInt(n - k) ;	/* j = rand int in range k to n-1 */

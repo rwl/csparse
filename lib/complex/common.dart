@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import java.io.ByteArrayOutputStream;
 //import java.io.UnsupportedEncodingException;
@@ -56,12 +56,7 @@ class DZcsa
 	 */
 	Float64List x;
 
-	DZcsa()
-	{
-
-	}
-
-	DZcsa(Float64List x)
+	DZcsa([Float64List x=null])
 	{
 		this.x = x ;
 	}
@@ -69,9 +64,9 @@ class DZcsa
 	/**
 	 * Constructs an array of the given length.
 	 */
-	DZcsa(int len)
+	factory DZcsa.sized(int len)
 	{
-		this.x = new Float64List(2*len) ;
+		return new DZcsa(new Float64List(2*len)) ;
 	}
 
 	/**
@@ -98,7 +93,7 @@ class DZcsa
 	 * @param idx
 	 * @param val
 	 */
-	void set(final int idx, final Float64List val)
+	void set_list(final int idx, final Float64List val)
 	{
 		int offset = 2 * idx ;
 
@@ -113,12 +108,11 @@ class DZcsa
 		x [offset + 1] = im ;
 	}
 
-	@Override
 	String toString() {
 		String s = "DZcsa [" ;
 		for (int i = 0; i < x.length; i+=2) {
 			if (i != 0) s += ", " ;
-			s += String.format("%g+j%g", x[i], x[i + 1]) ;
+			s += "${x[i]}+j${x[i + 1]}" ;
 		}
 		return s + "]" ;
 	}
@@ -183,7 +177,7 @@ class DZcs
 		return new Float64List.fromList([x [offset], x [offset + 1]]) ;
 	}
 
-	void set(final int idx, final Float64List val) {
+	void set_list(final int idx, final Float64List val) {
 		set(idx, val [0], val [1]);
 	}
 
@@ -196,13 +190,10 @@ class DZcs
 	}
 
 	String toString() {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		//ByteArrayOutputStream out = new ByteArrayOutputStream();
+	  StringBuffer out = new StringBuffer();
 		cs_print(this, BRIEF_PRINT, out);
-		try {
-			return new String(out.toByteArray(), "UTF-8");
-		} on UnsupportedEncodingException catch (e) {
-			return out.toString();
-		}
+	  return out.toString();
 	}
 
 }

@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //public class DZcs_complex {
 
@@ -57,14 +57,14 @@ void cs_cset(Float64List x, int idx, Float64List val)
 	x [idx + 1] = val [1] ;
 }
 
-bool cs_cequal(Float64List x, Float64List y)
+/*bool cs_cequal(Float64List x, Float64List y)
 {
 	return cs_cequal (x, y, 1e-14) ;
-}
+}*/
 
-bool cs_cequal(Float64List x, Float64List y, double tol)
+bool cs_cequal(Float64List x, Float64List y, [double tol=1e-14])
 {
-	if (cs_cabs (x [0] - y [0], x [1] - y [1]) <= Math.abs(tol))
+	if (cs_cabs (x [0] - y [0], x [1] - y [1]) <= tol.abs())
 	{
 		return true ;
 	}
@@ -74,10 +74,10 @@ bool cs_cequal(Float64List x, Float64List y, double tol)
 	}
 }
 
-double cs_cabs(Float64List x)
+double cs_cabs_list(Float64List x)
 {
-	double absX = Math.abs(x [0]) ;
-	double absY = Math.abs(x [1]) ;
+	double absX = x [0].abs() ;
+	double absY = x [1].abs() ;
 
 	if (absX == 0.0 && absY == 0.0)
 	{
@@ -86,19 +86,19 @@ double cs_cabs(Float64List x)
 	else if (absX >= absY)
 	{
 		double d = x [1] / x [0] ;
-		return absX * Math.sqrt(1.0 + d * d) ;
+		return absX * math.sqrt(1.0 + d * d) ;
 	}
 	else
 	{
 	    double d = x[0] / x[1] ;
-	    return absY * Math.sqrt(1.0 + d * d) ;
+	    return absY * math.sqrt(1.0 + d * d) ;
 	}
 }
 
 double cs_cabs(double re, double im)
 {
-	double absX = Math.abs(re) ;
-	double absY = Math.abs(im) ;
+	double absX = re.abs() ;
+	double absY = im.abs() ;
 
 	if (absX == 0.0 && absY == 0.0)
 	{
@@ -107,12 +107,12 @@ double cs_cabs(double re, double im)
 	else if (absX >= absY)
 	{
 		double d = im / re ;
-		return absX * Math.sqrt(1.0 + d * d) ;
+		return absX * math.sqrt(1.0 + d * d) ;
 	}
 	else
 	{
 		double d = re / im ;
-		return absY * Math.sqrt(1.0 + d * d) ;
+		return absY * math.sqrt(1.0 + d * d) ;
 	}
 }
 
@@ -126,7 +126,7 @@ Float64List cs_cdiv(Float64List x, double re, double im)
 	Float64List z = new Float64List(2) ;
 	double scalar ;
 
-	if (Math.abs(re) >= Math.abs(im))
+	if (re.abs() >= im.abs())
 	{
 		scalar = 1.0 / (re + im * (im / re)) ;
 
@@ -144,7 +144,7 @@ Float64List cs_cdiv(Float64List x, double re, double im)
 	return z ;
 }
 
-Float64List cs_cdiv(Float64List x, Float64List y)
+Float64List cs_cdiv_list(Float64List x, Float64List y)
 {
 	return cs_cdiv (x, y [0], y [1]) ;
 }
@@ -164,7 +164,7 @@ Float64List cs_cmult(Float64List x, double y)
 	return new Float64List.fromList([x [0] * y, x [1] * y]); ;
 }
 
-Float64List cs_cmult(Float64List x, Float64List y)
+Float64List cs_cmult_list(Float64List x, Float64List y)
 {
 	return new Float64List.fromList([
 		x [0] * y [0] - x [1] * y [1],
@@ -175,25 +175,25 @@ Float64List cs_cmult(Float64List x, Float64List y)
 Float64List cs_cneg(Float64List x)
 {
 	Float64List neg_one = new Float64List.fromList([-1.0, 0.0]) ;
-	return cs_cmult(neg_one, x) ;
+	return cs_cmult_list(neg_one, x) ;
 }
 
 Float64List cs_csqrt(Float64List x)
 {
 	Float64List z = new Float64List(2) ;
-	double absx = cs_cabs (x) ;
+	double absx = cs_cabs_list (x) ;
 	double tmp ;
 	if (absx > 0.0)
 	{
 		if (x [0] > 0.0)
 		{
-			tmp = Math.sqrt(0.5 * (absx + x [0])) ;
+			tmp = math.sqrt(0.5 * (absx + x [0])) ;
 			z [0] = tmp ;
 			z [1] = 0.5 * (x [1] / tmp) ;
 		}
 		else
 		{
-			tmp = Math.sqrt(0.5 * (absx - x [0])) ;
+			tmp = math.sqrt(0.5 * (absx - x [0])) ;
 			if (x [1] < 0.0)
 			{
 				tmp = -tmp ;
@@ -212,7 +212,7 @@ Float64List cs_csqrt(Float64List x)
 
 Float64List cs_csquare(Float64List x)
 {
-	return cs_cmult (x, x) ;
+	return cs_cmult_list (x, x) ;
 }
 
 //}

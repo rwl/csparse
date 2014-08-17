@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
@@ -67,7 +67,7 @@ int cs_fkeep(DZcs A, DZcs_ifkeep fkeep, Object other)
 		{
 			if (fkeep.fkeep(Ai [p], j, Ax.x != null ? Ax.get(p) : cs_cone(), other))
 			{
-				if (Ax.x != null) Ax.set(nz, Ax.get(p));  /* keep A(i,j) */
+				if (Ax.x != null) Ax.set_list(nz, Ax.get(p));  /* keep A(i,j) */
 				Ai [nz++] = Ai [p] ;
 			}
 		}

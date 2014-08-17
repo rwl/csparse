@@ -22,7 +22,11 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+library edu.emory.mathcs.cxsparse.load;
+
+import 'dart:io';
+
+import 'cxsparse.dart';
 
 //import java.io.BufferedReader ;
 //import java.io.IOException ;
@@ -54,37 +58,25 @@ part of edu.emory.mathcs.csparse.complex;
  *            file name
  * @return T if successful, null on error
  */
-DZcs cs_load(InputStream in_)
+DZcs cs_load(File file, [int base=0])
 {
-	int i, j;
-	Float64List x;
-	double x_re, x_im ;
-	DZcs T;
-	String line;
-	List<String> tokens ;
-	Reader r = new InputStreamReader(in_);
-	BufferedReader br = new BufferedReader(r);
-
-	T = cs_spalloc(0, 0, 1, true, true) ;	/* allocate result */
+  final T = cs_spalloc(0, 0, 1, true, true) ;	/* allocate result */
 
 	try
 	{
-		while ((line = br.readLine()) != null)
-		{
-			tokens = line.trim().split("\\s+") ;
+    for (String line in file.readAsLinesSync()) {
+      List<String> tokens = line.trim().split(new RegExp(r"\s+"));
 			if (tokens.length != 4) return null ;
-			i = Integer.parseInt(tokens [0]) ;
-			j = Integer.parseInt(tokens [1]) ;
-			x_re = Double.parseDouble(tokens [2]) ;
-			x_im = Double.parseDouble(tokens [3]) ;
-			x = new Float64List.fromList([x_re, x_im]) ;
-			if (!cs_entry(T, i, j, x)) return (null) ;
+			final i = int.parse(tokens [0]) ;
+			final j = int.parse(tokens [1]) ;
+			final x_re = double.parse(tokens [2]) ;
+			final x_im = double.parse(tokens [3]) ;
+			if (!cs_entry(T, i, j, x_re, x_im)) return (null) ;
 		}
-		r.close();
-		br.close();
 	}
-	on IOException catch (e)
+	on FileSystemException catch (e)
 	{
+    print(e.message);
 		return (null) ;
 	}
 	return (T) ;

@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcss;
@@ -140,7 +140,7 @@ DZcss cs_sqr(int order, DZcs A, bool qr)
 		S.parent = cs_etree (C, true) ;		/* etree of C'*C, where C=A(:,q) */
 		post = cs_post (S.parent, n) ;
 		S.cp = cs_counts (C, S.parent, post, true) ;  /* col counts chol(C'*C) */
-		ok = C != null && S.parent != null && S.cp != null && cs_vcount(C, S) ;
+		ok = C != null && S.parent != null && S.cp != null && _cs_vcount(C, S) ;
 		if (ok) {
 		  S.unz = 0;
 		  for (k = 0 ; k < n ; k++) S.unz += S.cp [k] ;

@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
@@ -74,20 +74,20 @@ int cs_spsolve(DZcs G, DZcs B, int k, Int32List xi, DZcsa x, Int32List pinv, boo
 	Bp = B.p ; Bi = B.i ; Bx.x = B.x ;
 	top = cs_reach (G, B, k, xi, pinv) ;		/* xi[top..n-1]=Reach(B(:,k)) */
 	for (p = top ; p < n ; p++)
-	    x.set(xi [p], cs_czero()) ;			/* clear x */
+	    x.set_list(xi [p], cs_czero()) ;			/* clear x */
 	for (p = Bp [k] ; p < Bp [k+1] ; p++)
-	    x.set(Bi [p], Bx.get(p)) ;			/* scatter B */
+	    x.set_list(Bi [p], Bx.get(p)) ;			/* scatter B */
 	for (px = top ; px < n ; px++)
 	{
 		j = xi [px] ;				/* x(j) is nonzero */
 		J = pinv != null ? (pinv [j]) : j ;	/* j maps to col J of G */
 		if (J < 0) continue ;			/* column J is empty */
-		x.set(j, cs_cdiv (x.get(j), Gx.get(lo ? (Gp [J]) : (Gp [J+1]-1)))) ;  /* x(j) /= G(j,j) */
+		x.set_list(j, cs_cdiv_list (x.get(j), Gx.get(lo ? (Gp [J]) : (Gp [J+1]-1)))) ;  /* x(j) /= G(j,j) */
 		p = lo ? (Gp [J] + 1) : (Gp [J]) ;	/* lo: L(j,j) 1st entry */
 		q = lo ? (Gp [J + 1]) : (Gp [J+1]-1) ;	/* up: U(j,j) last entry */
 		for ( ; p < q ; p++)
 		{
-			x.set(Gi[p], cs_cminus(x.get(Gi[p]), cs_cmult(Gx.get(p), x.get(j)))) ;  /* x(i) -= G(i,j) * x(j) */
+			x.set_list(Gi[p], cs_cminus(x.get(Gi[p]), cs_cmult_list(Gx.get(p), x.get(j)))) ;  /* x(i) -= G(i,j) * x(j) */
 		}
 	}
 	return (top) ;					/* return top of stack */

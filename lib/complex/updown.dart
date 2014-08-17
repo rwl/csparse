@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
@@ -66,43 +66,43 @@ bool cs_updown(DZcs L, int sigma, DZcs C, Int32List parent)
 	Int32List Lp, Li, Cp, Ci ;
 	DZcsa Lx = new DZcsa(), Cx = new DZcsa(), w ;
 	Float64List alpha, gamma, w1, w2 ;
-	double phase, beta = 1, delta, beta2 = 1 ;
+	double phase, beta = 1.0, delta, beta2 = 1.0 ;
 	if (!CS_CSC(L) || !CS_CSC(C) || parent == null)
 		return (false) ;				/* check inputs */
 	Lp = L.p ; Li = L.i ; Lx.x = L.x ; n = L.n ;
 	Cp = C.p ; Ci = C.i ; Cx.x = C.x ;
 	if ((p = Cp[0]) >= Cp[1]) return (true) ;		/* return if C empty */
-	w = new DZcsa(n) ;					/* get workspace */
+	w = new DZcsa.sized(n) ;					/* get workspace */
 	if (w == null) return (false) ;				/* out of memory */
 	f = Ci [p] ;
-	for ( ; p < Cp [1]; p++) f = Math.min(f, Ci [p]) ;	/* f = min (find (C)) */
+	for ( ; p < Cp [1]; p++) f = math.min(f, Ci [p]) ;	/* f = min (find (C)) */
 	for (j = f ; j != -1 ; j = parent [j])
-		w.set(j, cs_czero()) ;				/* clear workspace w */
+		w.set_list(j, cs_czero()) ;				/* clear workspace w */
 	for (p = Cp [0]; p < Cp [1]; p++)
-		w.set(Ci [p], Cx.get(p)) ;			/* w = C */
+		w.set_list(Ci [p], Cx.get(p)) ;			/* w = C */
 	for (j = f ; j != -1 ; j = parent [j])			/* walk path f up to root */
 	{
 		p = Lp [j] ;
-		alpha = cs_cdiv (w.get(j), Lx.get(p)) ;		/* alpha = w(j) / L(j,j) */
+		alpha = cs_cdiv_list (w.get(j), Lx.get(p)) ;		/* alpha = w(j) / L(j,j) */
 		/* CXSparseJ */
-		beta2 = beta*beta + sigma * cs_creal(cs_cmult(alpha, cs_conj(alpha))) ;
+		beta2 = beta*beta + sigma * cs_creal(cs_cmult_list(alpha, cs_conj(alpha))) ;
 		if (beta2 <= 0) break ;				/* not positive definite */
-		beta2 = Math.sqrt(beta2) ;
+		beta2 = math.sqrt(beta2) ;
 		delta = (sigma > 0) ? (beta / beta2) : (beta2 / beta) ;
-		gamma = cs_cmult(cs_cdiv(cs_conj(alpha), beta2*beta, 0.0), sigma) ;
-		Lx.set(p, cs_cplus(cs_cmult(Lx.get(p), delta), (sigma>0) ? cs_cmult(gamma, w.get(j)) : cs_czero()));
+		gamma = cs_cmult(cs_cdiv(cs_conj(alpha), beta2*beta, 0.0), sigma.toDouble()) ;
+		Lx.set_list(p, cs_cplus(cs_cmult(Lx.get(p), delta), (sigma>0) ? cs_cmult_list(gamma, w.get(j)) : cs_czero()));
 		beta = beta2 ;
 		/* CXSparseJ */
-		phase = cs_cabs(cs_cdiv(Lx.get(p), Lx.get(p))) ;  /* phase = abs(L(j,j))/L(j,j) */
-		Lx.set(p, cs_cmult(Lx.get(p), phase)) ;		/* L(j,j) = L(j,j) * phase */
+		phase = cs_cabs_list(cs_cdiv_list(Lx.get(p), Lx.get(p))) ;  /* phase = abs(L(j,j))/L(j,j) */
+		Lx.set_list(p, cs_cmult(Lx.get(p), phase)) ;		/* L(j,j) = L(j,j) * phase */
 		for (p++; p < Lp [j + 1]; p++)
 		{
 			w1 = w.get(Li [p]) ;
-			w.set(Li [p], cs_cminus(w1, cs_cmult(alpha, Lx.get(p)))) ;
+			w.set_list(Li [p], cs_cminus(w1, cs_cmult_list(alpha, Lx.get(p)))) ;
 			w2 = w.get(Li [p]) ;
-			Lx.set(p, cs_cplus(cs_cmult(Lx.get(p), delta), cs_cmult(gamma, (sigma>0) ? w1 : w2))) ;
+			Lx.set_list(p, cs_cplus(cs_cmult(Lx.get(p), delta), cs_cmult_list(gamma, (sigma>0) ? w1 : w2))) ;
 			/* CXSparseJ */
-			Lx.set(p, cs_cmult(Lx.get(p), phase)) ;	/* L(i,j) = L(i,j) * phase */
+			Lx.set_list(p, cs_cmult(Lx.get(p), phase)) ;	/* L(i,j) = L(i,j) * phase */
 		}
 	}
 	w = null ;

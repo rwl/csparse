@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa ;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
@@ -65,13 +65,13 @@ bool cs_dupl(DZcs A)
 			i = Ai [p] ;			/* A(i,j) is nonzero */
 			if (w [i] >= q)
 			{
-				Ax.set(w [i], cs_cplus(Ax.get(w [i]), Ax.get(p))); /* A(i,j) is a duplicate */
+				Ax.set_list(w [i], cs_cplus(Ax.get(w [i]), Ax.get(p))); /* A(i,j) is a duplicate */
 			}
 			else
 			{
 				w [i] = nz ;		/* record where row i occurs */
 				Ai [nz] = i ;		/* keep A(i,j) */
-				Ax.set(nz++, Ax.get(p)) ;
+				Ax.set_list(nz++, Ax.get(p)) ;
 			}
 		}
 		Ap [j] = q ;				/* record start of column j */

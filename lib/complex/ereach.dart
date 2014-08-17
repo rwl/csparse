@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
 
@@ -64,21 +64,21 @@ int cs_ereach(DZcs A, int k, Int32List parent, Int32List s, int s_offset, Int32L
 	Int32List Ap, Ai ;
 	if (!CS_CSC (A) || parent == null || s == null || w == null) return (-1) ; /* check inputs */
 	top = n = A.n ; Ap = A.p ; Ai = A.i ;
-	CS_MARK (w, k) ;			/* mark node k as visited */
+	_CS_MARK (w, k) ;			/* mark node k as visited */
 	for (p = Ap [k] ; p < Ap [k + 1] ; p++)
 	{
 		i = Ai [p] ;			/* A(i,k) is nonzero */
 		if (i > k) continue ;		/* only use upper triangular part of A */
-		for (len = 0 ; !CS_MARKED (w, i) ; i = parent [i]) /* traverse up etree*/
+		for (len = 0 ; !_CS_MARKED (w, i) ; i = parent [i]) /* traverse up etree*/
 		{
 			s [s_offset + len++] = i ; 	/* L(k,i) is nonzero */
-			CS_MARK (w, i) ;		/* mark i as visited */
+			_CS_MARK (w, i) ;		/* mark i as visited */
 		}
 		while (len > 0)
 			s[s_offset + --top] = s[s_offset + --len] ;  /* push path onto stack */
 	}
-	for (p = top ; p < n ; p++) CS_MARK(w, s [s_offset + p]) ;  /* unmark all nodes */
-	CS_MARK (w, k) ;			/* unmark node k */
+	for (p = top ; p < n ; p++) _CS_MARK(w, s [s_offset + p]) ;  /* unmark all nodes */
+	_CS_MARK (w, k) ;			/* unmark node k */
 	return (top) ;				/* s [top..n-1] contains pattern of L(k,:)*/
 }
 

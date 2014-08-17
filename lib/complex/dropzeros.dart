@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
 
@@ -56,7 +56,7 @@ class _Cs_nonzero implements DZcs_ifkeep {
  */
 int cs_dropzeros(DZcs A)
 {
-	return (cs_fkeep(A, new Cs_nonzero(), null));  /* keep all nonzero entries */
+	return (cs_fkeep(A, new _Cs_nonzero(), null));  /* keep all nonzero entries */
 }
 
 //}

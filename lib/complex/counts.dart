@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
 
@@ -62,7 +62,7 @@ Int32List _init_ata (DZcs AT, Int32List post, Int32List w)
 	for (i = 0 ; i < m ; i++)
 	{
 	  k = n;
-		for (p = ATp [i] ; p < ATp [i + 1] ; p++) k = Math.min(k, w [ATi [p]]) ;
+		for (p = ATp [i] ; p < ATp [i + 1] ; p++) k = math.min(k, w [ATi [p]]) ;
 		next [next_offset + i] = head [head_offset + k] ;  /* place row i in linked list k */
 		head [head_offset + k] = i ;
 	}
@@ -117,7 +117,7 @@ Int32List cs_counts(DZcs A, Int32List parent, Int32List post, bool ata)
 	ATp = AT.p ; ATi = AT.i ;
 	if (ata)
 	{
-		Int32List offsets = init_ata(AT, post, w) ;
+		Int32List offsets = _init_ata(AT, post, w) ;
 		head = w ;
 		head_offset = offsets [0] ;
 		next = w ;
@@ -128,7 +128,7 @@ Int32List cs_counts(DZcs A, Int32List parent, Int32List post, bool ata)
 	{
 		j = post [k] ;				/* j is the kth node in postordered etree */
 		if (parent [j] != -1) delta [parent [j]]-- ;  /* j is not a root */
-		for (J = HEAD (k, j, head, head_offset, ata) ; J != -1 ; J = NEXT (J, next, next_offset, ata)) /* J=j for LL'=A case */
+		for (J = _HEAD (k, j, head, head_offset, ata) ; J != -1 ; J = _NEXT (J, next, next_offset, ata)) /* J=j for LL'=A case */
 		{
 			for (p = ATp [J]; p < ATp [J + 1]; p++)
 			{

@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
@@ -75,7 +75,7 @@ bool cs_qrsol(int order, DZcs A, DZcsa b)
 	{
 		S = cs_sqr (order, A, true) ; 		/* ordering and symbolic analysis */
 		N = cs_qr (A, S) ;			/* numeric QR factorization */
-		x = new DZcsa (S != null ? S.m2 : 1) ;	/* get workspace */
+		x = new DZcsa.sized (S != null ? S.m2 : 1) ;	/* get workspace */
 		ok = (S != null && N != null) ;
 		if (ok)
 		{
@@ -93,7 +93,7 @@ bool cs_qrsol(int order, DZcs A, DZcsa b)
 		AT = cs_transpose (A, true) ;		/* Ax=b is underdetermined */
 		S = cs_sqr (order, AT, true) ;		/* ordering and symbolic analysis */
 		N = cs_qr (AT, S) ;				/* numeric QR factorization of A' */
-		x = new DZcsa(S != null ? S.m2 : 1) ;	/* get workspace */
+		x = new DZcsa.sized(S != null ? S.m2 : 1) ;	/* get workspace */
 		ok = (AT != null && S != null && N != null) ;
 		if (ok)
 		{

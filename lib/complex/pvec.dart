@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa;
 
@@ -52,7 +52,7 @@ bool cs_pvec(Int32List p, DZcsa b, DZcsa x, int n)
 {
 	int k ;
 	if (x == null || b == null) return (false) ;	/* check inputs */
-	for (k = 0 ; k < n ; k++) x.set(k, b.get(p != null ? p [k] : k)) ;
+	for (k = 0 ; k < n ; k++) x.set_list(k, b.get(p != null ? p [k] : k)) ;
 	return (true) ;
 }
 

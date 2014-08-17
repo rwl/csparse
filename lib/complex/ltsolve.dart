@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa ;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
@@ -63,9 +63,9 @@ bool cs_ltsolve(DZcs L, DZcsa x)
 	{
 		for (p = Lp [j] + 1 ; p < Lp [j+1] ; p++)
 		{
-			x.set(j, cs_cminus(x.get(j), cs_cmult(cs_conj(Lx.get(p)), x.get(Li [p])) )) ;
+			x.set_list(j, cs_cminus(x.get(j), cs_cmult_list(cs_conj(Lx.get(p)), x.get(Li [p])) )) ;
 		}
-		x.set(j, cs_cdiv(x.get(j), cs_conj( Lx.get(Lp [j]) ))) ;
+		x.set_list(j, cs_cdiv_list(x.get(j), cs_conj( Lx.get(Lp [j]) ))) ;
 	}
 	return (true) ;
 }

@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa ;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
@@ -67,12 +67,12 @@ bool cs_happly(DZcs V, int i, double beta, DZcsa x)
 	Vp = V.p ; Vi = V.i ; Vx.x = V.x ;
 	for (p = Vp [i] ; p < Vp [i+1] ; p++)		/* tau = v'*x */
 	{
-	    tau = cs_cplus(tau, cs_cmult(cs_conj(Vx.get(p)), x.get(Vi [p]))) ;
+	    tau = cs_cplus(tau, cs_cmult_list(cs_conj(Vx.get(p)), x.get(Vi [p]))) ;
 	}
 	tau = cs_cmult(tau, beta) ;			/* tau = beta*(v'*x) */
 	for (p = Vp [i] ; p < Vp [i+1] ; p++) 		/* x = x - v*tau */
 	{
-		x.set(Vi [p], cs_cminus(x.get(Vi [p]), cs_cmult(Vx.get(p), tau))) ;
+		x.set_list(Vi [p], cs_cminus(x.get(Vi [p]), cs_cmult_list(Vx.get(p), tau))) ;
 	}
 	return (true) ;
 }

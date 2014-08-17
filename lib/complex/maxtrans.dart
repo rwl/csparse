@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
 
@@ -116,7 +116,7 @@ Int32List cs_maxtrans(DZcs A, int seed)		/*[jmatch [0..m-1]; imatch [0..n-1]]*/
 			if (j == Ai [p]) k++ ;			/* count entries already on diagonal */
 		}
 	}
-	if (k == Math.min(m, n))				/* quick return if diagonal zero-free */
+	if (k == math.min(m, n))				/* quick return if diagonal zero-free */
 	{
 		jmatch = jimatch ;
 		imatch = jimatch ;
@@ -159,7 +159,7 @@ Int32List cs_maxtrans(DZcs A, int seed)		/*[jmatch [0..m-1]; imatch [0..n-1]]*/
 	q = cs_randperm (n, seed) ;					/* q = random permutation */
 	for (k = 0 ; k < n ; k++)				/* augment, starting at column q[k] */
 	{
-		cs_augment(q != null ? q[k] : k, C, jmatch, jmatch_offset, cheap, cheap_offset, w, 0,
+		_cs_augment(q != null ? q[k] : k, C, jmatch, jmatch_offset, cheap, cheap_offset, w, 0,
 			js, js_offset, is_, is_offset, ps, ps_offset) ;
 	}
 	q = null ;

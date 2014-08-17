@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
 
@@ -77,17 +77,17 @@ int cs_dfs(int j, DZcs G, int top, Int32List xi, int xi_offset, Int32List pstack
 	{
 		j = xi [xi_offset + head] ;	/* get j from the top of the recursion stack */
 		jnew = pinv != null ? (pinv [pinv_offset + j]) : j ;
-		if (!CS_MARKED (Gp, j))
+		if (!_CS_MARKED (Gp, j))
 		{
-			CS_MARK (Gp, j) ;	/* mark node j as visited */
-			pstack [pstack_offset + head] = (jnew < 0) ? 0 : CS_UNFLIP (Gp [jnew]) ;
+			_CS_MARK (Gp, j) ;	/* mark node j as visited */
+			pstack [pstack_offset + head] = (jnew < 0) ? 0 : _CS_UNFLIP (Gp [jnew]) ;
 		}
 		done = true ;			/* node j done if no unvisited neighbors */
-		p2 = (jnew < 0) ? 0 : CS_UNFLIP (Gp [jnew + 1]) ;
+		p2 = (jnew < 0) ? 0 : _CS_UNFLIP (Gp [jnew + 1]) ;
 		for (p = pstack [pstack_offset + head] ; p < p2 ; p++) /* examine all neighbors of j */
 		{
 			i = Gi [p] ;		/* consider neighbor node i */
-			if (CS_MARKED (Gp, i))
+			if (_CS_MARKED (Gp, i))
 				continue;	/* skip visited node i */
 			pstack [pstack_offset + head] = p ; /* pause depth-first search of node j */
 			xi [xi_offset + ++head] = i ; /* start dfs at node i */

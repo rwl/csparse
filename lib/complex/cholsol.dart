@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
@@ -69,7 +69,7 @@ bool cs_cholsol(int order, DZcs A, DZcsa b) {
 	n = A.n ;
 	S = cs_schol (order, A) ;			/* ordering and symbolic analysis */
 	N = cs_chol (A, S) ;				/* numeric Cholesky factorization */
-	x = new DZcsa (n) ;				/* get workspace */
+	x = new DZcsa.sized (n) ;				/* get workspace */
 	ok = (S != null && N != null && x != null) ;
 	if (ok)
 	{

@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa ;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
@@ -67,7 +67,7 @@ DZcs cs_compress(DZcs T) {
 	for (k = 0 ; k < nz ; k++)
 	{
 		Ci [p = w [Tj [k]]++] = Ti [k] ;	/* A(i,j) is the pth entry in C */
-		if (Cx.x != null) Cx.set(p, Tx.get(k)) ;
+		if (Cx.x != null) Cx.set_list(p, Tx.get(k)) ;
 	}
 	return (cs_done (C, w, null, true)) ;		/* success; free w and return C */
 }

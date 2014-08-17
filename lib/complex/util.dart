@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa ;
@@ -58,7 +58,7 @@ DZcs cs_spalloc(int m, int n, int nzmax, bool values, bool triplet)
 	DZcs A = new DZcs() ;			/* allocate the DZcs struct */
 	A.m = m ;				/* define dimensions and nzmax */
 	A.n = n ;
-	A.nzmax = nzmax = Math.max (nzmax, 1) ;
+	A.nzmax = nzmax = math.max (nzmax, 1) ;
 	A.nz = triplet ? 0 : -1 ;		/* allocate triplet or comp.col */
 	A.p = triplet ? new Int32List(nzmax) : new Int32List(n+1) ;
 	A.i = new Int32List(nzmax) ;
@@ -80,21 +80,24 @@ bool cs_sprealloc(DZcs A, int nzmax)
 	if (A == null) return (false) ;
 	if (nzmax <= 0) nzmax = (CS_CSC (A)) ? (A.p [A.n]) : A.nz ;
 	Int32List Ainew = new Int32List(nzmax) ;
-	int length = Math.min (nzmax, A.i.length) ;
-	System.arraycopy (A.i, 0, Ainew, 0, length) ;
+	int length = math.min (nzmax, A.i.length) ;
+	//System.arraycopy (A.i, 0, Ainew, 0, length) ;
+	Ainew.setAll(0, A.i);
 	A.i = Ainew ;
 	if (CS_TRIPLET (A))
 	{
 		Int32List Apnew = new Int32List(nzmax) ;
-		length = Math.min (nzmax, A.p.length) ;
-		System.arraycopy (A.p, 0, Apnew, 0, length) ;
+		length = math.min (nzmax, A.p.length) ;
+		//System.arraycopy (A.p, 0, Apnew, 0, length) ;
+		Apnew.setAll(0, A.p);
 		A.p = Apnew ;
 	}
 	if (A.x != null)
 	{
 		Float64List Axnew = new Float64List(2*nzmax) ;
-		length = Math.min (2*nzmax, A.x.length) ;
-		System.arraycopy (A.x, 0, Axnew, 0, length) ;
+		length = math.min (2*nzmax, A.x.length) ;
+		//System.arraycopy (A.x, 0, Axnew, 0, length) ;
+		Axnew.setAll(0, A.x);
 		A.x = Axnew ;
 	}
 	A.nzmax = nzmax ;
@@ -130,7 +133,7 @@ int _CS_FLIP(int i)
 
 int _CS_UNFLIP(int i)
 {
-	return (((i) < 0) ? CS_FLIP (i) : (i)) ;
+	return (((i) < 0) ? _CS_FLIP (i) : (i)) ;
 }
 
 bool _CS_MARKED(Int32List w, int j)
@@ -140,7 +143,7 @@ bool _CS_MARKED(Int32List w, int j)
 
 void _CS_MARK(Int32List w, int j)
 {
-	w [j] = CS_FLIP (w [j]) ;
+	w [j] = _CS_FLIP (w [j]) ;
 }
 
 /**

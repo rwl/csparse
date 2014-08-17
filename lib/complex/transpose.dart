@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa ;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
@@ -69,7 +69,7 @@ DZcs cs_transpose(DZcs A, bool values)
 		{
 			Ci [q = w [Ai [p]]++] = j ;	/* place A(i,j) as entry C(j,i) */
 			if (Cx.x != null)
-				Cx.set(q, (values) ? cs_conj(Ax.get(p)) : Ax.get(p)) ;
+				Cx.set_list(q, (values) ? cs_conj(Ax.get(p)) : Ax.get(p)) ;
 		}
 	}
 	return (C) ;

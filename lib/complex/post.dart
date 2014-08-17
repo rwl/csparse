@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_util.cs_idone ;
 //import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_tdfs.cs_tdfs ;

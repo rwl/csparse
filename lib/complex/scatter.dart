@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
@@ -77,11 +77,11 @@ int cs_scatter(DZcs A, int j, Float64List beta, Int32List w, DZcsa x, int mark, 
 			w [i] = mark ;	/* i is new entry in column j */
 			Ci [nz++] = i ;	/* add i to pattern of C(:,j) */
 			if (x != null)
-				x.set(i, cs_cmult(beta, Ax.get(p))) ;  /* x(i) = beta*A(i,j) */
+				x.set_list(i, cs_cmult_list(beta, Ax.get(p))) ;  /* x(i) = beta*A(i,j) */
 		}
 		else if (x != null)
 		{
-			x.set(i, cs_cplus(x.get(i), cs_cmult(beta, Ax.get(p))));  /* i exists in C(:,j) already */
+			x.set_list(i, cs_cplus(x.get(i), cs_cmult_list(beta, Ax.get(p))));  /* i exists in C(:,j) already */
 		}
 	}
 	return (nz) ;

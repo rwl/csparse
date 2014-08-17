@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa ;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
@@ -68,7 +68,7 @@ DZcs cs_add(DZcs A, DZcs B, Float64List alpha, Float64List beta)
 	n = B.n ; Bp = B.p ; Bx.x = B.x ; bnz = Bp[n] ;
 	w = new Int32List(m) ;					/* get workspace */
 	values = (A.x != null) && (Bx.x != null) ;
-	x = values ? new DZcsa (m) : null ;			/* get workspace */
+	x = values ? new DZcsa.sized (m) : null ;			/* get workspace */
 	C = cs_spalloc (m, n, anz + bnz, values, false) ;	/* allocate result*/
 	Cp = C.p ; Ci = C.i ; Cx.x = C.x ;
 	for (j = 0 ; j < n ; j++)
@@ -76,7 +76,7 @@ DZcs cs_add(DZcs A, DZcs B, Float64List alpha, Float64List beta)
 	    Cp[j] = nz ;	/* column j of C starts here */
 	    nz = cs_scatter (A, j, alpha, w, x, j + 1, C, nz) ;		/* alpha*A(:,j)*/
 	    nz = cs_scatter (B, j, beta, w, x, j + 1, C, nz) ;		/* beta*B(:,j) */
-	    if (values) for (p = Cp[j] ; p < nz ; p++) Cx.set (p, x.get (Ci [p])) ;
+	    if (values) for (p = Cp[j] ; p < nz ; p++) Cx.set_list (p, x.get (Ci [p])) ;
 	}
 	Cp[n] = nz ;			/* finalize the last column of C */
 	cs_sprealloc (C, 0) ;		/* remove extra space from C */

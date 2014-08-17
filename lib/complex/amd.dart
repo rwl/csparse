@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
 
@@ -96,8 +96,8 @@ Int32List cs_amd(int order, DZcs A)
 	AT = cs_transpose (A, false) ; /* compute A' */
 	if (AT == null) return (null) ;
 	m = A.m ; n = A.n ;
-	dense = Math.max (16, 10 * Math.sqrt (n).toInt()) ; /* find dense threshold */
-	dense = Math.min (n - 2, dense) ;
+	dense = math.max (16, 10 * math.sqrt (n).toInt()) ; /* find dense threshold */
+	dense = math.min (n - 2, dense) ;
 	if (order == 1 && n == m)
 	{
 	    C = cs_add(A, AT, cs_czero(), cs_czero()) ; /* C = A+A' */
@@ -125,12 +125,12 @@ Int32List cs_amd(int order, DZcs A)
 	}
 	AT = null ;
 	if (C == null) return (null) ;
-	cs_fkeep (C, new Cs_diag(), null) ;	/* drop diagonal entries */
+	cs_fkeep (C, new _Cs_diag(), null) ;	/* drop diagonal entries */
 	Cp = C.p ;
 	cnz = Cp [n] ;
 	P = new Int32List(n+1) ;		/* allocate result */
 	W = new Int32List(8*(n+1)) ;		/* get workspace */
-	t = cnz + cnz/5 + 2*n ;		/* add elbow room to C */
+	t = cnz + cnz~/5 + 2*n ;		/* add elbow room to C */
 	if (P == null || W == null || !cs_sprealloc (C, t))
 		return (cs_idone (P, C, W, false)) ;
 	len = W ;
@@ -165,7 +165,7 @@ Int32List cs_amd(int order, DZcs A)
 		elen [elen_offset + i] = 0 ;		/* Ek of node i is empty */
 		degree [degree_offset + i] = len [i] ;	/* degree of node i */
 	}
-	mark = cs_wclear (0, 0, w, w_offset, n);	/* clear w */
+	mark = _cs_wclear (0, 0, w, w_offset, n);	/* clear w */
 	elen [elen_offset + n] = -2 ;			/* n is a dead element */
 	Cp [n] = -1 ;					/* n is a root of assembly tree */
 	w [w_offset + n] = 0 ;				/* n is a dead element */
@@ -185,7 +185,7 @@ Int32List cs_amd(int order, DZcs A)
 			nv [nv_offset + i] = 0 ;	/* absorb i into element n */
 			elen [elen_offset + i] = -1 ;	/* node i is dead */
 			nel++ ;
-			Cp [i] = CS_FLIP (n) ;
+			Cp [i] = _CS_FLIP (n) ;
 			nv [nv_offset + n]++ ;
 		}
 		else
@@ -213,13 +213,13 @@ Int32List cs_amd(int order, DZcs A)
 				if ((p = Cp [j]) >= 0)		/* j is a live node or element */
 				{
 					Cp [j] = Ci [p] ;		/* save first entry of object */
-					Ci [p] = CS_FLIP(j) ;	/* first entry is now CS_FLIP(j) */
+					Ci [p] = _CS_FLIP(j) ;	/* first entry is now CS_FLIP(j) */
 				}
 			}
 			q = 0;
 			for (p = 0 ; p < cnz ; )		/* scan all of memory */
 			{
-				if ((j = CS_FLIP(Ci [p++])) >= 0)	/* found object j */
+				if ((j = _CS_FLIP(Ci [p++])) >= 0)	/* found object j */
 				{
 					Ci [q] = Cp [j] ;		/* restore first entry of object */
 					Cp[j] = q++ ;		/* new pointer to object j */
@@ -268,7 +268,7 @@ Int32List cs_amd(int order, DZcs A)
 			}
 			if (e != k)
 			{
-				Cp[e] = CS_FLIP(k) ; 	/* absorb e into k */
+				Cp[e] = _CS_FLIP(k) ; 	/* absorb e into k */
 				w [w_offset + e] = 0 ;	/* e is now a dead element */
 			}
 		}
@@ -278,7 +278,7 @@ Int32List cs_amd(int order, DZcs A)
 		len [k] = pk2 - pk1 ;
 		elen [elen_offset + k] = -2 ;		/* k is now an element */
 		/* --- Find set differences ----------------------------------------- */
-		mark = cs_wclear (mark, lemax, w, w_offset, n) ;	/* clear w if necessary */
+		mark = _cs_wclear (mark, lemax, w, w_offset, n) ;	/* clear w if necessary */
 		for (pk = pk1 ; pk < pk2 ; pk++)			/* scan 1: find |Le\Lk| */
 		{
 			i = Ci [pk] ;
@@ -322,7 +322,7 @@ Int32List cs_amd(int order, DZcs A)
 					}
 					else
 					{
-						Cp [e] = CS_FLIP (k) ; /* aggressive absorb. e.k */
+						Cp [e] = _CS_FLIP (k) ; /* aggressive absorb. e.k */
 						w [w_offset + e] = 0 ; /* e is a dead element */
 					}
 				}
@@ -341,7 +341,7 @@ Int32List cs_amd(int order, DZcs A)
 			}
 			if (d == 0)				/* check for mass elimination */
 			{
-				Cp [i] = CS_FLIP (k);		/* absorb i into k */
+				Cp [i] = _CS_FLIP (k);		/* absorb i into k */
 				nvi = -nv [nv_offset + i] ;
 				dk -= nvi ;			/* |Lk| -= |i| */
 				nvk += nvi ;			/* |k| += nv[nv_offset+i] */
@@ -351,7 +351,7 @@ Int32List cs_amd(int order, DZcs A)
 			}
 			else
 			{
-				degree [degree_offset + i] = Math.min (degree [degree_offset + i], d); /* update degree(i) */
+				degree [degree_offset + i] = math.min (degree [degree_offset + i], d); /* update degree(i) */
 				Ci [pn] = Ci [p3] ;		/* move first node to end */
 				Ci [p3] = Ci [p1] ;		/* move 1st el. to end of Ei */
 				Ci [p1] = k ;			/* add k as 1st element in of Ei */
@@ -363,8 +363,8 @@ Int32List cs_amd(int order, DZcs A)
 			}
 		}						/* scan2 is done */
 		degree [degree_offset + k] = dk ;		/* finalize |Lk| */
-		lemax = Math.max (lemax, dk) ;
-		mark = cs_wclear(mark+lemax, lemax, w, w_offset, n) ; /* clear w */
+		lemax = math.max (lemax, dk) ;
+		mark = _cs_wclear(mark+lemax, lemax, w, w_offset, n) ; /* clear w */
 		/* --- Supernode detection ------------------------------------------ */
 		for (pk = pk1 ; pk < pk2 ; pk++)
 		{
@@ -390,7 +390,7 @@ Int32List cs_amd(int order, DZcs A)
 					}
 					if (ok) /* i and j are identical */
 					{
-						Cp [j] = CS_FLIP (i) ; /* absorb j into i */
+						Cp [j] = _CS_FLIP (i) ; /* absorb j into i */
 						nv [nv_offset + i] += nv [nv_offset + j] ;
 						nv [nv_offset + j] = 0 ;
 						elen [elen_offset + j] = -1 ; /* node j is dead */
@@ -413,13 +413,13 @@ Int32List cs_amd(int order, DZcs A)
 			if ((nvi = -nv[nv_offset + i]) <= 0) continue;	/* skip if i is dead */
 			nv [nv_offset + i] = nvi ;			/* restore nv[nv_offset+i] */
 			d = degree [degree_offset + i] + dk - nvi ;	/* compute external degree(i) */
-			d = Math.min (d, n - nel - nvi) ;
+			d = math.min (d, n - nel - nvi) ;
 			if (head [head_offset + d] != -1)
 				last [head [head_offset + d]] = i ;
 			next [next_offset + i] = head [head_offset + d] ; /* put i back in degree list */
 			last [i] = -1 ;
 			head [head_offset + d] = i ;
-			mindeg = Math.min (mindeg, d) ;		/* find new minimum degree */
+			mindeg = math.min (mindeg, d) ;		/* find new minimum degree */
 			degree [degree_offset + i] = d ;
 			Ci [p++] = i ;				/* place i in Lk */
 		}
@@ -432,7 +432,7 @@ Int32List cs_amd(int order, DZcs A)
 		if (elenk != 0) cnz = p ;			/* free unused space in Lk */
 	}
 	/* --- Postordering ----------------------------------------------------- */
-	for (i = 0 ; i < n ; i++) Cp[i] = CS_FLIP (Cp [i]) ;	/* fix assembly tree */
+	for (i = 0 ; i < n ; i++) Cp[i] = _CS_FLIP (Cp [i]) ;	/* fix assembly tree */
 	for (j = 0 ; j <= n ; j++) head [head_offset + j] = -1 ;
 	for (j = n ; j >= 0 ; j--)				/* place unordered nodes in lists */
 	{

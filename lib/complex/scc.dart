@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsd ;
@@ -73,15 +73,15 @@ DZcsd cs_scc(DZcs A)
 	top = n ;
 	for (i = 0 ; i < n ; i++)			/* first dfs(A) to find finish times (xi) */
 	{
-		if (!CS_MARKED (Ap, i))
+		if (!_CS_MARKED (Ap, i))
 		top = cs_dfs (i, A, top, xi, 0, pstack, pstack_offset, null, 0) ;
 	}
-	for (i = 0 ; i < n ; i++) CS_MARK (Ap, i) ;	/* restore A; unmark all nodes*/
+	for (i = 0 ; i < n ; i++) _CS_MARK (Ap, i) ;	/* restore A; unmark all nodes*/
 	top = n ; nb = n ;
 	for (k = 0 ; k < n ; k++)			/* dfs(A') to find strongly connnected comp */
 	{
 		i = xi [k] ;				/* get i in reverse order of finish times */
-		if (CS_MARKED (ATp, i)) continue ;	/* skip node i if already ordered */
+		if (_CS_MARKED (ATp, i)) continue ;	/* skip node i if already ordered */
 		r [nb--] = top ;			/* node i is the start of a component in p */
 		top = cs_dfs (i, AT, top, p, 0, pstack, pstack_offset, null, 0) ;
 	}

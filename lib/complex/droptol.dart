@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
 
@@ -42,7 +42,7 @@ class _Cs_tol implements DZcs_ifkeep {
 
 	bool fkeep(int i, int j, Float64List aij, Object other)
 	{
-		return (cs_cabs (aij) > (other as double)) ;
+		return (cs_cabs_list (aij) > (other as double)) ;
 	}
 }
 
@@ -57,7 +57,7 @@ class _Cs_tol implements DZcs_ifkeep {
  */
 int cs_droptol(DZcs A, double tol)
 {
-	return (cs_fkeep (A, new Cs_tol(), tol)) ;  /* keep all large entries */
+	return (cs_fkeep (A, new _Cs_tol(), tol)) ;  /* keep all large entries */
 }
 
 //}

@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
@@ -69,7 +69,7 @@ DZcsn cs_qr(DZcs A, DZcss S)
 	q = S.q ; parent = S.parent ; pinv = S.pinv ; m2 = S.m2 ;
 	vnz = S.lnz ; rnz = S.unz ; leftmost = S.leftmost ;
 	w = new Int32List(m2) ; 			/* get int workspace */
-	x = new DZcsa (m2) ;			/* get double workspace */
+	x = new DZcsa.sized (m2) ;			/* get double workspace */
 	N = new DZcsn () ;			/* allocate result */
 	s = new Int32List(n) ; 			/* get int workspace, s is size n */
 	//for (k = 0 ; k < m2 ; k++) x.set(k, cs_czero()) ; 	/* clear workspace x */
@@ -124,7 +124,7 @@ DZcsn cs_qr(DZcs A, DZcss S)
 		}
 		Ri [rnz] = k ;			/* R(k,k) = norm (x) */
 		Float64List beta = new Float64List.fromList([Beta [k]]) ;
-		Rx.set(rnz++, cs_house(Vx, p1, beta, vnz - p1)) ;  /* [v,beta]=house(x) */
+		Rx.set_list(rnz++, cs_house(Vx, p1, beta, vnz - p1)) ;  /* [v,beta]=house(x) */
 		Beta [k] = beta [0] ;
 	}
 	Rp [n] = rnz ; 				/* finalize R */

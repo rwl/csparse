@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
@@ -69,7 +69,7 @@ DZcs cs_permute(DZcs A, Int32List pinv, Int32List q, bool values)
 		for (t = Ap [j] ; t < Ap [j+1] ; t++)
 		{
 			if (Cx.x != null)
-				Cx.set(nz, Ax.get(t)) ;  /* row i of A is row pinv[i] of C */
+				Cx.set_list(nz, Ax.get(t)) ;  /* row i of A is row pinv[i] of C */
 			Ci [nz++] = pinv != null ? (pinv [Ai [t]]) : Ai [t] ;
 		}
 	}

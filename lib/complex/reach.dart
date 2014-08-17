@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
 
@@ -66,12 +66,12 @@ int cs_reach(DZcs G, DZcs B, int k, Int32List xi, Int32List pinv)
 	top = n ;
 	for (p = Bp [k] ; p < Bp [k+1] ; p++)
 	{
-		if (!CS_MARKED (Gp, Bi [p]))  /* start a dfs at unmarked node i */
+		if (!_CS_MARKED (Gp, Bi [p]))  /* start a dfs at unmarked node i */
 		{
 			top = cs_dfs (Bi [p], G, top, xi, 0, xi, n, pinv, 0) ;
 		}
 	}
-	for (p = top ; p < n ; p++) CS_MARK (Gp, xi [p]) ;  /* restore G */
+	for (p = top ; p < n ; p++) _CS_MARK (Gp, xi [p]) ;  /* restore G */
 	return (top) ;
 }
 

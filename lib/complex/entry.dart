@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
 
@@ -52,7 +52,7 @@ part of edu.emory.mathcs.csparse.complex;
  *            numerical value of new entry
  * @return true if successful, false otherwise
  */
-bool cs_entry(DZcs T, int i, int j, Float64List x)
+bool cs_entry_list(DZcs T, int i, int j, Float64List x)
 {
 	return cs_entry(T, i, j, x [0], x [1]);
 }
@@ -64,8 +64,8 @@ bool cs_entry(DZcs T, int i, int j, double re, double im)
 	if (T.x != null) T.set(T.nz, re, im) ;
 	T.i [T.nz] = i ;
 	T.p [T.nz++] = j ;
-	T.m = Math.max(T.m, i + 1) ;
-	T.n = Math.max(T.n, j + 1) ;
+	T.m = math.max(T.m, i + 1) ;
+	T.n = math.max(T.n, j + 1) ;
 	return (true) ;
 }
 

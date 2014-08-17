@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
@@ -70,7 +70,7 @@ bool cs_lusol(int order, DZcs A, DZcsa b, double tol)
 	n = A.n ;
 	S = cs_sqr (order, A, false) ; 			/* ordering and symbolic analysis */
 	N = cs_lu (A, S, tol) ;				/* numeric LU factorization */
-	x = new DZcsa(n) ; 				/* get workspace */
+	x = new DZcsa.sized(n) ; 				/* get workspace */
 	ok = (S != null && N != null) ;
 	if (ok)
 	{

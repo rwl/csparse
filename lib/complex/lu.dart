@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa ;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
@@ -71,14 +71,14 @@ DZcsn cs_lu(DZcs A, DZcss S, double tol)
 	if (!CS_CSC(A) || S == null) return (null) ;	/* check inputs */
 	n = A.n ;
 	q = S.q ; lnz = S.lnz ; unz = S.unz ;
-	x = new DZcsa(n) ;		/* get double workspace */
+	x = new DZcsa.sized(n) ;		/* get double workspace */
 	xi = new Int32List(2 * n) ;		/* get int workspace */
 	N = new DZcsn() ;		/* allocate result */
 	N.L = L = cs_spalloc (n, n, lnz, true, false) ;		/* allocate result L */
 	N.U = U = cs_spalloc (n, n, unz, true, false) ;		/* allocate result U */
 	N.pinv = pinv = new Int32List(n) ;				/* allocate result pinv */
 	Lp = L.p ; Up = U.p ;
-	for (i = 0 ; i < n ; i++) x.set(i, cs_czero()) ;	/* clear workspace */
+	for (i = 0 ; i < n ; i++) x.set_list(i, cs_czero()) ;	/* clear workspace */
 	for (i = 0 ; i < n ; i++) pinv [i] = -1 ;		/* no rows pivotal yet */
 	for (k = 0 ; k <= n ; k++) Lp [k] = 0 ;			/* no cols of L yet */
 	lnz = unz = 0 ;
@@ -100,13 +100,13 @@ DZcsn cs_lu(DZcs A, DZcss S, double tol)
 		top = cs_spsolve(L, A, col, xi, x, pinv, true) ;  /* x = L\A(:,col) */
 		/* --- Find pivot --------------------------------------------------- */
 		ipiv = -1 ;
-		a = -1 ;
+		a = -1.0 ;
 		for (p = top ; p < n ; p++)
 		{
 			i = xi [p] ;			/* x(i) is nonzero */
 			if (pinv [i] < 0) /* row i is not yet pivotal */
 			{
-				if ((t = cs_cabs(x.get(i))) > a)
+				if ((t = cs_cabs_list(x.get(i))) > a)
 				{
 					a = t;		/* largest pivot candidate so far */
 					ipiv = i ;
@@ -115,27 +115,27 @@ DZcsn cs_lu(DZcs A, DZcss S, double tol)
 			else 				/* x(i) is the entry U(pinv[i],k) */
 			{
 				Ui [unz] = pinv [i] ;
-				Ux.set(unz++, x.get(i)) ;
+				Ux.set_list(unz++, x.get(i)) ;
 			}
 		}
 		if (ipiv == -1 || a <= 0) return (cs_ndone (N, null, xi, x, false)) ;
-		if (pinv [col] < 0 && cs_cabs(x.get(col)) >= a * tol) ipiv = col ;
+		if (pinv [col] < 0 && cs_cabs_list(x.get(col)) >= a * tol) ipiv = col ;
 		/* --- Divide by pivot ---------------------------------------------- */
 		pivot = x.get(ipiv) ;			/* the chosen pivot */
 		Ui [unz] = k ;				/* last entry in U(:,k) is U(k,k) */
-		Ux.set(unz++, pivot) ;
+		Ux.set_list(unz++, pivot) ;
 		pinv [ipiv] = k ;			/* ipiv is the kth pivot row */
 		Li [lnz] = ipiv ;			/* first entry in L(:,k) is L(k,k) = 1 */
-		Lx.set(lnz++, cs_cone()) ;
+		Lx.set_list(lnz++, cs_cone()) ;
 		for (p = top ; p < n ; p++)		/* L(k+1:n,k) = x / pivot */
 		{
 			i = xi [p] ;
 			if (pinv [i] < 0)		/* x(i) is an entry in L(:,k) */
 			{
 				Li [lnz] = i ;		/* save unpermuted row in L */
-				Lx.set(lnz++, cs_cdiv(x.get(i), pivot)) ;  /* scale pivot column */
+				Lx.set_list(lnz++, cs_cdiv_list(x.get(i), pivot)) ;  /* scale pivot column */
 			}
-			x.set(i, cs_czero()) ;		/* x [0..n-1] = 0 for next k */
+			x.set_list(i, cs_czero()) ;		/* x [0..n-1] = 0 for next k */
 		}
 	}
 	/* --- Finalize L and U ------------------------------------------------- */

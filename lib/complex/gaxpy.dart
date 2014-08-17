@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa ;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
@@ -62,7 +62,7 @@ bool cs_gaxpy (DZcs A, DZcsa x, DZcsa y)
 	{
 		for (p = Ap [j] ; p < Ap [j+1] ; p++)
 		{
-			y.set(Ai [p], cs_cplus(y.get(Ai [p]), cs_cmult(Ax.get(p), x.get(j)))) ;
+			y.set_list(Ai [p], cs_cplus(y.get(Ai [p]), cs_cmult_list(Ax.get(p), x.get(j)))) ;
 		}
 	}
 	return (true) ;

@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import java.io.OutputStream;
 //import java.io.PrintStream;
@@ -52,15 +52,14 @@ part of edu.emory.mathcs.csparse.complex;
  *            print all of A if false, a few entries otherwise
  * @return true if successful, false on error
  */
-bool cs_print(DZcs A, bool brief, OutputStream output)
+bool cs_print(DZcs A, bool brief, StringBuffer out)
 {
 	int p, j, m, n, nzmax, nz;
 	Int32List Ap, Ai ;
 	DZcsa Ax = new DZcsa() ;
-	PrintStream out = new PrintStream(output);
 	if (A == null)
 	{
-	    out.print("(null)\n") ;
+	    out.write("(null)\n") ;
 	    return (false) ;
 	}
 	m = A.m ; n = A.n ; Ap = A.p ; Ai = A.i ; Ax.x = A.x ;
@@ -70,20 +69,16 @@ bool cs_print(DZcs A, bool brief, OutputStream output)
 		DZcs_common.CS_DATE, DZcs_common.CS_COPYRIGHT) ;*/
 	if (nz < 0)
 	{
-		out.printf("%d-by-%d, nzmax: %d nnz: %d, 1-norm: %g\n", m, n,
-			nzmax, Ap[n], cs_norm (A)) ;
+		out.write("$m-by-$n, nzmax: $nzmax nnz: ${Ap[n]}, 1-norm: ${cs_norm (A)}\n") ;
 		for (j = 0 ; j < n ; j++)
 		{
-			out.printf("    col %d : locations %d to %d\n",
-				j, Ap [j], Ap [j+1] - 1) ;
+			out.write("    col $j : locations ${Ap [j]} to ${Ap [j+1] - 1}\n") ;
 			for (p = Ap [j] ; p < Ap [j+1] ; p++)
 			{
-				out.printf("      %d : (%g, %g)\n", Ai [p],
-					Ax.x != null ? cs_creal (Ax.get(p)) : 1,
-					Ax.x != null ? cs_cimag (Ax.get(p)) : 0) ;
+				out.write("      ${Ai [p]} : (${Ax.x != null ? cs_creal (Ax.get(p)) : 1}, ${Ax.x != null ? cs_cimag (Ax.get(p)) : 0})\n") ;
 				if (brief && p > 20)
 				{
-					out.print("  ...\n") ;
+					out.write("  ...\n") ;
 					return (true) ;
 				}
 			}
@@ -91,16 +86,13 @@ bool cs_print(DZcs A, bool brief, OutputStream output)
 	}
 	else
 	{
-		out.printf("triplet: %d-by-%d, nzmax: %d nnz: %d\n",
-			m, n, nzmax, nz) ;
+		out.write("triplet: $m-by-$n, nzmax: $nzmax nnz: $nz\n") ;
 		for (p = 0 ; p < nz ; p++)
 		{
-			out.printf("    %d %d : (%g, %g)\n", Ai [p], Ap [p],
-				Ax.x != null ? cs_creal (Ax.get(p)) : 1,
-				Ax.x != null ? cs_cimag (Ax.get(p)) : 0) ;
+			out.write("    ${Ai [p]} ${Ap [p]} : (${Ax.x != null ? cs_creal (Ax.get(p)) : 1}, ${Ax.x != null ? cs_cimag (Ax.get(p)) : 0})\n") ;
 			if (brief && p > 20)
 			{
-				out.print("  ...\n") ;
+				out.write("  ...\n") ;
 				return (true) ;
 			}
 		}
@@ -108,9 +100,9 @@ bool cs_print(DZcs A, bool brief, OutputStream output)
 	return (true) ;
 }
 
-bool cs_print(DZcs A, bool brief)
+/*bool cs_print(DZcs A, bool brief)
 {
 	return cs_print(A, brief, stdout);
-}
+}*/
 
 //}

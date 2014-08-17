@@ -22,7 +22,7 @@
  *
  */
 
-part of edu.emory.mathcs.csparse.complex;
+part of edu.emory.mathcs.cxsparse;
 
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa ;
 //import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
@@ -72,7 +72,7 @@ DZcs cs_symperm(DZcs A, Int32List pinv, bool values)
 			i = Ai [p] ;
 			if (i > j) continue ;		/* skip lower triangular part of A */
 			i2 = pinv != null ? pinv [i] : i ;  /* row i of A is row i2 of C */
-			w [Math.max(i2, j2)]++ ;	/* column count of C */
+			w [math.max(i2, j2)]++ ;	/* column count of C */
 		}
 	}
 	cs_cumsum (Cp, w, n) ;				/* compute column pointers of C */
@@ -84,9 +84,9 @@ DZcs cs_symperm(DZcs A, Int32List pinv, bool values)
 			i = Ai [p] ;
 			if (i > j) continue ;		/* skip lower triangular part of A*/
 			i2 = pinv != null ? pinv [i] : i ;  /* row i of A is row i2 of C */
-			Ci [q = w [Math.max(i2, j2)]++] = Math.min(i2, j2) ;
+			Ci [q = w [math.max(i2, j2)]++] = math.min(i2, j2) ;
 			if (Cx.x != null)
-				Cx.set(q, (i2 <= j2) ? Ax.get(p) : cs_conj(Ax.get(p))) ;
+				Cx.set_list(q, (i2 <= j2) ? Ax.get(p) : cs_conj(Ax.get(p))) ;
 		}
 	}
 	return (C) ;
