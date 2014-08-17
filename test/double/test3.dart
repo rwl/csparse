@@ -25,8 +25,8 @@
 import 'dart:typed_data';
 import 'dart:math' as math;
 import 'package:unittest/unittest.dart';
-import 'package:csparse/csparse.dart';
-import 'package:csparse/test_util.dart';
+import 'package:csparse/double/csparse.dart';
+import 'package:csparse/double/test_util.dart';
 
 /**
  * Read a matrix, solve a linear system, update/downdate.

@@ -22,7 +22,7 @@
  *
  */
 
-library edu.emory.mathcs.csparse.cs_load.test_util;
+library edu.emory.mathcs.csparse.test_util;
 
 import 'dart:typed_data';
 import 'dart:math' as math;

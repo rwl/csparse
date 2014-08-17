@@ -24,10 +24,10 @@
 
 import 'dart:io';
 import 'package:unittest/unittest.dart';
-import 'package:csparse/csparse.dart';
-import 'package:csparse/load.dart';
-import 'package:csparse/test_util.dart';
-import 'package:csparse/print.dart';
+import 'package:csparse/double/csparse.dart';
+import 'package:csparse/double/load.dart';
+import 'package:csparse/double/test_util.dart';
+import 'package:csparse/double/print.dart';
 
 /**
  * Read a matrix from a file and perform basic matrix operations.
