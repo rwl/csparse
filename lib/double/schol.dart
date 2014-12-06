@@ -26,7 +26,7 @@ Dcss cs_schol(int order, Dcs A) {
   Int32List c, post, P;
   Dcs C;
   Dcss S;
-  if (!CS_CSC(A)) {
+  if (!cs_csc(A)) {
     return null; // check inputs
   }
   n = A.n;

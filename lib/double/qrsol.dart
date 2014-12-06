@@ -30,7 +30,7 @@ bool cs_qrsol(int order, Dcs A, Float64List b) {
   Dcs AT = null;
   int k, m, n;
   bool ok;
-  if (!CS_CSC(A) || b == null) {
+  if (!cs_csc(A) || b == null) {
     return false; // check inputs
   }
   n = A.n;

@@ -49,7 +49,7 @@ Int32List cs_amd(int order, Dcs A) {
       nel = 0;
   bool ok;
   /* Construct matrix C */
-  if (!CS_CSC(A) || order <= 0 || order > 3) {
+  if (!cs_csc(A) || order <= 0 || order > 3) {
     return (null); // check
   }
   AT = cs_transpose(A, false); // compute A'
@@ -145,7 +145,7 @@ Int32List cs_amd(int order, Dcs A) {
       nv[nv_offset + i] = 0; // absorb i into element n
       elen[elen_offset + i] = -1; // node i is dead
       nel++;
-      Cp[i] = CS_FLIP(n);
+      Cp[i] = cs_flip(n);
       nv[nv_offset + n]++;
     } else {
       if (head[head_offset + d] != -1) {
@@ -172,13 +172,13 @@ Int32List cs_amd(int order, Dcs A) {
         if ((p = Cp[j]) >= 0) // j is a live node or element
         {
           Cp[j] = Ci[p]; // save first entry of object
-          Ci[p] = CS_FLIP(j); // first entry is now CS_FLIP(j)
+          Ci[p] = cs_flip(j); // first entry is now CS_FLIP(j)
         }
       }
       q = 0;
       for (p = 0; p < cnz; ) // scan all of memory
       {
-        if ((j = CS_FLIP(Ci[p++])) >= 0) // found object j
+        if ((j = cs_flip(Ci[p++])) >= 0) // found object j
         {
           Ci[q] = Cp[j]; // restore first entry of object
           Cp[j] = q++; // new pointer to object j
@@ -222,7 +222,7 @@ Int32List cs_amd(int order, Dcs A) {
         }
       }
       if (e != k) {
-        Cp[e] = CS_FLIP(k); // absorb e into k
+        Cp[e] = cs_flip(k); // absorb e into k
         w[w_offset + e] = 0; // e is now a dead element
       }
     }
@@ -275,7 +275,7 @@ Int32List cs_amd(int order, Dcs A) {
             Ci[pn++] = e; // keep e in Ei
             h += e; // compute the hash of node i
           } else {
-            Cp[e] = CS_FLIP(k); // aggressive absorb. e.k
+            Cp[e] = cs_flip(k); // aggressive absorb. e.k
             w[w_offset + e] = 0; // e is a dead element
           }
         }
@@ -293,7 +293,7 @@ Int32List cs_amd(int order, Dcs A) {
       }
       if (d == 0) // check for mass elimination
       {
-        Cp[i] = CS_FLIP(k); // absorb i into k
+        Cp[i] = cs_flip(k); // absorb i into k
         nvi = -nv[nv_offset + i];
         dk -= nvi; // |Lk| -= |i|
         nvk += nvi; // |k| += nv[nv_offset+i]
@@ -337,7 +337,7 @@ Int32List cs_amd(int order, Dcs A) {
           }
           if (ok) // i and j are identical
           {
-            Cp[j] = CS_FLIP(i); // absorb j into i
+            Cp[j] = cs_flip(i); // absorb j into i
             nv[nv_offset + i] += nv[nv_offset + j];
             nv[nv_offset + j] = 0;
             elen[elen_offset + j] = -1; // node j is dead
@@ -383,7 +383,7 @@ Int32List cs_amd(int order, Dcs A) {
   }
   /* Postordering */
   for (i = 0; i < n; i++) {
-    Cp[i] = CS_FLIP(Cp[i]); // fix assembly tree
+    Cp[i] = cs_flip(Cp[i]); // fix assembly tree
   }
   for (j = 0; j <= n; j++) {
     head[head_offset + j] = -1;

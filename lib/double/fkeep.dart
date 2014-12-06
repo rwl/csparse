@@ -27,7 +27,7 @@ int cs_fkeep(Dcs A, ifkeep fkeep, Object other) {
   int nz = 0;
   Int32List Ap, Ai;
   Float64List Ax;
-  if (!CS_CSC(A)) {
+  if (!cs_csc(A)) {
     return -1; // check inputs
   }
   n = A.n;

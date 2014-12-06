@@ -28,7 +28,7 @@ part of edu.emory.mathcs.csparse;
 int cs_reach(Dcs G, Dcs B, int k, Int32List xi, Int32List pinv) {
   int p, n, top;
   Int32List Bp, Bi, Gp;
-  if (!CS_CSC(G) || !CS_CSC(B) || xi == null) {
+  if (!cs_csc(G) || !cs_csc(B) || xi == null) {
     return (-1); // check inputs
   }
   n = G.n;
@@ -37,13 +37,13 @@ int cs_reach(Dcs G, Dcs B, int k, Int32List xi, Int32List pinv) {
   Gp = G.p;
   top = n;
   for (p = Bp[k]; p < Bp[k + 1]; p++) {
-    if (!CS_MARKED(Gp, Bi[p])) // start a dfs at unmarked node i
+    if (!cs_marked(Gp, Bi[p])) // start a dfs at unmarked node i
     {
       top = cs_dfs(Bi[p], G, top, xi, 0, xi, n, pinv, 0);
     }
   }
   for (p = top; p < n; p++) {
-    CS_MARK(Gp, xi[p]); // restore G
+    cs_mark(Gp, xi[p]); // restore G
   }
   return top;
 }

@@ -30,7 +30,7 @@ Dcs cs_permute(Dcs A, Int32List pinv, Int32List q, bool values) {
   Int32List Ap, Ai, Cp, Ci;
   Float64List Cx, Ax;
   Dcs C;
-  if (!CS_CSC(A)) {
+  if (!cs_csc(A)) {
     return null; // check inputs
   }
   m = A.m;

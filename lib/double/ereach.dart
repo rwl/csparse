@@ -30,30 +30,30 @@ part of edu.emory.mathcs.csparse;
 int cs_ereach(Dcs A, int k, Int32List parent, Int32List s, int s_offset, Int32List w) {
   int i, p, n, len, top;
   Int32List Ap, Ai;
-  if (!CS_CSC(A) || parent == null || s == null || w == null) {
+  if (!cs_csc(A) || parent == null || s == null || w == null) {
     return (-1); // check inputs
   }
   top = n = A.n;
   Ap = A.p;
   Ai = A.i;
-  CS_MARK(w, k); // mark node k as visited
+  cs_mark(w, k); // mark node k as visited
   for (p = Ap[k]; p < Ap[k + 1]; p++) {
     i = Ai[p]; // A(i,k) is nonzero
     if (i > k) {
       continue; // only use upper triangular part of A
     }
-    for (len = 0; !CS_MARKED(w, i); i = parent[i]) // traverse up etree
+    for (len = 0; !cs_marked(w, i); i = parent[i]) // traverse up etree
     {
       s[s_offset + len++] = i; // L(k,i) is nonzero
-      CS_MARK(w, i); // mark i as visited
+      cs_mark(w, i); // mark i as visited
     }
     while (len > 0) {
       s[s_offset + --top] = s[s_offset + --len]; // push path onto stack
     }
   }
   for (p = top; p < n; p++) {
-    CS_MARK(w, s[s_offset + p]); // unmark all nodes
+    cs_mark(w, s[s_offset + p]); // unmark all nodes
   }
-  CS_MARK(w, k); // unmark node k
+  cs_mark(w, k); // unmark node k
   return (top); // s [top..n-1] contains pattern of L(k,:)
 }

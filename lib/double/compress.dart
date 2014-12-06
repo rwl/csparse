@@ -27,7 +27,7 @@ Dcs cs_compress(Dcs T) {
   Int32List Cp, Ci, w, Ti, Tj;
   Float64List Cx, Tx;
   Dcs C;
-  if (!CS_TRIPLET(T)) {
+  if (!cs_triplet(T)) {
     return null; // check inputs
   }
   m = T.m;

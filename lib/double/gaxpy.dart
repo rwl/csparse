@@ -25,7 +25,7 @@ bool cs_gaxpy(Dcs A, Float64List x, Float64List y) {
   int n;
   Int32List Ap, Ai;
   Float64List Ax;
-  if (!CS_CSC(A) || x == null || y == null) {
+  if (!cs_csc(A) || x == null || y == null) {
     return false; // check inputs
   }
   n = A.n;

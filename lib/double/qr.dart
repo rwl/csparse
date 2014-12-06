@@ -26,7 +26,7 @@ Dcsn cs_qr(Dcs A, Dcss S) {
   Int32List s, leftmost, Ap, Ai, parent, Rp, Ri, Vp, Vi, w, pinv, q;
   Dcs R, V;
   Dcsn N;
-  if (!CS_CSC(A) || S == null) {
+  if (!cs_csc(A) || S == null) {
     return null;
   }
   n = A.n;

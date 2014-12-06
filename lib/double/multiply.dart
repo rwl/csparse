@@ -28,7 +28,7 @@ Dcs cs_multiply(Dcs A, Dcs B) {
   Float64List x, Bx, Cx;
   bool values;
   Dcs C;
-  if (!CS_CSC(A) || !CS_CSC(B)) {
+  if (!cs_csc(A) || !cs_csc(B)) {
     return null; // check inputs
   }
   if (A.n != B.m) {

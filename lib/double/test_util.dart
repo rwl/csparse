@@ -26,15 +26,6 @@ import 'package:unittest/unittest.dart';
 import 'csparse.dart';
 import 'load.dart';
 
-/**
- * Support routines for Dcs_test*.java
- *
- * @author Piotr Wendykier (piotr.wendykier@gmail.com)
- * @author Richard Lincoln (r.w.lincoln@gmail.com)
- *
- */
-//abstract public class Dcs_test extends TestCase {
-
 const double DELTA = 1e-3;
 const double DROP_TOL = 1e-14;
 
@@ -42,64 +33,48 @@ final String DIR = "matrix";
 
 final String T1 = "t1";
 
-/**
- * Unsymmetric overdetermined pattern of Holland survey. Ashkenazi, 1974
- *
- * http://www.cise.ufl.edu/research/sparse/matrices/HB/ash219.html
- */
+/// Unsymmetric overdetermined pattern of Holland survey. Ashkenazi, 1974
+///
+/// http://www.cise.ufl.edu/research/sparse/matrices/HB/ash219.html
 final String ASH219 = "ash219";
 
-/**
- * Symmetric stiffness matrix small generalized eigenvalue problem.
- *
- * http://www.cise.ufl.edu/research/sparse/matrices/HB/bcsstk01.html
- */
+/// Symmetric stiffness matrix small generalized eigenvalue problem.
+///
+/// http://www.cise.ufl.edu/research/sparse/matrices/HB/bcsstk01.html
 final String BCSSTK01 = "bcsstk01";
 
-/**
- * S stiffness matrix - Corp. of Engineers Dam
- *
- * http://www.cise.ufl.edu/research/sparse/matrices/HB/bcsstk16.html
- */
+/// S stiffness matrix - Corp. of Engineers Dam
+///
+/// http://www.cise.ufl.edu/research/sparse/matrices/HB/bcsstk16.html
 final String BCSSTK16 = "bcsstk16";
 
-/**
- * Unsymmetric facsimile convergence matrix.
- *
- * http://www.cise.ufl.edu/research/sparse/matrices/HB/fs_183_1.html
- */
+/// Unsymmetric facsimile convergence matrix.
+///
+/// http://www.cise.ufl.edu/research/sparse/matrices/HB/fs_183_1.html
 final String FS_183_1 = "fs_183_1";
 
-/**
- * Unsymmetric pattern on leaflet advertising ibm 1971 conference,
- * but with the last column removed.
- *
- * http://www.cise.ufl.edu/research/sparse/matrices/HB/ibm32.html
- */
+/// Unsymmetric pattern on leaflet advertising ibm 1971 conference,
+/// but with the last column removed.
+///
+/// http://www.cise.ufl.edu/research/sparse/matrices/HB/ibm32.html
 final String IBM32A = "ibm32a";
 
-/** The transpose of ibm32a */
+/// The transpose of [IBM32A].
 final String IBM32B = "ibm32b";
 
-/**
- * Netlib LP problem afiro: minimize c'*x, where Ax=b, lo<=x<=hi
- *
- * http://www.cise.ufl.edu/research/sparse/matrices/LPnetlib/lp_afiro.html
- */
+/// Netlib LP problem afiro: minimize c'*x, where Ax=b, lo<=x<=hi
+///
+/// http://www.cise.ufl.edu/research/sparse/matrices/LPnetlib/lp_afiro.html
 final String LP_AFIRO = "lp_afiro";
 
-/**
- * U Nonsymmetric matrix U.S. Economy 1972 -SZYLD-I.E.A.-NYU-
- *
- * http://www.cise.ufl.edu/research/sparse/matrices/HB/mbeacxc.html
- */
+/// U Nonsymmetric matrix U.S. Economy 1972 -SZYLD-I.E.A.-NYU-
+///
+/// http://www.cise.ufl.edu/research/sparse/matrices/HB/mbeacxc.html
 final String MBEACXC = "mbeacxc";
 
-/**
- * Cavett problem with 5 components (chemical eng., Westerberg)
- *
- * http://www.cise.ufl.edu/research/sparse/matrices/HB/west0067.html
- */
+/// Cavett problem with 5 components (chemical eng., Westerberg)
+///
+/// http://www.cise.ufl.edu/research/sparse/matrices/HB/west0067.html
 final String WEST0067 = "west0067";
 
 
@@ -140,13 +115,8 @@ void assert_dropped(Dproblem prob, int dropped_zeros, int dropped_tiny) {
   expect(dropped_tiny, equals(prob.dropped_tiny));
 }
 
-/**
- *
- * A structure for a demo problem.
- *
- */
+/// A structure for a demo problem.
 class Dproblem {
-
   Dcs A;
   Dcs C;
   int sym;
@@ -163,17 +133,12 @@ class Dproblem {
   int dropped_zeros;
   int dropped_tiny;
 
-  Dproblem() {}
-
+  Dproblem();
 }
 
-/**
- * 1 if A is square & upper tri., -1 if square & lower tri., 0 otherwise
- */
+/// 1 if A is square & upper tri., -1 if square & lower tri., 0 otherwise
 int is_sym(Dcs A) {
-  int j,
-      p,
-      n = A.n,
+  int n = A.n,
       m = A.m;
   Int32List Ap = A.p,
       Ai = A.i;
@@ -181,73 +146,59 @@ int is_sym(Dcs A) {
   if (m != n) return (0);
   is_upper = true;
   is_lower = true;
-  for (j = 0; j < n; j++) {
-    for (p = Ap[j]; p < Ap[j + 1]; p++) {
+  for (int j = 0; j < n; j++) {
+    for (int p = Ap[j]; p < Ap[j + 1]; p++) {
       if (Ai[p] > j) is_upper = false;
       if (Ai[p] < j) is_lower = false;
     }
   }
-  return (is_upper ? 1 : (is_lower ? -1 : 0));
+  return is_upper ? 1 : (is_lower ? -1 : 0);
 }
 
-/**
- * true for off-diagonal entries
- */
-bool dropdiag(int i, int j, double aij, Object other) {
-    return (i != j);
-}
+/// true for off-diagonal entries
+bool dropdiag(int i, int j, double aij, Object other) => i != j;
 
-/**
- * C = A + triu(A,1)'
- */
+/// C = A + triu(A,1)'
 Dcs make_sym(Dcs A) {
   Dcs AT, C;
   AT = cs_transpose(A, true);
-  /* AT = A' */
+  // AT = A'
   cs_fkeep(AT, dropdiag, null);
-  /* drop diagonal entries from AT */
+  // drop diagonal entries from AT
   C = cs_add(A, AT, 1.0, 1.0);
-  /* C = A+AT */
+  // C = A+AT
   AT = null;
-  return (C);
+  return C;
 }
 
-/**
- * create a right-hand side
- */
+/// create a right-hand side
 void rhs(Float64List x, Float64List b, int m) {
-  int i;
-  for (i = 0; i < m; i++) b[i] = 1 + i.toDouble() / m;
-  for (i = 0; i < m; i++) x[i] = b[i];
+  for (int i = 0; i < m; i++) b[i] = 1 + i.toDouble() / m;
+  for (int i = 0; i < m; i++) x[i] = b[i];
 }
 
-/**
- * infinity-norm of x
- */
+/// infinity-norm of x
 double norm(Float64List x, int n) {
-  int i;
   double normx = 0.0;
-  for (i = 0; i < n; i++) {
+  for (int i = 0; i < n; i++) {
     normx = math.max(normx, x[i].abs());
   }
-  return (normx);
+  return normx;
 }
 
-/**
- * compute residual, norm(A*x-b,inf) / (norm(A,1)*norm(x,inf) + norm(b,inf))
- */
+/// compute residual, norm(A*x-b,inf) / (norm(A,1)*norm(x,inf) + norm(b,inf))
 void print_resid(bool ok, Dcs A, Float64List x, Float64List b, Float64List resid, Dproblem prob) {
-  int i, m, n;
+  int m, n;
   if (!ok) {
     stdout.write("    (failed)\n");
     return;
   }
   m = A.m;
   n = A.n;
-  for (i = 0; i < m; i++) resid[i] = -b[i];
-  /* resid = -b */
+  for (int i = 0; i < m; i++) resid[i] = -b[i];
+  // resid = -b
   cs_gaxpy(A, x, resid);
-  /* resid = resid + A*x  */
+  // resid = resid + A*x
 
   double r = norm(resid, m) / ((n == 0) ? 1 : (cs_norm(A) * norm(x, n) + norm(b, m)));
   stdout.write("resid: $r");
@@ -257,14 +208,9 @@ void print_resid(bool ok, Dcs A, Float64List x, Float64List b, Float64List resid
   prob.norms.add(nrm);
 }
 
-int tic() {
-  return new DateTime.now().millisecondsSinceEpoch;
-}
+int tic() => new DateTime.now().millisecondsSinceEpoch;
 
-int toc(int t) {
-  final s = tic();
-  return math.max(0, s - t);// / 1000000.0 ;
-}
+int toc(int t) => math.max(0, tic() - t);// / 1000000.0 ;
 
 void print_order(int order) {
   switch (order) {
@@ -283,49 +229,46 @@ void print_order(int order) {
   }
 }
 
-/**
- * Reads a problem from a file.
- *
- * @param fileName
- *            file name
- * @param tol
- *            drop tolerance
- * @param base
- *            file index base
- * @return problem
- */
+/// Reads a problem from a file.
+///
+/// [tol] drop tolerance.
+/// [base] file index base.
 Dproblem get_problem(File file, [double tol = 0.0, int base = 0]) {
   Dcs T, A, C;
   int sym, m, n, mn, nz1, nz2;
   Dproblem prob;
   prob = new Dproblem();
   T = cs_load(file, base);
-  /* load triplet matrix T from a file */
+  // load triplet matrix T from a file
   prob.A = A = cs_compress(T);
-  /* A = compressed-column form of T */
+  // A = compressed-column form of T
   T = null;
   /* clear T */
   if (!cs_dupl(A)) return (null);
-  /* sum up duplicates */
+  // sum up duplicates
   prob.sym = sym = is_sym(A);
-  /* determine if A is symmetric */
+  // determine if A is symmetric
   m = A.m;
   n = A.n;
   mn = math.max(m, n);
   nz1 = A.p[n];
   if (tol > 0) cs_dropzeros(A);
-  /* drop zero entries */
+  // drop zero entries
   nz2 = A.p[n];
   if (tol > 0) cs_droptol(A, tol);
-  /* drop tiny entries (just to test) */
+  // drop tiny entries (just to test)
   prob.C = C = sym != 0 ? make_sym(A) : A;
-  /* C = A + triu(A,1)', or C=A */
-  if (C == null) return (null);
+  // C = A + triu(A,1)', or C=A
+  if (C == null) return null;
   stdout.write("\n--- Matrix: $m-by-$n, nnz: ${A.p[n]} (sym: $sym: nnz ${sym != 0 ? C.p[n] : 0}), norm: ${cs_norm(C)}\n");
   prob.dropped_zeros = nz1 - nz2;
-  if (nz1 != nz2) stdout.write("zero entries dropped: ${nz1 - nz2}\n");
+  if (nz1 != nz2) {
+    stdout.write("zero entries dropped: ${nz1 - nz2}\n");
+  }
   prob.dropped_tiny = nz2 - A.p[n];
-  if (nz2 != A.p[n]) stdout.write("tiny entries dropped: ${nz2 - A.p[n]}\n");
+  if (nz2 != A.p[n]) {
+    stdout.write("tiny entries dropped: ${nz2 - A.p[n]}\n");
+}
   prob.b = new Float64List(mn);
   prob.x = new Float64List(mn);
   prob.resid = new Float64List(mn);

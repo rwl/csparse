@@ -25,7 +25,7 @@ int _next(int J, Int32List next, int next_offset, bool ata) {
   return ata ? next[next_offset + J] : -1;
 }
 
-Int32List init_ata(Dcs AT, Int32List post, Int32List w) {
+List<int> init_ata(Dcs AT, Int32List post, Int32List w) {
   int p,
       m = AT.n,
       n = AT.m;
@@ -64,7 +64,7 @@ Int32List cs_counts(Dcs A, Int32List parent, Int32List post, bool ata) {
   int head_offset = 0,
       next_offset = 0;
   Dcs AT;
-  if (!CS_CSC(A) || parent == null || post == null) {
+  if (!cs_csc(A) || parent == null || post == null) {
     return (null); // check inputs
   }
   m = A.m;
@@ -94,7 +94,7 @@ Int32List cs_counts(Dcs A, Int32List parent, Int32List post, bool ata) {
   ATp = AT.p;
   ATi = AT.i;
   if (ata) {
-    Int32List offsets = init_ata(AT, post, w);
+    final offsets = init_ata(AT, post, w);
     head = w;
     head_offset = offsets[0];
     next = w;

@@ -27,7 +27,7 @@ bool cs_happly(Dcs V, int i, double beta, Float64List x) {
   Int32List Vp, Vi;
   Float64List Vx;
   double tau = 0.0;
-  if (!CS_CSC(V) || x == null) {
+  if (!cs_csc(V) || x == null) {
     return (false); // check inputs
   }
   Vp = V.p;

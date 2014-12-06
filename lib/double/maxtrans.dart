@@ -79,7 +79,7 @@ Int32List cs_maxtrans(Dcs A, int seed) // [jmatch [0..m-1]; imatch [0..n-1]]
       m2 = 0;
   Int32List Ap, jimatch, w, cheap, js, _is, ps, Ai, Cp, jmatch, imatch, q;
   Dcs C;
-  if (!CS_CSC(A)) {
+  if (!cs_csc(A)) {
     return null; // check inputs
   }
   n = A.n;

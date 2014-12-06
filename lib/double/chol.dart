@@ -31,7 +31,7 @@ Dcsn cs_chol(Dcs A, Dcss S) {
   Int32List Li, Lp, cp, pinv, s, c, parent, Cp, Ci;
   Dcs L, C;
   Dcsn N;
-  if (!CS_CSC(A) || S == null || S.cp == null || S.parent == null) {
+  if (!cs_csc(A) || S == null || S.cp == null || S.parent == null) {
     return (null);
   }
   n = A.n;

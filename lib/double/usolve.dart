@@ -17,39 +17,28 @@
 /// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 part of edu.emory.mathcs.csparse;
 
-/**
- * Solve an upper triangular system Ux=b.
- *
- * @author Piotr Wendykier (piotr.wendykier@gmail.com)
- *
- */
-//public class Dcs_usolve {
-
-/**
- * Solves an upper triangular system Ux=b, where x and b are dense vectors.
- * The diagonal of U must be the last entry of each column.
- *
- * @param U
- *            upper triangular matrix in column-compressed form
- * @param x
- *            size n, right hand side on input, solution on output
- * @return true if successful, false on error
- */
+/// Solves an upper triangular system Ux=b, where x and b are dense vectors.
+/// The diagonal of U must be the last entry of each column.
+///
+/// [U] upper triangular matrix in column-compressed form.
+/// [x] size n, right hand side on input, solution on output.
+/// Returns true if successful, false on error.
 bool cs_usolve(Dcs U, Float64List x) {
-    int p, j, n;
-    Int32List Up, Ui;
-    Float64List Ux;
-    if (!CS_CSC(U) || x == null)
-        return (false); /* check inputs */
-    n = U.n;
-    Up = U.p;
-    Ui = U.i;
-    Ux = U.x;
-    for (j = n - 1; j >= 0; j--) {
-        x[j] /= Ux[Up[j + 1] - 1];
-        for (p = Up[j]; p < Up[j + 1] - 1; p++) {
-            x[Ui[p]] -= Ux[p] * x[j];
-        }
+  int n;
+  Int32List Up, Ui;
+  Float64List Ux;
+  if (!cs_csc(U) || x == null) {
+    return false; // check inputs
+  }
+  n = U.n;
+  Up = U.p;
+  Ui = U.i;
+  Ux = U.x;
+  for (int j = n - 1; j >= 0; j--) {
+    x[j] /= Ux[Up[j + 1] - 1];
+    for (int p = Up[j]; p < Up[j + 1] - 1; p++) {
+      x[Ui[p]] -= Ux[p] * x[j];
     }
-    return (true);
+  }
+  return true;
 }

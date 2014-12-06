@@ -29,7 +29,7 @@ Dcs cs_add(Dcs A, Dcs B, double alpha, double beta) {
   Float64List x, Bx, Cx;
   bool values;
   Dcs C;
-  if (!CS_CSC(A) || !CS_CSC(B)) {
+  if (!cs_csc(A) || !cs_csc(B)) {
     return null; // check inputs
   }
   if (A.m != B.m || A.n != B.n) {

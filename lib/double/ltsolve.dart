@@ -27,7 +27,7 @@ bool cs_ltsolve(Dcs L, Float64List x) {
     int n;
     Int32List Lp, Li;
     Float64List Lx;
-    if (!CS_CSC(L) || x == null) {
+    if (!cs_csc(L) || x == null) {
         return false; // check inputs
     }
     n = L.n;

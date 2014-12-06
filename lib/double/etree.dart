@@ -24,7 +24,7 @@ part of edu.emory.mathcs.csparse;
 Int32List cs_etree(Dcs A, bool ata) {
   int p, m, n, inext;
   Int32List Ap, Ai, w, parent, ancestor, prev;
-  if (!CS_CSC(A)) {
+  if (!cs_csc(A)) {
     return null; // check inputs
   }
   m = A.m;

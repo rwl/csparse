@@ -17,64 +17,55 @@
 /// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 part of edu.emory.mathcs.csparse;
 
-/**
- * Symmetric permutation of a sparse matrix.
- *
- * @author Piotr Wendykier (piotr.wendykier@gmail.com)
- *
- */
-//public class Dcs_symperm {
-
-/**
- * Permutes a symmetric sparse matrix. C = PAP' where A and C are symmetric.
- *
- * @param A
- *            column-compressed matrix (only upper triangular part is used)
- * @param pinv
- *            size n, inverse permutation
- * @param values
- *            allocate pattern only if false, values and pattern otherwise
- * @return C = PAP', null on error
- */
+/// Permutes a symmetric sparse matrix. C = PAP' where A and C are symmetric.
+///
+/// [A] column-compressed matrix (only upper triangular part is used).
+/// [pinv] size n, inverse permutation.
+/// [values] allocate pattern only if false, values and pattern otherwise.
+/// Returns C = PAP', null on error.
 Dcs cs_symperm(Dcs A, Int32List pinv, bool values) {
-    int i, j, p, q, i2, j2, n;
-    Int32List Ap, Ai, Cp, Ci, w;
-    Float64List Cx, Ax;
-    Dcs C;
-    if (!CS_CSC(A))
-        return (null); /* check inputs */
-    n = A.n;
-    Ap = A.p;
-    Ai = A.i;
-    Ax = A.x;
-    C = cs_spalloc(n, n, Ap[n], values && (Ax != null), false); /* alloc result*/
-    w = new Int32List(n); /* get workspace */
-    Cp = C.p;
-    Ci = C.i;
-    Cx = C.x;
-    for (j = 0; j < n; j++) /* count entries in each column of C */
-    {
-        j2 = pinv != null ? pinv[j] : j; /* column j of A is column j2 of C */
-        for (p = Ap[j]; p < Ap[j + 1]; p++) {
-            i = Ai[p];
-            if (i > j)
-                continue; /* skip lower triangular part of A */
-            i2 = pinv != null ? pinv[i] : i; /* row i of A is row i2 of C */
-            w[math.max(i2, j2)]++; /* column count of C */
-        }
+  int q, n;
+  Int32List Ap, Ai, Cp, Ci, w;
+  Float64List Cx, Ax;
+  Dcs C;
+  if (!cs_csc(A)) {
+    return null; // check inputs
+  }
+  n = A.n;
+  Ap = A.p;
+  Ai = A.i;
+  Ax = A.x;
+  C = cs_spalloc(n, n, Ap[n], values && (Ax != null), false); // alloc result
+  w = new Int32List(n); // get workspace
+  Cp = C.p;
+  Ci = C.i;
+  Cx = C.x;
+  for (int j = 0; j < n; j++) // count entries in each column of C
+  {
+    final j2 = pinv != null ? pinv[j] : j; // column j of A is column j2 of C
+    for (int p = Ap[j]; p < Ap[j + 1]; p++) {
+      final i = Ai[p];
+      if (i > j) {
+        continue; // skip lower triangular part of A
+      }
+      final i2 = pinv != null ? pinv[i] : i; // row i of A is row i2 of C
+      w[math.max(i2, j2)]++; // column count of C
     }
-    cs_cumsum(Cp, w, n); /* compute column pointers of C */
-    for (j = 0; j < n; j++) {
-        j2 = pinv != null ? pinv[j] : j; /* column j of A is column j2 of C */
-        for (p = Ap[j]; p < Ap[j + 1]; p++) {
-            i = Ai[p];
-            if (i > j)
-                continue; /* skip lower triangular part of A*/
-            i2 = pinv != null ? pinv[i] : i; /* row i of A is row i2 of C */
-            Ci[q = w[math.max(i2, j2)]++] = math.min(i2, j2);
-            if (Cx != null)
-                Cx[q] = Ax[p];
-        }
+  }
+  cs_cumsum(Cp, w, n); // compute column pointers of C
+  for (int j = 0; j < n; j++) {
+    final j2 = pinv != null ? pinv[j] : j; // column j of A is column j2 of C
+    for (int p = Ap[j]; p < Ap[j + 1]; p++) {
+      final i = Ai[p];
+      if (i > j) {
+        continue; // skip lower triangular part of A
+      }
+      final i2 = pinv != null ? pinv[i] : i; // row i of A is row i2 of C
+      Ci[q = w[math.max(i2, j2)]++] = math.min(i2, j2);
+      if (Cx != null) {
+        Cx[q] = Ax[p];
+      }
     }
-    return C;
+  }
+  return C;
 }

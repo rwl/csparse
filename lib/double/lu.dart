@@ -28,7 +28,7 @@ Dcsn cs_lu(Dcs A, Dcss S, double tol) {
   Float64List Lx, Ux, x;
   Int32List Lp, Li, Up, Ui, pinv, xi, q;
   int n, ipiv, k, top, p, i, col, lnz, unz;
-  if (!CS_CSC(A) || S == null) {
+  if (!cs_csc(A) || S == null) {
     return null; // check inputs
   }
   n = A.n;

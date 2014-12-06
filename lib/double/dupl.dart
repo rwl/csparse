@@ -25,7 +25,7 @@ bool cs_dupl(Dcs A) {
   int nz = 0;
   Int32List Ap, Ai, w;
   Float64List Ax;
-  if (!CS_CSC(A)) {
+  if (!cs_csc(A)) {
     return false;
   }
   /* check inputs */

@@ -25,7 +25,7 @@ part of edu.emory.mathcs.csparse;
 /// [x] numerical value of new entry.
 /// Returns true if successful, false otherwise.
 bool cs_entry(Dcs T, int i, int j, double x) {
-  if (!CS_TRIPLET(T) || i < 0 || j < 0) {
+  if (!cs_triplet(T) || i < 0 || j < 0) {
     return (false); // check inputs
   }
   if (T.nz >= T.nzmax) {

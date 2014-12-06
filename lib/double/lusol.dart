@@ -30,7 +30,7 @@ bool cs_lusol(int order, Dcs A, Float64List b, double tol) {
   Dcsn N;
   int n;
   bool ok;
-  if (!CS_CSC(A) || b == null) {
+  if (!cs_csc(A) || b == null) {
     return false; // check inputs
   }
   n = A.n;

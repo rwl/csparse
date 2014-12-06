@@ -32,7 +32,7 @@ part of edu.emory.mathcs.csparse;
 int cs_scatter(Dcs A, int j, double beta, Int32List w, Float64List x, int mark, Dcs C, int nz) {
   Int32List Ap, Ai, Ci;
   Float64List Ax;
-  if (!CS_CSC(A) || w == null || !CS_CSC(C)) {
+  if (!cs_csc(A) || w == null || !cs_csc(C)) {
     return -1; // check inputs
   }
   Ap = A.p;

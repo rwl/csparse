@@ -109,7 +109,7 @@ Dcsd cs_dmperm(Dcs A, int seed) {
   Dcs C;
   Dcsd D, scc;
   /* Maximum matching */
-  if (!CS_CSC(A)) {
+  if (!cs_csc(A)) {
     return null; // check inputs
   }
   m = A.m;

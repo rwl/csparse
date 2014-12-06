@@ -27,7 +27,7 @@ Dcsd cs_scc(Dcs A) {
   Int32List xi, pstack, p, r, Ap, ATp, rcopy, Blk;
   Dcs AT;
   Dcsd D;
-  if (!CS_CSC(A)) {
+  if (!cs_csc(A)) {
     return null; // check inputs
   }
   n = A.n;
@@ -49,19 +49,19 @@ Dcsd cs_scc(Dcs A) {
   top = n;
   for (int i = 0; i < n; i++) // first dfs(A) to find finish times (xi)
   {
-    if (!CS_MARKED(Ap, i)) {
+    if (!cs_marked(Ap, i)) {
       top = cs_dfs(i, A, top, xi, 0, pstack, pstack_offset, null, 0);
     }
   }
   for (int i = 0; i < n; i++) {
-    CS_MARK(Ap, i); // restore A; unmark all nodes
+    cs_mark(Ap, i); // restore A; unmark all nodes
   }
   top = n;
   nb = n;
   for (int k = 0; k < n; k++) // dfs(A') to find strongly connnected comp
   {
     final i = xi[k]; // get i in reverse order of finish times
-    if (CS_MARKED(ATp, i)) {
+    if (cs_marked(ATp, i)) {
       continue; // skip node i if already ordered
     }
     r[nb--] = top; // node i is the start of a component in p
