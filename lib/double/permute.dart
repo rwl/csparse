@@ -17,52 +17,41 @@
 /// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 part of edu.emory.mathcs.csparse;
 
-/**
- * Permute a sparse matrix.
- *
- * @author Piotr Wendykier (piotr.wendykier@gmail.com)
- *
- */
-//public class Dcs_permute {
-
-/**
- * Permutes a sparse matrix, C = PAQ.
- *
- * @param A
- *            m-by-n, column-compressed matrix
- * @param pinv
- *            a permutation vector of length m
- * @param q
- *            a permutation vector of length n
- * @param values
- *            allocate pattern only if false, values and pattern otherwise
- * @return C = PAQ, null on error
- */
+/// Permutes a sparse matrix, C = PAQ.
+///
+/// [A] m-by-n, column-compressed matrix.
+/// [pinv] a permutation vector of length m.
+/// [q] a permutation vector of length n.
+/// [values] allocate pattern only if false, values and pattern otherwise.
+/// Returns C = PAQ, null on error.
 Dcs cs_permute(Dcs A, Int32List pinv, Int32List q, bool values) {
-    int t, j, k, nz = 0, m, n;
-    Int32List Ap, Ai, Cp, Ci;
-    Float64List Cx, Ax;
-    Dcs C;
-    if (!CS_CSC(A))
-        return (null); /* check inputs */
-    m = A.m;
-    n = A.n;
-    Ap = A.p;
-    Ai = A.i;
-    Ax = A.x;
-    C = cs_spalloc(m, n, Ap[n], values && Ax != null, false); /* alloc result */
-    Cp = C.p;
-    Ci = C.i;
-    Cx = C.x;
-    for (k = 0; k < n; k++) {
-        Cp[k] = nz; /* column k of C is column q[k] of A */
-        j = q != null ? (q[k]) : k;
-        for (t = Ap[j]; t < Ap[j + 1]; t++) {
-            if (Cx != null)
-                Cx[nz] = Ax[t]; /* row i of A is row pinv[i] of C */
-            Ci[nz++] = pinv != null ? (pinv[Ai[t]]) : Ai[t];
-        }
+  int m, n;
+  int nz = 0;
+  Int32List Ap, Ai, Cp, Ci;
+  Float64List Cx, Ax;
+  Dcs C;
+  if (!CS_CSC(A)) {
+    return null; // check inputs
+  }
+  m = A.m;
+  n = A.n;
+  Ap = A.p;
+  Ai = A.i;
+  Ax = A.x;
+  C = cs_spalloc(m, n, Ap[n], values && Ax != null, false); // alloc result
+  Cp = C.p;
+  Ci = C.i;
+  Cx = C.x;
+  for (int k = 0; k < n; k++) {
+    Cp[k] = nz; // column k of C is column q[k] of A
+    final j = q != null ? (q[k]) : k;
+    for (int t = Ap[j]; t < Ap[j + 1]; t++) {
+      if (Cx != null) {
+        Cx[nz] = Ax[t]; // row i of A is row pinv[i] of C
+      }
+      Ci[nz++] = pinv != null ? (pinv[Ai[t]]) : Ai[t];
     }
-    Cp[n] = nz; /* finalize the last column of C */
-    return C;
+  }
+  Cp[n] = nz; // finalize the last column of C
+  return C;
 }

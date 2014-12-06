@@ -17,37 +17,30 @@
 /// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 part of edu.emory.mathcs.csparse;
 
-/**
- * Sparse matrix 1-norm.
- *
- * @author Piotr Wendykier (piotr.wendykier@gmail.com)
- *
- */
-//public class Dcs_norm {
-
-/**
- * Computes the 1-norm of a sparse matrix = max (sum (abs (A))), largest
- * column sum.
- *
- * @param A
- *            column-compressed matrix
- * @return the 1-norm if successful, -1 on error
- */
+/// Sparse matrix 1-norm.
+///
+/// Computes the 1-norm of a sparse matrix = max (sum (abs (A))), largest
+/// column sum.
+///
+/// Returns the 1-norm if successful, -1 on error.
 double cs_norm(Dcs A) {
-    int p, j, n;
-    Int32List Ap;
-    Float64List Ax;
-    double norm = 0.0, s;
-    if (!CS_CSC(A) || A.x == null)
-        return (-1.0); /* check inputs */
-    n = A.n;
-    Ap = A.p;
-    Ax = A.x;
-    for (j = 0; j < n; j++) {
-        s = 0.0;
-        for (p = Ap[j]; p < Ap[j + 1]; p++)
-            s += Ax[p].abs();
-        norm = math.max(norm, s);
+  int n;
+  Int32List Ap;
+  Float64List Ax;
+  double norm = 0.0,
+      s;
+  if (!CS_CSC(A) || A.x == null) {
+    return -1.0; // check inputs
+  }
+  n = A.n;
+  Ap = A.p;
+  Ax = A.x;
+  for (int j = 0; j < n; j++) {
+    s = 0.0;
+    for (int p = Ap[j]; p < Ap[j + 1]; p++) {
+      s += Ax[p].abs();
     }
-    return (norm);
+    norm = math.max(norm, s);
+  }
+  return norm;
 }

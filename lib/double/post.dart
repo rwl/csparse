@@ -17,48 +17,40 @@
 /// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 part of edu.emory.mathcs.csparse;
 
-/**
- * Postorder a tree or forest.
- *
- * @author Piotr Wendykier (piotr.wendykier@gmail.com)
- *
- */
-//public class Dcs_post {
-
-/**
- * Postorders a tree of forest.
- *
- * @param parent
- *            defines a tree of n nodes
- * @param n
- *            length of parent
- * @return post[k]=i, null on error
- */
+/// Postorders a tree of forest.
+///
+/// [parent] defines a tree of n nodes.
+/// [n] length of parent.
+/// Returns post[k]=i, null on error.
 Int32List cs_post(Int32List parent, int n) {
-    int j, k = 0;
-    Int32List post, w, head, next, stack;
-    if (parent == null)
-        return (null); /* check inputs */
-    post = new Int32List(n); /* allocate result */
-    w = new Int32List(3 * n); /* get workspace */
-    head = w;
-    next = w;
-    int next_offset = n;
-    stack = w;
-    int stack_offset = 2 * n;
-    for (j = 0; j < n; j++)
-        head[j] = -1; /* empty linked lists */
-    for (j = n - 1; j >= 0; j--) /* traverse nodes in reverse order*/
-    {
-        if (parent[j] == -1)
-            continue; /* j is a root */
-        next[next_offset + j] = head[parent[j]]; /* add j to list of its parent */
-        head[parent[j]] = j;
+  int k = 0;
+  Int32List post, w, head, next, stack;
+  if (parent == null) {
+    return null; // check inputs
+  }
+  post = new Int32List(n); // allocate result
+  w = new Int32List(3 * n); // get workspace
+  head = w;
+  next = w;
+  int next_offset = n;
+  stack = w;
+  int stack_offset = 2 * n;
+  for (int j = 0; j < n; j++) {
+    head[j] = -1; // empty linked lists
+  }
+  for (int j = n - 1; j >= 0; j--) // traverse nodes in reverse order
+  {
+    if (parent[j] == -1) {
+      continue; // j is a root
     }
-    for (j = 0; j < n; j++) {
-        if (parent[j] != -1)
-            continue; /* skip j if it is not a root */
-        k = cs_tdfs(j, k, head, 0, next, next_offset, post, 0, stack, stack_offset);
+    next[next_offset + j] = head[parent[j]]; // add j to list of its parent
+    head[parent[j]] = j;
+  }
+  for (int j = 0; j < n; j++) {
+    if (parent[j] != -1) {
+      continue; // skip j if it is not a root
     }
-    return post;
+    k = cs_tdfs(j, k, head, 0, next, next_offset, post, 0, stack, stack_offset);
+  }
+  return post;
 }

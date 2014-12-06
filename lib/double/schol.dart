@@ -17,41 +17,30 @@
 /// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 part of edu.emory.mathcs.csparse;
 
-/**
- * Symbolic Cholesky ordering and analysis.
- *
- * @author Piotr Wendykier (piotr.wendykier@gmail.com)
- *
- */
-//public class Dcs_schol {
-
-/**
- * Ordering and symbolic analysis for a Cholesky factorization.
- *
- * @param order
- *            ordering option (0 or 1)
- * @param A
- *            column-compressed matrix
- * @return symbolic analysis for Cholesky, null on error
- */
+/// Ordering and symbolic analysis for a Cholesky factorization.
+///
+/// [order] ordering option (0 or 1).
+/// Returns symbolic analysis for Cholesky, null on error.
 Dcss cs_schol(int order, Dcs A) {
-    int n;
-    Int32List c, post, P;
-    Dcs C;
-    Dcss S;
-    if (!CS_CSC(A))
-        return (null); /* check inputs */
-    n = A.n;
-    S = new Dcss(); /* allocate result S */
-    P = cs_amd(order, A); /* P = amd(A+A'), or natural */
-    S.pinv = cs_pinv(P, n); /* find inverse permutation */
-    if (order != 0 && S.pinv == null)
-        return null;
-    C = cs_symperm(A, S.pinv, false); /* C = spones(triu(A(P,P))) */
-    S.parent = cs_etree(C, false); /* find etree of C */
-    post = cs_post(S.parent, n); /* postorder the etree */
-    c = cs_counts(C, S.parent, post, false); /* find column counts of chol(C) */
-    S.cp = new Int32List(n + 1); /* allocate result S.cp */
-    S.unz = S.lnz = cs_cumsum(S.cp, c, n); /* find column pointers for L */
-    return ((S.lnz >= 0) ? S : null);
+  int n;
+  Int32List c, post, P;
+  Dcs C;
+  Dcss S;
+  if (!CS_CSC(A)) {
+    return null; // check inputs
+  }
+  n = A.n;
+  S = new Dcss(); // allocate result S
+  P = cs_amd(order, A); // P = amd(A+A'), or natural
+  S.pinv = cs_pinv(P, n); // find inverse permutation
+  if (order != 0 && S.pinv == null) {
+    return null;
+  }
+  C = cs_symperm(A, S.pinv, false); // C = spones(triu(A(P,P)))
+  S.parent = cs_etree(C, false); // find etree of C
+  post = cs_post(S.parent, n); // postorder the etree
+  c = cs_counts(C, S.parent, post, false); // find column counts of chol(C)
+  S.cp = new Int32List(n + 1); // allocate result S.cp
+  S.unz = S.lnz = cs_cumsum(S.cp, c, n); // find column pointers for L
+  return (S.lnz >= 0) ? S : null;
 }

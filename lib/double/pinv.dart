@@ -17,30 +17,19 @@
 /// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 part of edu.emory.mathcs.csparse;
 
-/**
- * Invert a permutation vector.
- *
- * @author Piotr Wendykier (piotr.wendykier@gmail.com)
- *
- */
-//public class Dcs_pinv {
-
-/**
- * Inverts a permutation vector. Returns pinv[i] = k if p[k] = i on input.
- *
- * @param p
- *            a permutation vector if length n
- * @param n
- *            length of p
- * @return pinv, null on error
- */
+/// Inverts a permutation vector. Returns pinv[i] = k if p[k] = i on input.
+///
+/// [p] a permutation vector if length n.
+/// [n] length of p.
+/// Returns pinv, null on error.
 Int32List cs_pinv(Int32List p, int n) {
-    int k;
-    Int32List pinv;
-    if (p == null)
-        return (null); /* p = NULL denotes identity */
-    pinv = new Int32List(n); /* allocate result */
-    for (k = 0; k < n; k++)
-        pinv[p[k]] = k;/* invert the permutation */
-    return (pinv); /* return result */
+  Int32List pinv;
+  if (p == null) {
+    return null; // p = NULL denotes identity
+  }
+  pinv = new Int32List(n); // allocate result
+  for (int k = 0; k < n; k++) {
+    pinv[p[k]] = k; // invert the permutation
+  }
+  return pinv; // return result
 }

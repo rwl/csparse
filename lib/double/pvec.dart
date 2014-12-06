@@ -17,32 +17,18 @@
 /// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 part of edu.emory.mathcs.csparse;
 
-/**
- * Permutes a vector, x=P*b.
- *
- * @author Piotr Wendykier (piotr.wendykier@gmail.com)
- *
- */
-//public class Dcs_pvec {
-
-/**
- * Permutes a vector, x=P*b, for dense vectors x and b.
- *
- * @param p
- *            permutation vector, p=null denotes identity
- * @param b
- *            input vector
- * @param x
- *            output vector, x=P*b
- * @param n
- *            length of p, b and x
- * @return true if successful, false otherwise
- */
+/// Permutes a vector, x=P*b, for dense vectors x and b.
+///
+/// [p] permutation vector, p=null denotes identity.
+/// [b] input vector. [x] output vector, x=P*b
+/// [n] length of p, b and x.
+/// Returns true if successful, false otherwise.
 bool cs_pvec(Int32List p, Float64List b, Float64List x, int n) {
-    int k;
-    if (x == null || b == null)
-        return (false); /* check inputs */
-    for (k = 0; k < n; k++)
-        x[k] = b[p != null ? p[k] : k];
-    return (true);
+  if (x == null || b == null) {
+    return false; // check inputs
+  }
+  for (int k = 0; k < n; k++) {
+    x[k] = b[p != null ? p[k] : k];
+  }
+  return true;
 }

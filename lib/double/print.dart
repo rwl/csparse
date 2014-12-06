@@ -21,13 +21,11 @@ import 'dart:typed_data';
 import 'dart:io' show stdout;
 import 'csparse.dart';
 
-/**
- * Prints a sparse matrix.
- *
- * @param A sparse matrix (triplet ot column-compressed)
- * @param brief print all of A if false, a few entries otherwise
- * @return true if successful, false on error
- */
+/// Prints a sparse matrix.
+///
+/// [A] sparse matrix (triplet or column-compressed).
+/// [brief] print all of A if false, a few entries otherwise.
+/// Returns true if successful, false on error.
 bool cs_print(Dcs A, bool brief) {
   int p, j, m, n, nzmax, nz;
   Int32List Ap, Ai;
@@ -52,7 +50,7 @@ bool cs_print(Dcs A, bool brief) {
         stdout.write("      ${Ai[p]} : ${Ax != null ? Ax[p] : 1}\n");
         if (brief && p > 20) {
           stdout.write("  ...\n");
-          return (true);
+          return true;
         }
       }
     }
@@ -62,9 +60,9 @@ bool cs_print(Dcs A, bool brief) {
       stdout.write("    ${Ai[p]} ${Ap[p]} : ${Ax != null ? Ax[p] : 1}\n");
       if (brief && p > 20) {
         stdout.write("  ...\n");
-        return (true);
+        return true;
       }
     }
   }
-  return (true);
+  return true;
 }
