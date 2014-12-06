@@ -24,12 +24,12 @@ part of edu.emory.mathcs.csparse;
 /// [i] row index of new entry. [j] column index of new entry.
 /// [x] numerical value of new entry.
 /// Returns true if successful, false otherwise.
-bool cs_entry(Dcs T, int i, int j, double x) {
-  if (!cs_triplet(T) || i < 0 || j < 0) {
+bool entry(Matrix T, int i, int j, double x) {
+  if (!triplet(T) || i < 0 || j < 0) {
     return (false); // check inputs
   }
   if (T.nz >= T.nzmax) {
-    cs_sprealloc(T, 2 * (T.nzmax));
+    sprealloc(T, 2 * (T.nzmax));
   }
   if (T.x != null) {
     T.x[T.nz] = x;

@@ -23,11 +23,11 @@ part of edu.emory.mathcs.csparse;
 /// [L] column-compressed, lower triangular matrix.
 /// [x] size n, right hand side on input, solution on output.
 /// Returns true if successful, false on error.
-bool cs_lsolve(Dcs L, Float64List x) {
+bool lsolve(Matrix L, Float64List x) {
   int n;
   Int32List Lp, Li;
   Float64List Lx;
-  if (!cs_csc(L) || x == null) {
+  if (!csc(L) || x == null) {
     return (false); // check inputs
   }
   n = L.n;

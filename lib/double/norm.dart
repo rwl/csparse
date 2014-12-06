@@ -23,13 +23,13 @@ part of edu.emory.mathcs.csparse;
 /// column sum.
 ///
 /// Returns the 1-norm if successful, -1 on error.
-double cs_norm(Dcs A) {
+double norm(Matrix A) {
   int n;
   Int32List Ap;
   Float64List Ax;
   double norm = 0.0,
       s;
-  if (!cs_csc(A) || A.x == null) {
+  if (!csc(A) || A.x == null) {
     return -1.0; // check inputs
   }
   n = A.n;

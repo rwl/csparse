@@ -22,12 +22,12 @@ part of edu.emory.mathcs.csparse;
 /// [fkeep] drop aij if fkeep.fkeep(i,j,aij,other) is false
 /// [other] optional parameter to fkeep
 /// Returns the new number of entries in A, -1 on error.
-int cs_fkeep(Dcs A, ifkeep fkeep, Object other) {
+int fkeep(Matrix A, ifkeep fkeep, Object other) {
   int n;
   int nz = 0;
   Int32List Ap, Ai;
   Float64List Ax;
-  if (!cs_csc(A)) {
+  if (!csc(A)) {
     return -1; // check inputs
   }
   n = A.n;
@@ -47,6 +47,6 @@ int cs_fkeep(Dcs A, ifkeep fkeep, Object other) {
     }
   }
   Ap[n] = nz; // finalize A
-  cs_sprealloc(A, 0); // remove extra space from A
+  sprealloc(A, 0); // remove extra space from A
   return nz;
 }

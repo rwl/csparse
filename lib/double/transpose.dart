@@ -21,14 +21,14 @@ part of edu.emory.mathcs.csparse;
 ///
 /// [values] pattern only if false, both pattern and values otherwise.
 /// Returns C=A', null on error.
-Dcs cs_transpose(Dcs A, bool values) {
+Matrix transpose(Matrix A, bool values) {
   int q;
   Int32List Cp, Ci;
   int n, m;
   Int32List Ap, Ai, w;
   Float64List Cx, Ax;
-  Dcs C;
-  if (!cs_csc(A)) {
+  Matrix C;
+  if (!csc(A)) {
     return (null); // check inputs
   }
   m = A.m;
@@ -36,7 +36,7 @@ Dcs cs_transpose(Dcs A, bool values) {
   Ap = A.p;
   Ai = A.i;
   Ax = A.x;
-  C = cs_spalloc(n, m, Ap[n], values && (Ax != null), false); // allocate result
+  C = spalloc(n, m, Ap[n], values && (Ax != null), false); // allocate result
   w = new Int32List(m); // get workspace
   Cp = C.p;
   Ci = C.i;
@@ -44,7 +44,7 @@ Dcs cs_transpose(Dcs A, bool values) {
   for (int p = 0; p < Ap[n]; p++) {
     w[Ai[p]]++; // row counts
   }
-  cs_cumsum(Cp, w, m); // row pointers
+  cumsum(Cp, w, m); // row pointers
   for (int j = 0; j < n; j++) {
     for (int p = Ap[j]; p < Ap[j + 1]; p++) {
       Ci[q = w[Ai[p]]++] = j; // place A(i,j) as entry C(j,i)

@@ -21,10 +21,10 @@ part of edu.emory.mathcs.csparse;
 ///
 /// Analyze A if [ata] is false, A'A otherwise.
 /// Returns elimination tree, null on error.
-Int32List cs_etree(Dcs A, bool ata) {
+Int32List etree(Matrix A, bool ata) {
   int p, m, n, inext;
   Int32List Ap, Ai, w, parent, ancestor, prev;
-  if (!cs_csc(A)) {
+  if (!csc(A)) {
     return null; // check inputs
   }
   m = A.m;

@@ -22,12 +22,12 @@ part of edu.emory.mathcs.csparse;
 /// C = compressed-column form of a triplet matrix T. The columns of C are
 /// not sorted, and duplicate entries may be present in C.
 /// Returns C if successful, null on error
-Dcs cs_compress(Dcs T) {
+Matrix compress(Matrix T) {
   int m, n, nz, p;
   Int32List Cp, Ci, w, Ti, Tj;
   Float64List Cx, Tx;
-  Dcs C;
-  if (!cs_triplet(T)) {
+  Matrix C;
+  if (!triplet(T)) {
     return null; // check inputs
   }
   m = T.m;
@@ -36,7 +36,7 @@ Dcs cs_compress(Dcs T) {
   Tj = T.p;
   Tx = T.x;
   nz = T.nz;
-  C = cs_spalloc(m, n, nz, Tx != null, false); // allocate result
+  C = spalloc(m, n, nz, Tx != null, false); // allocate result
   w = new Int32List(n); // get workspace
   Cp = C.p;
   Ci = C.i;
@@ -44,7 +44,7 @@ Dcs cs_compress(Dcs T) {
   for (int k = 0; k < nz; k++) {
     w[Tj[k]]++; // column counts
   }
-  cs_cumsum(Cp, w, n); // column pointers
+  cumsum(Cp, w, n); // column pointers
   for (int k = 0; k < nz; k++) {
     Ci[p = w[Tj[k]]++] = Ti[k]; // A(i,j) is the pth entry in C
     if (Cx != null) {

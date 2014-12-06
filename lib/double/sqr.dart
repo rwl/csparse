@@ -18,7 +18,7 @@
 part of edu.emory.mathcs.csparse;
 
 /// compute nnz(V) = S->lnz, S->pinv, S->leftmost, S->m2 from A and S->parent
-bool cs_vcount(Dcs A, Dcss S) {
+bool _vcount(Matrix A, Symbolic S) {
   int k, p, pa;
   final n = A.n,
       m = A.m;
@@ -104,27 +104,27 @@ bool cs_vcount(Dcs A, Dcss S) {
 /// [order] ordering method to use (0 to 3).
 /// [qr] analyze for QR if true or LU if false.
 /// Returns symbolic analysis for QR or LU, null on error.
-Dcss cs_sqr(int order, Dcs A, bool qr) {
+Symbolic sqr(int order, Matrix A, bool qr) {
   int n;
-  Int32List post;
-  Dcss S;
+  Int32List _post;
+  Symbolic S;
   bool ok = true;
-  if (!cs_csc(A)) {
+  if (!csc(A)) {
     return null; // check inputs
   }
   n = A.n;
-  S = new Dcss(); // allocate result S
-  S.q = cs_amd(order, A); // fill-reducing ordering
+  S = new Symbolic(); // allocate result S
+  S.q = amd(order, A); // fill-reducing ordering
   if (order > 0 && S.q == null) {
     return null;
   }
   if (qr) // QR symbolic analysis
   {
-    Dcs C = order > 0 ? cs_permute(A, null, S.q, false) : A;
-    S.parent = cs_etree(C, true); // etree of C'*C, where C=A(:,q)
-    post = cs_post(S.parent, n);
-    S.cp = cs_counts(C, S.parent, post, true); // col counts chol(C'*C)
-    ok = C != null && S.parent != null && S.cp != null && cs_vcount(C, S);
+    Matrix C = order > 0 ? permute(A, null, S.q, false) : A;
+    S.parent = etree(C, true); // etree of C'*C, where C=A(:,q)
+    _post = post(S.parent, n);
+    S.cp = counts(C, S.parent, _post, true); // col counts chol(C'*C)
+    ok = C != null && S.parent != null && S.cp != null && _vcount(C, S);
     if (ok) {
       S.unz = 0;
       for (int k = 0; k < n; k++) {

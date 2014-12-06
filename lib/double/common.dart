@@ -24,7 +24,7 @@ const CS_DATE = "June 13, 2009"; // CSparse release date
 const CS_COPYRIGHT = "Copyright (c) Timothy A. Davis, 2006-2009";
 
 /// Matrix in compressed-column or triplet form.
-class Dcs {
+class Matrix {
   /// Maximum number of entries.
   int nzmax;
 
@@ -46,11 +46,11 @@ class Dcs {
   /// # of entries in triplet matrix, -1 for compressed-col
   int nz;
 
-  Dcs();
+  Matrix();
 }
 
 /// Output of symbolic Cholesky, LU, or QR analysis.
-class Dcss {
+class Symbolic {
   /// inverse row perm. for QR, fill red. perm for Chol
   Int32List pinv;
 
@@ -75,16 +75,16 @@ class Dcss {
   /// # entries in U for LU; in R for QR
   int unz;
 
-  Dcss();
+  Symbolic();
 }
 
 /// Output of numeric Cholesky, LU, or QR factorization
-class Dcsn {
+class Numeric {
   /// L for LU and Cholesky, V for QR
-  Dcs L;
+  Matrix L;
 
   /// U for LU, R for QR, not used for Cholesky
-  Dcs U;
+  Matrix U;
 
   /// partial pivoting for LU
   Int32List pinv;
@@ -92,11 +92,11 @@ class Dcsn {
   /// beta [0..n-1] for QR
   Float64List B;
 
-  Dcsn();
+  Numeric();
 }
 
 /// Output of Dulmage-Mendelsohn decomposition.
-class Dcsd {
+class Decomposition {
   /// size m, row permutation
   Int32List p;
 

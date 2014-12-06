@@ -18,13 +18,13 @@
 part of edu.emory.mathcs.csparse;
 
 /// breadth-first search for coarse decomposition (C0,C1,R1 or R0,R3,C3)
-bool cs_bfs(Dcs A, int n, Int32List wi, Int32List wj, Int32List queue,
+bool _bfs(Matrix A, int n, Int32List wi, Int32List wj, Int32List queue,
             Int32List imatch, int imatch_offset, Int32List jmatch, int jmatch_offset, int mark) {
   Int32List Ap, Ai;
   int head = 0,
       tail = 0;
   int j, i, p, j2;
-  Dcs C;
+  Matrix C;
   for (j = 0; j < n; j++) // place all unmatched nodes in queue
   {
     if (imatch[imatch_offset + j] >= 0) {
@@ -36,7 +36,7 @@ bool cs_bfs(Dcs A, int n, Int32List wi, Int32List wj, Int32List queue,
   if (tail == 0) {
     return true; // quick return if no unmatched nodes
   }
-  C = (mark == 1) ? A : cs_transpose(A, false);
+  C = (mark == 1) ? A : transpose(A, false);
   if (C == null) {
     return false; // bfs of C=A' to find R3,C3 from R0
   }
@@ -66,7 +66,7 @@ bool cs_bfs(Dcs A, int n, Int32List wi, Int32List wj, Int32List queue,
 }
 
 /// collect matched rows and columns into p and q
-void cs_matched(int n, Int32List wj, Int32List imatch, int imatch_offset, Int32List p,
+void _matched(int n, Int32List wj, Int32List imatch, int imatch_offset, Int32List p,
                 Int32List q, Int32List cc, Int32List rr, int set, int mark) {
   int kc = cc[set],
       j;
@@ -82,7 +82,7 @@ void cs_matched(int n, Int32List wj, Int32List imatch, int imatch_offset, Int32L
 }
 
 /// collect unmatched rows into the permutation vector p
-void cs_unmatched(int m, Int32List wi, Int32List p, Int32List rr, int set) {
+void _unmatched(int m, Int32List wi, Int32List p, Int32List rr, int set) {
   int i,
       kr = rr[set];
   for (i = 0; i < m; i++) if (wi[i] == 0) p[kr++] = i;
@@ -90,7 +90,7 @@ void cs_unmatched(int m, Int32List wi, Int32List p, Int32List rr, int set) {
 }
 
 /// return 1 if row i is in R2
-bool cs_rprune(int i, int j, double aij, Object other) {
+bool _rprune(int i, int j, double aij, Object other) {
   Int32List rr = other as Int32List;
   return (i >= rr[1] && i < rr[2]);
 }
@@ -100,21 +100,21 @@ bool cs_rprune(int i, int j, double aij, Object other) {
 ///
 /// [seed] 0: natural, -1: reverse, random order oterwise.
 /// Returns Dulmage-Mendelsohn analysis, null on error.
-Dcsd cs_dmperm(Dcs A, int seed) {
+Decomposition dmperm(Matrix A, int seed) {
   int m, n, i, j, k, cnz, nc;
-  Int32List jmatch, imatch, wi, wj, pinv, Cp, Ci, ps, rs;
+  Int32List jmatch, imatch, wi, wj, _pinv, Cp, Ci, ps, rs;
   int nb1, nb2;
   Int32List p, q, cc, rr, r, s;
   bool ok;
-  Dcs C;
-  Dcsd D, scc;
+  Matrix C;
+  Decomposition D, _scc;
   /* Maximum matching */
-  if (!cs_csc(A)) {
+  if (!csc(A)) {
     return null; // check inputs
   }
   m = A.m;
   n = A.n;
-  D = cs_dalloc(m, n); // allocate result
+  D = dalloc(m, n); // allocate result
   if (D == null) {
     return null;
   }
@@ -124,7 +124,7 @@ Dcsd cs_dmperm(Dcs A, int seed) {
   s = D.s;
   cc = D.cc;
   rr = D.rr;
-  jmatch = cs_maxtrans(A, seed); // max transversal
+  jmatch = maxtrans(A, seed); // max transversal
   imatch = jmatch; // imatch = inverse of jmatch
   int imatch_offset = m;
   if (jmatch == null) {
@@ -139,24 +139,24 @@ Dcsd cs_dmperm(Dcs A, int seed) {
   for (i = 0; i < m; i++) {
     wi[i] = -1; // unmark all rows for bfs
   }
-  cs_bfs(A, n, wi, wj, q, imatch, imatch_offset, jmatch, 0, 1); // find C1, R1 from C0
-  ok = cs_bfs(A, m, wj, wi, p, jmatch, 0, imatch, imatch_offset, 3); // find R3, C3 from R0
+  _bfs(A, n, wi, wj, q, imatch, imatch_offset, jmatch, 0, 1); // find C1, R1 from C0
+  ok = _bfs(A, m, wj, wi, p, jmatch, 0, imatch, imatch_offset, 3); // find R3, C3 from R0
   if (!ok) {
     return null;
   }
-  cs_unmatched(n, wj, q, cc, 0); // unmatched set C0
-  cs_matched(n, wj, imatch, imatch_offset, p, q, cc, rr, 1, 1); // set R1 and C1
-  cs_matched(n, wj, imatch, imatch_offset, p, q, cc, rr, 2, -1); // set R2 and C2
-  cs_matched(n, wj, imatch, imatch_offset, p, q, cc, rr, 3, 3); // set R3 and C3
-  cs_unmatched(m, wi, p, rr, 3); // unmatched set R0
+  _unmatched(n, wj, q, cc, 0); // unmatched set C0
+  _matched(n, wj, imatch, imatch_offset, p, q, cc, rr, 1, 1); // set R1 and C1
+  _matched(n, wj, imatch, imatch_offset, p, q, cc, rr, 2, -1); // set R2 and C2
+  _matched(n, wj, imatch, imatch_offset, p, q, cc, rr, 3, 3); // set R3 and C3
+  _unmatched(m, wi, p, rr, 3); // unmatched set R0
   jmatch = null;
   /* Fine decomposition */
-  pinv = cs_pinv(p, m); // pinv=p'
+  _pinv = pinv(p, m); // pinv=p'
   if (pinv == null) {
     return null;
   }
-  C = cs_permute(A, pinv, q, false);// C=A(p,q) (it will hold A(R2,C2))
-  pinv = null;
+  C = permute(A, _pinv, q, false);// C=A(p,q) (it will hold A(R2,C2))
+  _pinv = null;
   if (C == null) {
     return null;
   }
@@ -170,7 +170,7 @@ Dcsd cs_dmperm(Dcs A, int seed) {
   C.n = nc;
   if (rr[2] - rr[1] < m) // delete rows R0, R1, and R3 from C
   {
-    cs_fkeep(C, cs_rprune, rr);
+    fkeep(C, _rprune, rr);
     cnz = Cp[nc];
     Ci = C.i;
     if (rr[1] > 0) {
@@ -180,14 +180,14 @@ Dcsd cs_dmperm(Dcs A, int seed) {
     }
   }
   C.m = nc;
-  scc = cs_scc(C); // find strongly connected components of C
+  _scc = scc(C); // find strongly connected components of C
   if (scc == null) {
     return null;
   }
   /* Combine coarse and fine decompositions */
-  ps = scc.p; // C(ps,ps) is the permuted matrix
-  rs = scc.r; // kth block is rs[k]..rs[k+1]-1
-  nb1 = scc.nb; // # of blocks of A(R2,C2)
+  ps = _scc.p; // C(ps,ps) is the permuted matrix
+  rs = _scc.r; // kth block is rs[k]..rs[k+1]-1
+  nb1 = _scc.nb; // # of blocks of A(R2,C2)
   for (k = 0; k < nc; k++) {
     wj[k] = q[ps[k] + cc[2]];
   }

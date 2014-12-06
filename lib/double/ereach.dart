@@ -27,33 +27,33 @@ part of edu.emory.mathcs.csparse;
 /// [s_offset] the index of the first element in array s.
 /// [w] size n, work array, w[0..n-1]>=0 on input, unchanged on output.
 /// Returns top in successful, -1 on error.
-int cs_ereach(Dcs A, int k, Int32List parent, Int32List s, int s_offset, Int32List w) {
+int ereach(Matrix A, int k, Int32List parent, Int32List s, int s_offset, Int32List w) {
   int i, p, n, len, top;
   Int32List Ap, Ai;
-  if (!cs_csc(A) || parent == null || s == null || w == null) {
+  if (!csc(A) || parent == null || s == null || w == null) {
     return (-1); // check inputs
   }
   top = n = A.n;
   Ap = A.p;
   Ai = A.i;
-  cs_mark(w, k); // mark node k as visited
+  _mark(w, k); // mark node k as visited
   for (p = Ap[k]; p < Ap[k + 1]; p++) {
     i = Ai[p]; // A(i,k) is nonzero
     if (i > k) {
       continue; // only use upper triangular part of A
     }
-    for (len = 0; !cs_marked(w, i); i = parent[i]) // traverse up etree
+    for (len = 0; !_marked(w, i); i = parent[i]) // traverse up etree
     {
       s[s_offset + len++] = i; // L(k,i) is nonzero
-      cs_mark(w, i); // mark i as visited
+      _mark(w, i); // mark i as visited
     }
     while (len > 0) {
       s[s_offset + --top] = s[s_offset + --len]; // push path onto stack
     }
   }
   for (p = top; p < n; p++) {
-    cs_mark(w, s[s_offset + p]); // unmark all nodes
+    _mark(w, s[s_offset + p]); // unmark all nodes
   }
-  cs_mark(w, k); // unmark node k
+  _mark(w, k); // unmark node k
   return (top); // s [top..n-1] contains pattern of L(k,:)
 }

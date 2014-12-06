@@ -28,16 +28,11 @@ import 'package:unittest/unittest.dart';
 import 'package:csparse/double/csparse.dart';
 import 'package:csparse/double/test_util.dart';
 
-/**
- * Read a matrix, solve a linear system, update/downdate.
- */
+/// Read a matrix, solve a linear system, update/downdate.
 main() {
-
-  /**
-	 * Cholesky update/downdate.
-	 */
+  /// Cholesky update/downdate.
   bool test3(Dproblem prob) {
-    Dcs A,
+    Matrix A,
         C,
         W = null,
         WW,
@@ -59,8 +54,8 @@ main() {
         Wx;
     double s;
     int t, t1;
-    Dcss S = null;
-    Dcsn N = null;
+    Symbolic S = null;
+    Numeric N = null;
     if (prob == null || prob.sym == 0 || prob.A.n == 0) return (false);
     A = prob.A;
     C = prob.C;
@@ -76,29 +71,29 @@ main() {
     y = new Float64List(n);
     t = tic();
     /* symbolic Chol, amd(A+A') */
-    S = cs_schol(1, C);
+    S = schol(1, C);
     print("\nsymbolic chol time ${toc (t)} ms\n");
     t = tic();
     /* numeric Cholesky */
-    N = cs_chol(C, S);
+    N = chol(C, S);
     print("numeric  chol time ${toc (t)} ms\n");
     if (S == null || N == null) return (false);
     t = tic();
     /* y = P*b */
-    cs_ipvec(S.pinv, b, y, n);
+    ipvec(S.pinv, b, y, n);
     /* y = L\y */
-    cs_lsolve(N.L, y);
+    lsolve(N.L, y);
     /* y = L'\y */
-    cs_ltsolve(N.L, y);
+    ltsolve(N.L, y);
     /* x = P'*y */
-    cs_pvec(S.pinv, y, x, n);
+    pvec(S.pinv, y, x, n);
     print("solve    chol time ${toc (t)} ms\n");
     print("original: ");
     /* print residual */
     print_resid(true, C, x, b, resid, prob);
     k = n ~/ 2;
     /* construct W  */
-    W = cs_spalloc(n, 1, n, true, false);
+    W = spalloc(n, 1, n, true, false);
     Lp = N.L.p;
     Li = N.L.i;
     Lx = N.L.x;
@@ -117,28 +112,28 @@ main() {
     }
     t = tic();
     /* update: L*L'+W*W' */
-    ok = cs_updown(N.L, /*+*/1, W, S.parent);
+    ok = updown(N.L, /*+*/1, W, S.parent);
     t1 = toc(t);
     print("update:   time: $t1 ms\n");
     if (!ok) return (false);
     t = tic();
     /* y = P*b */
-    cs_ipvec(S.pinv, b, y, n);
+    ipvec(S.pinv, b, y, n);
     /* y = L\y */
-    cs_lsolve(N.L, y);
+    lsolve(N.L, y);
     /* y = L'\y */
-    cs_ltsolve(N.L, y);
+    ltsolve(N.L, y);
     /* x = P'*y */
-    cs_pvec(S.pinv, y, x, n);
+    pvec(S.pinv, y, x, n);
     t = toc(t);
-    p = cs_pinv(S.pinv, n);
+    p = pinv(S.pinv, n);
     /* E = C + (P'W)*(P'W)' */
-    W2 = cs_permute(W, p, null, true);
-    WT = cs_transpose(W2, true);
-    WW = cs_multiply(W2, WT);
+    W2 = permute(W, p, null, true);
+    WT = transpose(W2, true);
+    WW = multiply(W2, WT);
     WT = null;
     W2 = null;
-    E = cs_add(C, WW, 1.0, 1.0);
+    E = add(C, WW, 1.0, 1.0);
     WW = null;
     if (E == null || p == null) return (false);
     print("update:   time: ${t1 + t} ms(incl solve) ");
@@ -148,35 +143,35 @@ main() {
     N = null;
     t = tic();
     /* numeric Cholesky */
-    N = cs_chol(E, S);
+    N = chol(E, S);
     if (N == null) return (false);
     /* y = P*b */
-    cs_ipvec(S.pinv, b, y, n);
+    ipvec(S.pinv, b, y, n);
     /* y = L\y */
-    cs_lsolve(N.L, y);
+    lsolve(N.L, y);
     /* y = L'\y */
-    cs_ltsolve(N.L, y);
+    ltsolve(N.L, y);
     /* x = P'*y */
-    cs_pvec(S.pinv, y, x, n);
+    pvec(S.pinv, y, x, n);
     t = toc(t);
     print("rechol:   time: $t ms(incl solve) ");
     /* print residual */
     print_resid(true, E, x, b, resid, prob);
     t = tic();
     /* downdate: L*L'-W*W' */
-    ok = cs_updown(N.L, -1, W, S.parent);
+    ok = updown(N.L, -1, W, S.parent);
     t1 = toc(t);
     if (!ok) return (false);
     print("downdate: time: $t1\n");
     t = tic();
     /* y = P*b */
-    cs_ipvec(S.pinv, b, y, n);
+    ipvec(S.pinv, b, y, n);
     /* y = L\y */
-    cs_lsolve(N.L, y);
+    lsolve(N.L, y);
     /* y = L'\y */
-    cs_ltsolve(N.L, y);
+    ltsolve(N.L, y);
     /* x = P'*y */
-    cs_pvec(S.pinv, y, x, n);
+    pvec(S.pinv, y, x, n);
     t = toc(t);
     print("downdate: time: ${t1 + t} ms(incl solve) ");
     /* print residual */
@@ -213,5 +208,4 @@ main() {
     expect(x_norm, closeTo(prob.norms[2], DELTA));
     expect(x_norm, closeTo(prob.norms[3], DELTA));
   });
-
 }

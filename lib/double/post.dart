@@ -22,7 +22,7 @@ part of edu.emory.mathcs.csparse;
 /// [parent] defines a tree of n nodes.
 /// [n] length of parent.
 /// Returns post[k]=i, null on error.
-Int32List cs_post(Int32List parent, int n) {
+Int32List post(Int32List parent, int n) {
   int k = 0;
   Int32List post, w, head, next, stack;
   if (parent == null) {
@@ -50,7 +50,7 @@ Int32List cs_post(Int32List parent, int n) {
     if (parent[j] != -1) {
       continue; // skip j if it is not a root
     }
-    k = cs_tdfs(j, k, head, 0, next, next_offset, post, 0, stack, stack_offset);
+    k = tdfs(j, k, head, 0, next, next_offset, post, 0, stack, stack_offset);
   }
   return post;
 }

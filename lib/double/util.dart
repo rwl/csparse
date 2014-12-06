@@ -23,8 +23,8 @@ part of edu.emory.mathcs.csparse;
 /// [nzmax] maximum number of entries.
 /// [values] allocate pattern only if false, values and pattern otherwise.
 /// [triplet] compressed-column if false, triplet form otherwise.
-Dcs cs_spalloc(int m, int n, int nzmax, bool values, bool triplet) {
-  Dcs A = new Dcs(); // allocate the Dcs struct
+Matrix spalloc(int m, int n, int nzmax, bool values, bool triplet) {
+  Matrix A = new Matrix(); // allocate the Dcs struct
   A.m = m; // define dimensions and nzmax
   A.n = n;
   A.nzmax = nzmax = math.max(nzmax, 1);
@@ -39,12 +39,12 @@ Dcs cs_spalloc(int m, int n, int nzmax, bool values, bool triplet) {
 ///
 /// [nzmax] new maximum number of entries.
 /// Returns true if successful, false on error.
-bool cs_sprealloc(Dcs A, int nzmax) {
+bool sprealloc(Matrix A, int nzmax) {
   if (A == null) {
     return false;
   }
   if (nzmax <= 0) {
-    nzmax = cs_csc(A) ? (A.p[A.n]) : A.nz;
+    nzmax = csc(A) ? (A.p[A.n]) : A.nz;
   }
   Int32List Ainew = new Int32List(nzmax);
   int length = math.min(nzmax, A.i.length);
@@ -52,7 +52,7 @@ bool cs_sprealloc(Dcs A, int nzmax) {
   for (int i = 0; i < length; i++) Ainew[i] = A.i[i];
   //Ainew.setAll(0, length, A.i);
   A.i = Ainew;
-  if (cs_triplet(A)) {
+  if (triplet(A)) {
     Int32List Apnew = new Int32List(nzmax);
     length = math.min(nzmax, A.p.length);
     //System.arraycopy(A.p, 0, Apnew, 0, length);
@@ -76,8 +76,8 @@ bool cs_sprealloc(Dcs A, int nzmax) {
 ///
 /// [m] number of rows of the matrix A to be analyzed.
 /// [n] number of columns of the matrix A to be analyzed.
-Dcsd cs_dalloc(int m, int n) {
-  final D = new Dcsd();
+Decomposition dalloc(int m, int n) {
+  final D = new Decomposition();
   D.p = new Int32List(m);
   D.r = new Int32List(m + 6);
   D.q = new Int32List(n);
@@ -87,22 +87,18 @@ Dcsd cs_dalloc(int m, int n) {
   return D;
 }
 
-int cs_flip(int i) => -i - 2;
+int _flip(int i) => -i - 2;
 
-int cs_unflip(int i) => i < 0 ? cs_flip(i) : i;
+int _unflip(int i) => i < 0 ? _flip(i) : i;
 
-bool cs_marked(Int32List w, int j) => w[j] < 0;
+bool _marked(Int32List w, int j) => w[j] < 0;
 
-void cs_mark(Int32List w, int j) {
-  w[j] = cs_flip(w[j]);
+void _mark(Int32List w, int j) {
+  w[j] = _flip(w[j]);
 }
 
 /// Returns true if A is in column-compressed form, false otherwise.
-bool cs_csc(Dcs A) {
-  return (A != null && (A.nz == -1));
-}
+bool csc(Matrix A) => A != null && (A.nz == -1);
 
 /// Returns true if A is in triplet form, false otherwise.
-bool cs_triplet(Dcs A) {
-  return (A != null && (A.nz >= 0));
-}
+bool triplet(Matrix A) => A != null && (A.nz >= 0);

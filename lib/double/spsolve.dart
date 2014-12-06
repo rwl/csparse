@@ -31,11 +31,11 @@ part of edu.emory.mathcs.csparse;
 /// [pinv] mapping of rows to columns of G, ignored if null.
 /// [lo] true if lower triangular, false if upper.
 /// Returns top, -1 in error.
-int cs_spsolve(Dcs G, Dcs B, int k, Int32List xi, Float64List x, Int32List pinv, bool lo) {
+int spsolve(Matrix G, Matrix B, int k, Int32List xi, Float64List x, Int32List pinv, bool lo) {
   int top, n;
   Int32List Gp, Gi, Bp, Bi;
   Float64List Gx, Bx;
-  if (!cs_csc(G) || !cs_csc(B) || xi == null || x == null) {
+  if (!csc(G) || !csc(B) || xi == null || x == null) {
     return -1;
   }
   Gp = G.p;
@@ -45,7 +45,7 @@ int cs_spsolve(Dcs G, Dcs B, int k, Int32List xi, Float64List x, Int32List pinv,
   Bp = B.p;
   Bi = B.i;
   Bx = B.x;
-  top = cs_reach(G, B, k, xi, pinv); // xi[top..n-1]=Reach(B(:,k))
+  top = reach(G, B, k, xi, pinv); // xi[top..n-1]=Reach(B(:,k))
   for (int p = top; p < n; p++) {
     x[xi[p]] = 0.0; // clear x
   }

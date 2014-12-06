@@ -23,7 +23,7 @@ part of edu.emory.mathcs.csparse;
 /// [x] on output, v on input.
 /// [x_offset] the index of the first element in array x.
 /// [n] the length of x. Returns norm2(x), -1 on error.
-double cs_house(Float64List x, int x_offset, Float64List beta, int n) {
+double house(Float64List x, int x_offset, Float64List beta, int n) {
   double s,
       sigma = 0.0;
   if (x == null || beta == null) {

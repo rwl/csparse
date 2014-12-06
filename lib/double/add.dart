@@ -20,7 +20,7 @@ part of edu.emory.mathcs.csparse;
 /// Add sparse matrices.
 ///
 /// Returns C = alpha*A + beta*B, null on error
-Dcs cs_add(Dcs A, Dcs B, double alpha, double beta) {
+Matrix add(Matrix A, Matrix B, double alpha, double beta) {
   int p, j, anz;
   int nz = 0;
   Int32List Cp, Ci, Bp;
@@ -28,8 +28,8 @@ Dcs cs_add(Dcs A, Dcs B, double alpha, double beta) {
   Int32List w;
   Float64List x, Bx, Cx;
   bool values;
-  Dcs C;
-  if (!cs_csc(A) || !cs_csc(B)) {
+  Matrix C;
+  if (!csc(A) || !csc(B)) {
     return null; // check inputs
   }
   if (A.m != B.m || A.n != B.n) {
@@ -44,14 +44,14 @@ Dcs cs_add(Dcs A, Dcs B, double alpha, double beta) {
   w = new Int32List(m); // get workspace
   values = (A.x != null) && (Bx != null);
   x = values ? new Float64List(m) : null; // get workspace
-  C = cs_spalloc(m, n, anz + bnz, values, false); // allocate result
+  C = spalloc(m, n, anz + bnz, values, false); // allocate result
   Cp = C.p;
   Ci = C.i;
   Cx = C.x;
   for (j = 0; j < n; j++) {
     Cp[j] = nz; // column j of C starts here
-    nz = cs_scatter(A, j, alpha, w, x, j + 1, C, nz); // alpha*A(:,j)
-    nz = cs_scatter(B, j, beta, w, x, j + 1, C, nz); // beta*B(:,j)
+    nz = scatter(A, j, alpha, w, x, j + 1, C, nz); // alpha*A(:,j)
+    nz = scatter(B, j, beta, w, x, j + 1, C, nz); // beta*B(:,j)
     if (values) {
       for (p = Cp[j]; p < nz; p++) {
         Cx[p] = x[Ci[p]];
@@ -59,6 +59,6 @@ Dcs cs_add(Dcs A, Dcs B, double alpha, double beta) {
     }
   }
   Cp[n] = nz; // finalize the last column of C
-  cs_sprealloc(C, 0); // remove extra space from C
+  sprealloc(C, 0); // remove extra space from C
   return C; // success; free workspace, return C
 }

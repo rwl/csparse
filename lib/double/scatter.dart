@@ -29,10 +29,10 @@ part of edu.emory.mathcs.csparse;
 /// [C] pattern of x accumulated in C.i.
 /// [nz] pattern of x placed in C starting at C.i[nz].
 /// Returns new value of nz, -1 on error.
-int cs_scatter(Dcs A, int j, double beta, Int32List w, Float64List x, int mark, Dcs C, int nz) {
+int scatter(Matrix A, int j, double beta, Int32List w, Float64List x, int mark, Matrix C, int nz) {
   Int32List Ap, Ai, Ci;
   Float64List Ax;
-  if (!cs_csc(A) || w == null || !cs_csc(C)) {
+  if (!csc(A) || w == null || !csc(C)) {
     return -1; // check inputs
   }
   Ap = A.p;

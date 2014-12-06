@@ -30,7 +30,7 @@ part of edu.emory.mathcs.csparse;
 /// [stack] size n, work array.
 /// [stack_offset] the index of the first element in array stack.
 /// Returns new value of k, -1 on error.
-int cs_tdfs(int j, int k, Int32List head, int head_offset, Int32List next, int next_offset,
+int tdfs(int j, int k, Int32List head, int head_offset, Int32List next, int next_offset,
             Int32List post, int post_offset, Int32List stack, int stack_offset) {
   int top = 0;
   if (head == null || next == null || post == null || stack == null) {

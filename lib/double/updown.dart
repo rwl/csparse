@@ -24,14 +24,14 @@ part of edu.emory.mathcs.csparse;
 /// [sigma] +1 for update, -1 for downdate.
 /// [parent] the elimination tree of L.
 /// Returns true if successful, false on error.
-bool cs_updown(Dcs L, int sigma, Dcs C, Int32List parent) {
+bool updown(Matrix L, int sigma, Matrix C, Int32List parent) {
   int n, p, f;
   Int32List Lp, Li, Cp, Ci;
   Float64List Lx, Cx, w;
   double alpha, delta, gamma, w1, w2;
   double beta = 1.0,
       beta2 = 1.0;
-  if (!cs_csc(L) || !cs_csc(C) || parent == null) {
+  if (!csc(L) || !csc(C) || parent == null) {
     return (false); // check inputs
   }
   Lp = L.p;

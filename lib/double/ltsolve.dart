@@ -23,22 +23,22 @@ part of edu.emory.mathcs.csparse;
 /// [L] column-compressed, lower triangular matrix.
 /// [x] size n, right hand side on input, solution on output.
 /// Returns true if successful, false on error.
-bool cs_ltsolve(Dcs L, Float64List x) {
-    int n;
-    Int32List Lp, Li;
-    Float64List Lx;
-    if (!cs_csc(L) || x == null) {
-        return false; // check inputs
+bool ltsolve(Matrix L, Float64List x) {
+  int n;
+  Int32List Lp, Li;
+  Float64List Lx;
+  if (!csc(L) || x == null) {
+    return false; // check inputs
+  }
+  n = L.n;
+  Lp = L.p;
+  Li = L.i;
+  Lx = L.x;
+  for (int j = n - 1; j >= 0; j--) {
+    for (int p = Lp[j] + 1; p < Lp[j + 1]; p++) {
+      x[j] -= Lx[p] * x[Li[p]];
     }
-    n = L.n;
-    Lp = L.p;
-    Li = L.i;
-    Lx = L.x;
-    for (int j = n - 1; j >= 0; j--) {
-        for (int p = Lp[j] + 1; p < Lp[j + 1]; p++) {
-            x[j] -= Lx[p] * x[Li[p]];
-        }
-        x[j] /= Lx[Lp[j]];
-    }
-    return true;
+    x[j] /= Lx[Lp[j]];
+  }
+  return true;
 }

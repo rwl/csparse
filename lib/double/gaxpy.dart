@@ -21,11 +21,11 @@ part of edu.emory.mathcs.csparse;
 ///
 /// [x] size n, vector. [y] size m, vector.
 /// Returns true if successful, false on error.
-bool cs_gaxpy(Dcs A, Float64List x, Float64List y) {
+bool gaxpy(Matrix A, Float64List x, Float64List y) {
   int n;
   Int32List Ap, Ai;
   Float64List Ax;
-  if (!cs_csc(A) || x == null || y == null) {
+  if (!csc(A) || x == null || y == null) {
     return false; // check inputs
   }
   n = A.n;

@@ -23,7 +23,7 @@ part of edu.emory.mathcs.csparse;
 /// [b] input vector. [x] output vector, x = P'b.
 /// [n] length of p, b, and x.
 /// Returns true if successful, false on error.
-bool cs_ipvec(Int32List p, Float64List b, Float64List x, int n) {
+bool ipvec(Int32List p, Float64List b, Float64List x, int n) {
   if (x == null || b == null) {
     return false; // check inputs
   }

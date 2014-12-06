@@ -23,11 +23,11 @@ part of edu.emory.mathcs.csparse;
 /// [U] upper triangular matrix in column-compressed form.
 /// [x] size n, right hand side on input, solution on output.
 /// Returns true if successful, false on error.
-bool cs_utsolve(Dcs U, Float64List x) {
+bool utsolve(Matrix U, Float64List x) {
   int n;
   Int32List Up, Ui;
   Float64List Ux;
-  if (!cs_csc(U) || x == null) {
+  if (!csc(U) || x == null) {
     return false; // check inputs
   }
   n = U.n;

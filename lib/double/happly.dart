@@ -23,11 +23,11 @@ part of edu.emory.mathcs.csparse;
 /// [V] column-compressed matrix of Householder vectors.
 /// [i] v = V(:,i), the ith column of V.
 /// [x] vector of size m. Returns true if successful, false on error.
-bool cs_happly(Dcs V, int i, double beta, Float64List x) {
+bool happly(Matrix V, int i, double beta, Float64List x) {
   Int32List Vp, Vi;
   Float64List Vx;
   double tau = 0.0;
-  if (!cs_csc(V) || x == null) {
+  if (!csc(V) || x == null) {
     return (false); // check inputs
   }
   Vp = V.p;

@@ -24,25 +24,25 @@ part of edu.emory.mathcs.csparse;
 /// [b] size n, b on input, x on output.
 /// [tol] partial pivoting tolerance.
 /// Returns true if successful, false on error.
-bool cs_lusol(int order, Dcs A, Float64List b, double tol) {
+bool lusol(int order, Matrix A, Float64List b, double tol) {
   Float64List x;
-  Dcss S;
-  Dcsn N;
+  Symbolic S;
+  Numeric N;
   int n;
   bool ok;
-  if (!cs_csc(A) || b == null) {
+  if (!csc(A) || b == null) {
     return false; // check inputs
   }
   n = A.n;
-  S = cs_sqr(order, A, false); // ordering and symbolic analysis
-  N = cs_lu(A, S, tol); // numeric LU factorization
+  S = sqr(order, A, false); // ordering and symbolic analysis
+  N = lu(A, S, tol); // numeric LU factorization
   x = new Float64List(n); // get workspace
   ok = (S != null && N != null);
   if (ok) {
-    cs_ipvec(N.pinv, b, x, n); // x = b(p)
-    cs_lsolve(N.L, x); // x = L\x
-    cs_usolve(N.U, x); // x = U\x
-    cs_ipvec(S.q, x, b, n); // b(q) = x
+    ipvec(N.pinv, b, x, n); // x = b(p)
+    lsolve(N.L, x); // x = L\x
+    usolve(N.U, x); // x = U\x
+    ipvec(S.q, x, b, n); // b(q) = x
   }
   return ok;
 }

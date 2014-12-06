@@ -28,13 +28,13 @@ part of edu.emory.mathcs.csparse;
 /// [pinv] mapping of rows to columns of G, ignored if null.
 /// [pinv_offset] the index of the first element in array pinv.
 /// Returns new value of top, -1 on error.
-int cs_dfs(int j, Dcs G, int top, Int32List xi, int xi_offset, Int32List pstack,
+int dfs(int j, Matrix G, int top, Int32List xi, int xi_offset, Int32List pstack,
            int pstack_offset, Int32List pinv, int pinv_offset) {
   int i, p, p2, jnew;
   int head = 0;
   Int32List Gp, Gi;
   bool done;
-  if (!cs_csc(G) || xi == null || pstack == null) {
+  if (!csc(G) || xi == null || pstack == null) {
     return -1; // check inputs
   }
   Gp = G.p;
@@ -43,16 +43,16 @@ int cs_dfs(int j, Dcs G, int top, Int32List xi, int xi_offset, Int32List pstack,
   while (head >= 0) {
     j = xi[xi_offset + head]; // get j from the top of the recursion stack
     jnew = pinv != null ? (pinv[pinv_offset + j]) : j;
-    if (!cs_marked(Gp, j)) {
-      cs_mark(Gp, j); // mark node j as visited
-      pstack[pstack_offset + head] = (jnew < 0) ? 0 : cs_unflip(Gp[jnew]);
+    if (!_marked(Gp, j)) {
+      _mark(Gp, j); // mark node j as visited
+      pstack[pstack_offset + head] = (jnew < 0) ? 0 : _unflip(Gp[jnew]);
     }
     done = true; // node j done if no unvisited neighbors
-    p2 = (jnew < 0) ? 0 : cs_unflip(Gp[jnew + 1]);
+    p2 = (jnew < 0) ? 0 : _unflip(Gp[jnew + 1]);
     for (p = pstack[pstack_offset + head]; p < p2; p++) // examine all neighbors of j
     {
       i = Gi[p]; // consider neighbor node i
-      if (cs_marked(Gp, i)) {
+      if (_marked(Gp, i)) {
         continue; // skip visited node i
       }
       pstack[pstack_offset + head] = p; // pause depth-first search of node j

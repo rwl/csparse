@@ -24,26 +24,26 @@ part of edu.emory.mathcs.csparse;
 /// [A] symmetric positive definite, only upper triangular part is used
 /// [b] right hand side, b is overwritten with solution
 /// Returns true if successful, false on error.
-bool cs_cholsol(int order, Dcs A, Float64List b) {
+bool cholsol(int order, Matrix A, Float64List b) {
   Float64List x;
-  Dcss S;
-  Dcsn N;
+  Symbolic S;
+  Numeric N;
   int n;
   bool ok;
-  if (!cs_csc(A) || b == null) {
+  if (!csc(A) || b == null) {
     return false; // check inputs
   }
   n = A.n;
-  S = cs_schol(order, A); // ordering and symbolic analysis
-  N = cs_chol(A, S); // numeric Cholesky factorization
+  S = schol(order, A); // ordering and symbolic analysis
+  N = chol(A, S); // numeric Cholesky factorization
   x = new Float64List(n);
   /* get workspace */
   ok = (S != null && N != null);
   if (ok) {
-    cs_ipvec(S.pinv, b, x, n); // x = P*b
-    cs_lsolve(N.L, x); // x = L\x
-    cs_ltsolve(N.L, x); // x = L'\x
-    cs_pvec(S.pinv, x, b, n); // b = P'*x
+    ipvec(S.pinv, b, x, n); // x = P*b
+    lsolve(N.L, x); // x = L\x
+    ltsolve(N.L, x); // x = L'\x
+    pvec(S.pinv, x, b, n); // b = P'*x
   }
   return (ok);
 }

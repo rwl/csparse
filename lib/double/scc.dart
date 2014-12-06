@@ -21,19 +21,19 @@ part of edu.emory.mathcs.csparse;
 ///
 /// [A] column-compressed matrix (A.p modified then restored).
 /// Returns strongly connected components, null on error.
-Dcsd cs_scc(Dcs A) {
+Decomposition scc(Matrix A) {
   int n, top;
   int nb = 0;
   Int32List xi, pstack, p, r, Ap, ATp, rcopy, Blk;
-  Dcs AT;
-  Dcsd D;
-  if (!cs_csc(A)) {
+  Matrix AT;
+  Decomposition D;
+  if (!csc(A)) {
     return null; // check inputs
   }
   n = A.n;
   Ap = A.p;
-  D = cs_dalloc(n, 0); // allocate result
-  AT = cs_transpose(A, false); // AT = A'
+  D = dalloc(n, 0); // allocate result
+  AT = transpose(A, false); // AT = A'
   xi = new Int32List(2 * n + 1); // get workspace
   if (D == null || AT == null) {
     return null;
@@ -49,23 +49,23 @@ Dcsd cs_scc(Dcs A) {
   top = n;
   for (int i = 0; i < n; i++) // first dfs(A) to find finish times (xi)
   {
-    if (!cs_marked(Ap, i)) {
-      top = cs_dfs(i, A, top, xi, 0, pstack, pstack_offset, null, 0);
+    if (!_marked(Ap, i)) {
+      top = dfs(i, A, top, xi, 0, pstack, pstack_offset, null, 0);
     }
   }
   for (int i = 0; i < n; i++) {
-    cs_mark(Ap, i); // restore A; unmark all nodes
+    _mark(Ap, i); // restore A; unmark all nodes
   }
   top = n;
   nb = n;
   for (int k = 0; k < n; k++) // dfs(A') to find strongly connnected comp
   {
     final i = xi[k]; // get i in reverse order of finish times
-    if (cs_marked(ATp, i)) {
+    if (_marked(ATp, i)) {
       continue; // skip node i if already ordered
     }
     r[nb--] = top; // node i is the start of a component in p
-    top = cs_dfs(i, AT, top, p, 0, pstack, pstack_offset, null, 0);
+    top = dfs(i, AT, top, p, 0, pstack, pstack_offset, null, 0);
   }
   r[nb] = 0; // first block starts at zero; shift r up
   for (int k = nb; k <= n; k++) {

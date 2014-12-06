@@ -24,7 +24,7 @@ part of edu.emory.mathcs.csparse;
 /// [n] length of p.
 /// [seed] 0: natural, -1: reverse, random p oterwise.
 /// Returns p, null on error or for natural order.
-Int32List cs_randperm(int n, int seed) {
+Int32List randperm(int n, int seed) {
   Int32List p;
   if (seed == 0) {
     return null; // return p = NULL (identity)

@@ -21,26 +21,26 @@ part of edu.emory.mathcs.csparse;
 ///
 /// [order] ordering option (0 or 1).
 /// Returns symbolic analysis for Cholesky, null on error.
-Dcss cs_schol(int order, Dcs A) {
+Symbolic schol(int order, Matrix A) {
   int n;
-  Int32List c, post, P;
-  Dcs C;
-  Dcss S;
-  if (!cs_csc(A)) {
+  Int32List c, _post, P;
+  Matrix C;
+  Symbolic S;
+  if (!csc(A)) {
     return null; // check inputs
   }
   n = A.n;
-  S = new Dcss(); // allocate result S
-  P = cs_amd(order, A); // P = amd(A+A'), or natural
-  S.pinv = cs_pinv(P, n); // find inverse permutation
+  S = new Symbolic(); // allocate result S
+  P = amd(order, A); // P = amd(A+A'), or natural
+  S.pinv = pinv(P, n); // find inverse permutation
   if (order != 0 && S.pinv == null) {
     return null;
   }
-  C = cs_symperm(A, S.pinv, false); // C = spones(triu(A(P,P)))
-  S.parent = cs_etree(C, false); // find etree of C
-  post = cs_post(S.parent, n); // postorder the etree
-  c = cs_counts(C, S.parent, post, false); // find column counts of chol(C)
+  C = symperm(A, S.pinv, false); // C = spones(triu(A(P,P)))
+  S.parent = etree(C, false); // find etree of C
+  _post = post(S.parent, n); // postorder the etree
+  c = counts(C, S.parent, _post, false); // find column counts of chol(C)
   S.cp = new Int32List(n + 1); // allocate result S.cp
-  S.unz = S.lnz = cs_cumsum(S.cp, c, n); // find column pointers for L
+  S.unz = S.lnz = cumsum(S.cp, c, n); // find column pointers for L
   return (S.lnz >= 0) ? S : null;
 }

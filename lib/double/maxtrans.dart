@@ -18,7 +18,7 @@
 part of edu.emory.mathcs.csparse;
 
 /// find an augmenting path starting at column k and extend the match if found
-void cs_augment(int k, Dcs A, Int32List jmatch, int jmatch_offset, Int32List cheap, int cheap_offset,
+void _augment(int k, Matrix A, Int32List jmatch, int jmatch_offset, Int32List cheap, int cheap_offset,
                 Int32List w, int w_offset, Int32List js, int js_offset, Int32List _is, int is_offset,
                 Int32List ps, int ps_offset) {
   int p, j;
@@ -72,14 +72,14 @@ void cs_augment(int k, Dcs A, Int32List jmatch, int jmatch_offset, Int32List che
 ///
 /// [seed] 0: natural, -1: reverse, randomized otherwise.
 /// Returns row and column matching, size m+n.
-Int32List cs_maxtrans(Dcs A, int seed) // [jmatch [0..m-1]; imatch [0..n-1]]
+Int32List maxtrans(Matrix A, int seed) // [jmatch [0..m-1]; imatch [0..n-1]]
 {
   int i, j, k, n, m, p;
   int n2 = 0,
       m2 = 0;
   Int32List Ap, jimatch, w, cheap, js, _is, ps, Ai, Cp, jmatch, imatch, q;
-  Dcs C;
-  if (!cs_csc(A)) {
+  Matrix C;
+  if (!csc(A)) {
     return null; // check inputs
   }
   n = A.n;
@@ -123,7 +123,7 @@ Int32List cs_maxtrans(Dcs A, int seed) // [jmatch [0..m-1]; imatch [0..n-1]]
   for (i = 0; i < m; i++) {
     m2 += w[i];
   }
-  C = (m2 < n2) ? cs_transpose(A, false) : A; // transpose if needed
+  C = (m2 < n2) ? transpose(A, false) : A; // transpose if needed
   if (C == null) {
     return null;
   }
@@ -157,10 +157,10 @@ Int32List cs_maxtrans(Dcs A, int seed) // [jmatch [0..m-1]; imatch [0..n-1]]
   for (i = 0; i < m; i++) {
     jmatch[jmatch_offset + i] = -1; // nothing matched yet
   }
-  q = cs_randperm(n, seed); // q = random permutation
+  q = randperm(n, seed); // q = random permutation
   for (k = 0; k < n; k++) // augment, starting at column q[k]
   {
-    cs_augment(q != null ? q[k] : k, C, jmatch, jmatch_offset, cheap, cheap_offset, w, 0, js, js_offset, _is, is_offset, ps, ps_offset);
+    _augment(q != null ? q[k] : k, C, jmatch, jmatch_offset, cheap, cheap_offset, w, 0, js, js_offset, _is, is_offset, ps, ps_offset);
   }
   q = null;
   for (j = 0; j < n; j++) {

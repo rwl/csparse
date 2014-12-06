@@ -18,12 +18,12 @@
 part of edu.emory.mathcs.csparse;
 
 /// Drop small entries from a sparse matrix.
-bool cs_tol(int i, int j, double aij, Object other) {
+bool _tol(int i, int j, double aij, Object other) {
   return aij.abs() > (other as double);
 }
 
 /// Removes entries from a matrix with absolute value <= tol.
 /// Return nz, new number of entries in A, -1 on error.
-int cs_droptol(Dcs A, double tol) {
-  return (cs_fkeep(A, cs_tol, tol)); // keep all large entries
+int droptol(Matrix A, double tol) {
+  return (fkeep(A, _tol, tol)); // keep all large entries
 }

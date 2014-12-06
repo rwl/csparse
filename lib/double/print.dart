@@ -26,7 +26,7 @@ import 'csparse.dart';
 /// [A] sparse matrix (triplet or column-compressed).
 /// [brief] print all of A if false, a few entries otherwise.
 /// Returns true if successful, false on error.
-bool cs_print(Dcs A, bool brief) {
+bool print(Matrix A, bool brief) {
   int p, j, m, n, nzmax, nz;
   Int32List Ap, Ai;
   Float64List Ax;
@@ -43,7 +43,7 @@ bool cs_print(Dcs A, bool brief) {
   nz = A.nz;
   stdout.write("CSparse Version $CS_VER.$CS_SUBVER.$CS_SUBSUB, $CS_DATE.  $CS_COPYRIGHT\n");
   if (nz < 0) {
-    stdout.write("$m-by-$n, nzmax: $nzmax nnz: ${Ap[n]}, 1-norm: ${cs_norm(A)}\n");
+    stdout.write("$m-by-$n, nzmax: $nzmax nnz: ${Ap[n]}, 1-norm: ${norm(A)}\n");
     for (j = 0; j < n; j++) {
       stdout.write("    col $j : locations ${Ap[j]} to ${Ap[j + 1] - 1}\n");
       for (p = Ap[j]; p < Ap[j + 1]; p++) {

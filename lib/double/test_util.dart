@@ -82,7 +82,7 @@ File get_file(String name) {
   return new File([Uri.base.toFilePath() + DIR, name].join('/'));
 }
 
-void assert_dimensions(Dcs A, int m, int n, int nzmax, int nnz, [double norm1 = null, double delta = DELTA]) {
+void assert_dimensions(Matrix A, int m, int n, int nzmax, int nnz, [double norm1 = null, double delta = DELTA]) {
   expect(m, equals(A.m));
   expect(n, equals(A.n));
   expect(nzmax, equals(A.nzmax));
@@ -91,17 +91,17 @@ void assert_dimensions(Dcs A, int m, int n, int nzmax, int nnz, [double norm1 = 
   expect(nnz, equals(nz));
 
   if (norm1 != null) {
-    expect(norm1, closeTo(cs_norm(A), delta));
+    expect(norm1, closeTo(norm(A), delta));
   }
 }
 
-void assert_problem(Dproblem prob, int m, int n, int nnz, int sym, int sym_nnz, double norm) {
+void assert_problem(Dproblem prob, int m, int n, int nnz, int sym, int sym_nnz, double _norm) {
   expect(m, equals(prob.A.m));
   expect(n, equals(prob.A.n));
   expect(nnz, equals(prob.A.p[n]));
   expect(sym, equals(prob.sym));
   expect(sym_nnz, equals(sym != 0 ? prob.C.p[n] : 0));
-  expect(norm, closeTo(cs_norm(prob.C), 1e-2));
+  expect(_norm, closeTo(norm(prob.C), 1e-2));
 }
 
 void assert_structure(Dproblem prob, int blocks, int singletons, int rank) {
@@ -117,8 +117,8 @@ void assert_dropped(Dproblem prob, int dropped_zeros, int dropped_tiny) {
 
 /// A structure for a demo problem.
 class Dproblem {
-  Dcs A;
-  Dcs C;
+  Matrix A;
+  Matrix C;
   int sym;
   Float64List x;
   Float64List b;
@@ -137,7 +137,7 @@ class Dproblem {
 }
 
 /// 1 if A is square & upper tri., -1 if square & lower tri., 0 otherwise
-int is_sym(Dcs A) {
+int is_sym(Matrix A) {
   int n = A.n,
       m = A.m;
   Int32List Ap = A.p,
@@ -159,13 +159,13 @@ int is_sym(Dcs A) {
 bool dropdiag(int i, int j, double aij, Object other) => i != j;
 
 /// C = A + triu(A,1)'
-Dcs make_sym(Dcs A) {
-  Dcs AT, C;
-  AT = cs_transpose(A, true);
+Matrix make_sym(Matrix A) {
+  Matrix AT, C;
+  AT = transpose(A, true);
   // AT = A'
-  cs_fkeep(AT, dropdiag, null);
+  fkeep(AT, dropdiag, null);
   // drop diagonal entries from AT
-  C = cs_add(A, AT, 1.0, 1.0);
+  C = add(A, AT, 1.0, 1.0);
   // C = A+AT
   AT = null;
   return C;
@@ -178,7 +178,7 @@ void rhs(Float64List x, Float64List b, int m) {
 }
 
 /// infinity-norm of x
-double norm(Float64List x, int n) {
+double normInf(Float64List x, int n) {
   double normx = 0.0;
   for (int i = 0; i < n; i++) {
     normx = math.max(normx, x[i].abs());
@@ -187,7 +187,7 @@ double norm(Float64List x, int n) {
 }
 
 /// compute residual, norm(A*x-b,inf) / (norm(A,1)*norm(x,inf) + norm(b,inf))
-void print_resid(bool ok, Dcs A, Float64List x, Float64List b, Float64List resid, Dproblem prob) {
+void print_resid(bool ok, Matrix A, Float64List x, Float64List b, Float64List resid, Dproblem prob) {
   int m, n;
   if (!ok) {
     stdout.write("    (failed)\n");
@@ -197,13 +197,13 @@ void print_resid(bool ok, Dcs A, Float64List x, Float64List b, Float64List resid
   n = A.n;
   for (int i = 0; i < m; i++) resid[i] = -b[i];
   // resid = -b
-  cs_gaxpy(A, x, resid);
+  gaxpy(A, x, resid);
   // resid = resid + A*x
 
-  double r = norm(resid, m) / ((n == 0) ? 1 : (cs_norm(A) * norm(x, n) + norm(b, m)));
+  double r = normInf(resid, m) / ((n == 0) ? 1 : (norm(A) * normInf(x, n) + normInf(b, m)));
   stdout.write("resid: $r");
 
-  double nrm = norm(x, n);
+  double nrm = normInf(x, n);
   stdout.write(" (norm: $nrm, $norm (b, m))\n");
   prob.norms.add(nrm);
 }
@@ -234,17 +234,17 @@ void print_order(int order) {
 /// [tol] drop tolerance.
 /// [base] file index base.
 Dproblem get_problem(File file, [double tol = 0.0, int base = 0]) {
-  Dcs T, A, C;
+  Matrix T, A, C;
   int sym, m, n, mn, nz1, nz2;
   Dproblem prob;
   prob = new Dproblem();
-  T = cs_load(file, base);
+  T = load(file, base);
   // load triplet matrix T from a file
-  prob.A = A = cs_compress(T);
+  prob.A = A = compress(T);
   // A = compressed-column form of T
   T = null;
   /* clear T */
-  if (!cs_dupl(A)) return (null);
+  if (!dupl(A)) return (null);
   // sum up duplicates
   prob.sym = sym = is_sym(A);
   // determine if A is symmetric
@@ -252,15 +252,15 @@ Dproblem get_problem(File file, [double tol = 0.0, int base = 0]) {
   n = A.n;
   mn = math.max(m, n);
   nz1 = A.p[n];
-  if (tol > 0) cs_dropzeros(A);
+  if (tol > 0) dropzeros(A);
   // drop zero entries
   nz2 = A.p[n];
-  if (tol > 0) cs_droptol(A, tol);
+  if (tol > 0) droptol(A, tol);
   // drop tiny entries (just to test)
   prob.C = C = sym != 0 ? make_sym(A) : A;
   // C = A + triu(A,1)', or C=A
   if (C == null) return null;
-  stdout.write("\n--- Matrix: $m-by-$n, nnz: ${A.p[n]} (sym: $sym: nnz ${sym != 0 ? C.p[n] : 0}), norm: ${cs_norm(C)}\n");
+  stdout.write("\n--- Matrix: $m-by-$n, nnz: ${A.p[n]} (sym: $sym: nnz ${sym != 0 ? C.p[n] : 0}), norm: ${norm(C)}\n");
   prob.dropped_zeros = nz1 - nz2;
   if (nz1 != nz2) {
     stdout.write("zero entries dropped: ${nz1 - nz2}\n");

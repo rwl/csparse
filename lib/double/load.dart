@@ -18,7 +18,7 @@
 library edu.emory.mathcs.csparse.cs_load;
 
 import 'dart:io';
-import 'csparse.dart' show Dcs, cs_spalloc, cs_entry;
+import 'csparse.dart' show Matrix, spalloc, entry;
 
 /// Load a sparse matrix from [file].
 ///
@@ -27,8 +27,8 @@ import 'csparse.dart' show Dcs, cs_spalloc, cs_entry;
 ///
 /// If the file uses 1-based indexing simply set [base] to 1. Returns T if
 /// successful, null on error.
-Dcs cs_load(File file, [int base = 0]) {
-  final T = cs_spalloc(0, 0, 1, true, true);
+Matrix load(File file, [int base = 0]) {
+  final T = spalloc(0, 0, 1, true, true);
   try {
     for (String line in file.readAsLinesSync()) {
       List<String> tokens = line.trim().split(new RegExp(r"\s+"));
@@ -38,7 +38,7 @@ Dcs cs_load(File file, [int base = 0]) {
       final i = int.parse(tokens[0]) - base,
           j = int.parse(tokens[1]) - base,
           x = double.parse(tokens[2]);
-      if (!cs_entry(T, i, j, x)) {
+      if (!entry(T, i, j, x)) {
         return null;
       }
     }

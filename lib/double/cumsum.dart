@@ -25,7 +25,7 @@ part of edu.emory.mathcs.csparse;
 /// [c] size n, overwritten with p [0..n-1] on output
 /// [n] length of c.
 /// Returns sum (c), null on error.
-int cs_cumsum(Int32List p, Int32List c, int n) {
+int cumsum(Int32List p, Int32List c, int n) {
   int nz = 0;
   double nz2 = 0.0;
   if (p == null || c == null) {

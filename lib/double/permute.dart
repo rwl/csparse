@@ -24,13 +24,13 @@ part of edu.emory.mathcs.csparse;
 /// [q] a permutation vector of length n.
 /// [values] allocate pattern only if false, values and pattern otherwise.
 /// Returns C = PAQ, null on error.
-Dcs cs_permute(Dcs A, Int32List pinv, Int32List q, bool values) {
+Matrix permute(Matrix A, Int32List pinv, Int32List q, bool values) {
   int m, n;
   int nz = 0;
   Int32List Ap, Ai, Cp, Ci;
   Float64List Cx, Ax;
-  Dcs C;
-  if (!cs_csc(A)) {
+  Matrix C;
+  if (!csc(A)) {
     return null; // check inputs
   }
   m = A.m;
@@ -38,7 +38,7 @@ Dcs cs_permute(Dcs A, Int32List pinv, Int32List q, bool values) {
   Ap = A.p;
   Ai = A.i;
   Ax = A.x;
-  C = cs_spalloc(m, n, Ap[n], values && Ax != null, false); // alloc result
+  C = spalloc(m, n, Ap[n], values && Ax != null, false); // alloc result
   Cp = C.p;
   Ci = C.i;
   Cx = C.x;

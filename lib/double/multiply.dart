@@ -20,15 +20,15 @@ part of edu.emory.mathcs.csparse;
 /// Sparse matrix multiplication, C = A*B.
 ///
 /// Returns C = A*B, null on error.
-Dcs cs_multiply(Dcs A, Dcs B) {
+Matrix multiply(Matrix A, Matrix B) {
   int p, j, anz, m, n, bnz;
   int nz = 0;
   Int32List Cp, Ci, Bp;
   Int32List w, Bi;
   Float64List x, Bx, Cx;
   bool values;
-  Dcs C;
-  if (!cs_csc(A) || !cs_csc(B)) {
+  Matrix C;
+  if (!csc(A) || !csc(B)) {
     return null; // check inputs
   }
   if (A.n != B.m) {
@@ -44,17 +44,17 @@ Dcs cs_multiply(Dcs A, Dcs B) {
   w = new Int32List(m); // get workspace
   values = (A.x != null) && (Bx != null);
   x = values ? new Float64List(m) : null; // get workspace
-  C = cs_spalloc(m, n, anz + bnz, values, false); // allocate result
+  C = spalloc(m, n, anz + bnz, values, false); // allocate result
   Cp = C.p;
   for (j = 0; j < n; j++) {
     if (nz + m > C.nzmax) {
-      cs_sprealloc(C, 2 * (C.nzmax) + m);
+      sprealloc(C, 2 * (C.nzmax) + m);
     }
     Ci = C.i;
     Cx = C.x; // C.i and C.x may be reallocated
     Cp[j] = nz; // column j of C starts here
     for (p = Bp[j]; p < Bp[j + 1]; p++) {
-      nz = cs_scatter(A, Bi[p], (Bx != null) ? Bx[p] : 1.0, w, x, j + 1, C, nz);
+      nz = scatter(A, Bi[p], (Bx != null) ? Bx[p] : 1.0, w, x, j + 1, C, nz);
     }
     if (values) {
       for (p = Cp[j]; p < nz; p++) {
@@ -63,6 +63,6 @@ Dcs cs_multiply(Dcs A, Dcs B) {
     }
   }
   Cp[n] = nz; // finalize the last column of C
-  cs_sprealloc(C, 0); // remove extra space from C
+  sprealloc(C, 0); // remove extra space from C
   return C;
 }

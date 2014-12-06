@@ -21,14 +21,14 @@ part of edu.emory.mathcs.csparse;
 ///
 /// [tol] partial pivoting threshold (1 for partial pivoting).
 /// Returns numeric LU factorization, null on error.
-Dcsn cs_lu(Dcs A, Dcss S, double tol) {
-  Dcs L, U;
-  Dcsn N;
+Numeric lu(Matrix A, Symbolic S, double tol) {
+  Matrix L, U;
+  Numeric N;
   double pivot, a, t;
   Float64List Lx, Ux, x;
   Int32List Lp, Li, Up, Ui, pinv, xi, q;
   int n, ipiv, k, top, p, i, col, lnz, unz;
-  if (!cs_csc(A) || S == null) {
+  if (!csc(A) || S == null) {
     return null; // check inputs
   }
   n = A.n;
@@ -37,9 +37,9 @@ Dcsn cs_lu(Dcs A, Dcss S, double tol) {
   unz = S.unz;
   x = new Float64List(n); // get double workspace
   xi = new Int32List(2 * n); // get int workspace
-  N = new Dcsn(); // allocate result
-  N.L = L = cs_spalloc(n, n, lnz, true, false); // allocate result L
-  N.U = U = cs_spalloc(n, n, unz, true, false); // allocate result U
+  N = new Numeric(); // allocate result
+  N.L = L = spalloc(n, n, lnz, true, false); // allocate result L
+  N.U = U = spalloc(n, n, unz, true, false); // allocate result U
   N.pinv = pinv = new Int32List(n); // allocate result pinv
   Lp = L.p;
   Up = U.p;
@@ -59,17 +59,17 @@ Dcsn cs_lu(Dcs A, Dcss S, double tol) {
     Lp[k] = lnz; // L(:,k) starts here
     Up[k] = unz; // U(:,k) starts here
     if (lnz + n > L.nzmax) {
-      cs_sprealloc(L, 2 * L.nzmax + n);
+      sprealloc(L, 2 * L.nzmax + n);
     }
     if (unz + n > U.nzmax) {
-      cs_sprealloc(U, 2 * U.nzmax + n);
+      sprealloc(U, 2 * U.nzmax + n);
     }
     Li = L.i;
     Lx = L.x;
     Ui = U.i;
     Ux = U.x;
     col = q != null ? (q[k]) : k;
-    top = cs_spsolve(L, A, col, xi, x, pinv, true); // x = L\A(:,col)
+    top = spsolve(L, A, col, xi, x, pinv, true); // x = L\A(:,col)
     /* Find pivot */
     ipiv = -1;
     a = -1.0;
@@ -118,7 +118,7 @@ Dcsn cs_lu(Dcs A, Dcss S, double tol) {
   for (p = 0; p < lnz; p++) {
     Li[p] = pinv[Li[p]];
   }
-  cs_sprealloc(L, 0); // remove extra space from L and U
-  cs_sprealloc(U, 0);
+  sprealloc(L, 0); // remove extra space from L and U
+  sprealloc(U, 0);
   return N;
 }

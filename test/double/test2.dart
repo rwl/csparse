@@ -28,23 +28,19 @@ import 'package:unittest/unittest.dart';
 import 'package:csparse/double/csparse.dart';
 import 'package:csparse/double/test_util.dart';
 
-/**
- * Read a matrix from a file and solve a linear system.
- */
+/// Read a matrix from a file and solve a linear system.
 main() {
 
-  /**
-	 * Solves a linear system using Cholesky, LU, and QR, with various
-	 * orderings.
-	 */
+  /// Solves a linear system using Cholesky, LU, and QR, with various
+  /// orderings.
   bool test2(Dproblem prob) {
-    Dcs A, C;
+    Matrix A, C;
     Float64List b, x, resid;
     double tol;
     int t, k, m, n, order, nb, ns, sprank;
     Int32List r, s, rr;
     bool ok;
-    Dcsd D;
+    Decomposition D;
     if (prob == null) return (false);
     A = prob.A;
     C = prob.C;
@@ -56,7 +52,7 @@ main() {
     /* partial pivoting tolerance */
     tol = prob.sym != 0 ? 0.001 : 1.0;
     /* randomized dmperm analysis */
-    D = cs_dmperm(C, 1);
+    D = dmperm(C, 1);
     if (D == null) return (false);
     prob.nb = nb = D.nb;
     r = D.r;
@@ -82,7 +78,7 @@ main() {
       rhs(x, b, m);
       t = tic();
       /* min norm(Ax-b) with QR */
-      ok = cs_qrsol(order, C, x);
+      ok = qrsol(order, C, x);
       stdout.write("time: ${toc (t)} ms ");
       /* print residual */
       print_resid(ok, C, x, b, resid, prob);
@@ -99,7 +95,7 @@ main() {
       rhs(x, b, m);
       t = tic();
       /* solve Ax=b with LU */
-      ok = cs_lusol(order, C, x, tol);
+      ok = lusol(order, C, x, tol);
       stdout.write("time: ${toc (t)} ms ");
       /* print residual */
       print_resid(ok, C, x, b, resid, prob);
@@ -115,7 +111,7 @@ main() {
       rhs(x, b, m);
       t = tic();
       /* solve Ax=b with Cholesky */
-      ok = cs_cholsol(order, C, x);
+      ok = cholsol(order, C, x);
       stdout.write("time: ${toc (t)} ms ");
       /* print residual */
       print_resid(ok, C, x, b, resid, prob);
@@ -280,5 +276,4 @@ main() {
     expect(x_norm, closeTo(prob.norms[4], DELTA));
     expect(x_norm, closeTo(prob.norms[5], DELTA));
   });
-
 }

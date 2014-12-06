@@ -22,7 +22,7 @@ part of edu.emory.mathcs.csparse;
 /// [p] a permutation vector if length n.
 /// [n] length of p.
 /// Returns pinv, null on error.
-Int32List cs_pinv(Int32List p, int n) {
+Int32List pinv(Int32List p, int n) {
   Int32List pinv;
   if (p == null) {
     return null; // p = NULL denotes identity

@@ -34,44 +34,44 @@ import 'package:csparse/double/print.dart';
  */
 main() {
 
-  Dcs demo1_load(File file) {
+  Matrix demo1_load(File file) {
     /* load triplet matrix T from file */
-    Dcs T = cs_load(file);
+    Matrix T = load(file);
     //stdout.write("T:\n") ;
     //cs_print(T, false) ;     /* print T */
     return T;
   }
 
-  Dcs demo1_compress(Dcs T) {
+  Matrix demo1_compress(Matrix T) {
     /* A = compressed-column form of T */
-    Dcs A = cs_compress(T);
+    Matrix A = compress(T);
     //stdout.write("A:\n") ;
     //cs_print (A, false) ;     /* print A */
     return A;
   }
 
-  Dcs demo1_transpose(Dcs A) {
+  Matrix demo1_transpose(Matrix A) {
     /* AT = A' */
-    Dcs AT = cs_transpose(A, true);
+    Matrix AT = transpose(A, true);
     //stdout.write("AT:\n") ;
     //cs_print (AT, false) ;      /* print AT */
     return AT;
   }
 
-  Dcs demo1_multiply_add(Dcs A, Dcs AT) {
-    Dcs T, Eye, C, D;
+  Matrix demo1_multiply_add(Matrix A, Matrix AT) {
+    Matrix T, Eye, C, D;
     /* m = # of rows of A */
     int m = A != null ? A.m : 0;
     /* create triplet identity matrix */
-    T = cs_spalloc(m, m, m, true, true);
-    for (int i = 0; i < m; i++) cs_entry(T, i, i, 1.0);
+    T = spalloc(m, m, m, true, true);
+    for (int i = 0; i < m; i++) entry(T, i, i, 1.0);
     /* Eye = speye (m) */
-    Eye = cs_compress(T);
+    Eye = compress(T);
     T = null;
     /* C = A*A' */
-    C = cs_multiply(A, AT);
+    C = multiply(A, AT);
     /* D = C + Eye*norm (C,1) */
-    D = cs_add(C, Eye, 1.0, cs_norm(C));
+    D = add(C, Eye, 1.0, norm(C));
     //stdout.write("D:\n") ;
     //cs_print(D, false) ;      /* print D */
     return D;
@@ -79,7 +79,7 @@ main() {
 
   group('demo1', () {
     test('ash219', () {
-      Dcs T, A, AT, D;
+      Matrix T, A, AT, D;
 
       final file = get_file(ASH219);
 
@@ -97,7 +97,7 @@ main() {
     });
 
     test('bcsstk01', () {
-      Dcs T, A, AT, D;
+      Matrix T, A, AT, D;
 
       final file = get_file(BCSSTK01);
 
@@ -115,7 +115,7 @@ main() {
     });
 
     test('bcsstk16', () {
-      Dcs T, A, AT, D;
+      Matrix T, A, AT, D;
 
       final file = get_file(BCSSTK16);
 
@@ -133,7 +133,7 @@ main() {
     });
 
     test('fs_183_1', () {
-      Dcs T, A, AT, D;
+      Matrix T, A, AT, D;
 
       final file = get_file(FS_183_1);
 
@@ -151,7 +151,7 @@ main() {
     });
 
     test('ibm32a', () {
-      Dcs T, A, AT, D;
+      Matrix T, A, AT, D;
 
       final file = get_file(IBM32A);
 
@@ -169,7 +169,7 @@ main() {
     });
 
     test('ibm32b', () {
-      Dcs T, A, AT, D;
+      Matrix T, A, AT, D;
 
       final file = get_file(IBM32B);
 
@@ -187,7 +187,7 @@ main() {
     });
 
     test('lp_afiro', () {
-      Dcs T, A, AT, D;
+      Matrix T, A, AT, D;
 
       final file = get_file(LP_AFIRO);
 
@@ -205,7 +205,7 @@ main() {
     });
 
     test('mbeacxc', () {
-      Dcs T, A, AT, D;
+      Matrix T, A, AT, D;
 
       final file = get_file(MBEACXC);
 
@@ -223,7 +223,7 @@ main() {
     });
 
     test('t1', () {
-      Dcs T, A, AT, D;
+      Matrix T, A, AT, D;
 
       final file = get_file(T1);
 
@@ -241,7 +241,7 @@ main() {
     });
 
     test('west0067', () {
-      Dcs T, A, AT, D;
+      Matrix T, A, AT, D;
 
       final file = get_file(WEST0067);
 

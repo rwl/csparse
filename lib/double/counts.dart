@@ -25,7 +25,7 @@ int _next(int J, Int32List next, int next_offset, bool ata) {
   return ata ? next[next_offset + J] : -1;
 }
 
-List<int> init_ata(Dcs AT, Int32List post, Int32List w) {
+List<int> init_ata(Matrix AT, Int32List post, Int32List w) {
   int p,
       m = AT.n,
       n = AT.m;
@@ -55,7 +55,7 @@ List<int> init_ata(Dcs AT, Int32List post, Int32List w) {
 /// [A] column-compressed matrix. [parent] elimination tree of A.
 /// [post] postordering of parent. [ata] analyze A if false, A'A otherwise.
 /// Returns column counts of LL'=A or LL'=A'A, null on error.
-Int32List cs_counts(Dcs A, Int32List parent, Int32List post, bool ata) {
+Int32List counts(Matrix A, Int32List parent, Int32List post, bool ata) {
   int i, j, k, n, m, J, s, p, q;
   Int32List ATp, ATi, maxfirst, prevleaf, ancestor, colcount, w, first, delta;
   Int32List head = null,
@@ -63,8 +63,8 @@ Int32List cs_counts(Dcs A, Int32List parent, Int32List post, bool ata) {
   Int32List jleaf = new Int32List(1);
   int head_offset = 0,
       next_offset = 0;
-  Dcs AT;
-  if (!cs_csc(A) || parent == null || post == null) {
+  Matrix AT;
+  if (!csc(A) || parent == null || post == null) {
     return (null); // check inputs
   }
   m = A.m;
@@ -72,7 +72,7 @@ Int32List cs_counts(Dcs A, Int32List parent, Int32List post, bool ata) {
   s = 4 * n + (ata ? (n + m + 1) : 0);
   delta = colcount = new Int32List(n); // allocate result
   w = new Int32List(s); // get workspace
-  AT = cs_transpose(A, false); // AT = A'
+  AT = transpose(A, false); // AT = A'
   ancestor = w;
   maxfirst = w;
   int maxfirst_offset = n;
@@ -112,7 +112,7 @@ Int32List cs_counts(Dcs A, Int32List parent, Int32List post, bool ata) {
     {
       for (p = ATp[J]; p < ATp[J + 1]; p++) {
         i = ATi[p];
-        q = cs_leaf(i, j, first, first_offset, maxfirst, maxfirst_offset, prevleaf, prevleaf_offset, ancestor, 0, jleaf);
+        q = leaf(i, j, first, first_offset, maxfirst, maxfirst_offset, prevleaf, prevleaf_offset, ancestor, 0, jleaf);
         if (jleaf[0] >= 1) {
           delta[j]++; // A(i,j) is in skeleton
         }

@@ -24,30 +24,30 @@ part of edu.emory.mathcs.csparse;
 /// Only the upper triangular part of [A] is used.
 /// [S] symbolic Cholesky analysis, pinv is optional.
 /// Returns numeric Cholesky factorization, null on error.
-Dcsn cs_chol(Dcs A, Dcss S) {
+Numeric chol(Matrix A, Symbolic S) {
   double d, lki;
   Float64List Lx, x, Cx;
   int n;
   Int32List Li, Lp, cp, pinv, s, c, parent, Cp, Ci;
-  Dcs L, C;
-  Dcsn N;
-  if (!cs_csc(A) || S == null || S.cp == null || S.parent == null) {
+  Matrix L, C;
+  Numeric N;
+  if (!csc(A) || S == null || S.cp == null || S.parent == null) {
     return (null);
   }
   n = A.n;
-  N = new Dcsn(); // allocate result
+  N = new Numeric(); // allocate result
   c = new Int32List(2 * n); // get int workspace
   x = new Float64List(n); // get double workspace
   cp = S.cp;
   pinv = S.pinv;
   parent = S.parent;
-  C = pinv != null ? cs_symperm(A, pinv, true) : A;
+  C = pinv != null ? symperm(A, pinv, true) : A;
   s = c;
   int s_offset = n;
   Cp = C.p;
   Ci = C.i;
   Cx = C.x;
-  N.L = L = cs_spalloc(n, n, cp[n], true, false); // allocate result
+  N.L = L = spalloc(n, n, cp[n], true, false); // allocate result
   Lp = L.p;
   Li = L.i;
   Lx = L.x;
@@ -57,7 +57,7 @@ Dcsn cs_chol(Dcs A, Dcss S) {
   for (int k = 0; k < n; k++) // compute L(k,:) for L*L' = C
   {
     /* Nonzero pattern of L(k,:) */
-    int top = cs_ereach(C, k, parent, s, s_offset, c); // find pattern of L(k,:)
+    int top = ereach(C, k, parent, s, s_offset, c); // find pattern of L(k,:)
     x[k] = 0.0; // x (0:k) is now zero
     for (int p = Cp[k]; p < Cp[k + 1]; p++) // x = full(triu(C(:,k)))
     {

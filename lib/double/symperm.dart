@@ -23,19 +23,19 @@ part of edu.emory.mathcs.csparse;
 /// [pinv] size n, inverse permutation.
 /// [values] allocate pattern only if false, values and pattern otherwise.
 /// Returns C = PAP', null on error.
-Dcs cs_symperm(Dcs A, Int32List pinv, bool values) {
+Matrix symperm(Matrix A, Int32List pinv, bool values) {
   int q, n;
   Int32List Ap, Ai, Cp, Ci, w;
   Float64List Cx, Ax;
-  Dcs C;
-  if (!cs_csc(A)) {
+  Matrix C;
+  if (!csc(A)) {
     return null; // check inputs
   }
   n = A.n;
   Ap = A.p;
   Ai = A.i;
   Ax = A.x;
-  C = cs_spalloc(n, n, Ap[n], values && (Ax != null), false); // alloc result
+  C = spalloc(n, n, Ap[n], values && (Ax != null), false); // alloc result
   w = new Int32List(n); // get workspace
   Cp = C.p;
   Ci = C.i;
@@ -52,7 +52,7 @@ Dcs cs_symperm(Dcs A, Int32List pinv, bool values) {
       w[math.max(i2, j2)]++; // column count of C
     }
   }
-  cs_cumsum(Cp, w, n); // compute column pointers of C
+  cumsum(Cp, w, n); // compute column pointers of C
   for (int j = 0; j < n; j++) {
     final j2 = pinv != null ? pinv[j] : j; // column j of A is column j2 of C
     for (int p = Ap[j]; p < Ap[j + 1]; p++) {

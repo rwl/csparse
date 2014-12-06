@@ -18,10 +18,10 @@
 part of edu.emory.mathcs.csparse;
 
 /// Drop zeros from a sparse matrix.
-bool cs_nonzero(i, j, double aij, other) => aij != 0;
+bool _nonzero(i, j, double aij, other) => aij != 0;
 
 /// Removes numerically zero entries from a matrix.
 /// Returns the new number of entries in A, -1 on error.
-int cs_dropzeros(Dcs A) {
-  return cs_fkeep(A, cs_nonzero, null); // keep all nonzero entries
+int dropzeros(Matrix A) {
+  return fkeep(A, _nonzero, null); // keep all nonzero entries
 }

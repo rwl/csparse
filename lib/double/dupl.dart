@@ -20,12 +20,12 @@ part of edu.emory.mathcs.csparse;
 /// Removes and sums duplicate entries in a sparse matrix.
 ///
 /// Returns true if successful, false on error.
-bool cs_dupl(Dcs A) {
+bool dupl(Matrix A) {
   int p, q, n, m;
   int nz = 0;
   Int32List Ap, Ai, w;
   Float64List Ax;
-  if (!cs_csc(A)) {
+  if (!csc(A)) {
     return false;
   }
   /* check inputs */
@@ -53,5 +53,5 @@ bool cs_dupl(Dcs A) {
     Ap[j] = q; // record start of column j
   }
   Ap[n] = nz; // finalize A
-  return cs_sprealloc(A, 0); // remove extra space from A
+  return sprealloc(A, 0); // remove extra space from A
 }
