@@ -17,61 +17,34 @@
 /// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 part of edu.emory.mathcs.cxsparse;
 
-//import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
-//import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa ;
-//import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsd ;
-//import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsn ;
-
-/**
- * Various utilities.
- *
- * @author Piotr Wendykier (piotr.wendykier@gmail.com)
- * @author Richard Lincoln (r.w.lincoln@gmail.com)
- *
- */
-//public class DZcs_util {
-
-/**
- * Allocate a sparse matrix (triplet form or compressed-column form).
- *
- * @param m
- *            number of rows
- * @param n
- *            number of columns
- * @param nzmax
- *            maximum number of entries
- * @param values
- *            allocate pattern only if false, values and pattern otherwise
- * @param triplet
- *            compressed-column if false, triplet form otherwise
- * @return sparse matrix
- */
+/// Allocate a sparse matrix (triplet form or compressed-column form).
+///
+/// [m] number of rows. [n] number of columns.
+/// [nzmax] maximum number of entries.
+/// [values] allocate pattern only if false, values and pattern otherwise.
+/// [triplet] compressed-column if false, triplet form otherwise.
 DZcs cs_spalloc(int m, int n, int nzmax, bool values, bool triplet)
 {
-	DZcs A = new DZcs() ;			/* allocate the DZcs struct */
-	A.m = m ;				/* define dimensions and nzmax */
+	DZcs A = new DZcs() ;			// allocate the DZcs struct
+	A.m = m ;				// define dimensions and nzmax
 	A.n = n ;
 	A.nzmax = nzmax = math.max (nzmax, 1) ;
-	A.nz = triplet ? 0 : -1 ;		/* allocate triplet or comp.col */
+	A.nz = triplet ? 0 : -1 ;		// allocate triplet or comp.col
 	A.p = triplet ? new Int32List(nzmax) : new Int32List(n+1) ;
 	A.i = new Int32List(nzmax) ;
 	A.x = values ? new Float64List(2*nzmax) : null ;
 	return A ;
 }
 
-/**
- * Change the max # of entries a sparse matrix can hold.
- *
- * @param A
- *            column-compressed matrix
- * @param nzmax
- *            new maximum number of entries
- * @return true if successful, false on error
- */
+/// Change the max # of entries a sparse matrix can hold.
 bool cs_sprealloc(DZcs A, int nzmax)
 {
-	if (A == null) return (false) ;
-	if (nzmax <= 0) nzmax = (CS_CSC (A)) ? (A.p [A.n]) : A.nz ;
+	if (A == null) {
+	  return false;
+	}
+	if (nzmax <= 0) {
+	  nzmax = (CS_CSC (A)) ? (A.p [A.n]) : A.nz ;
+	}
 	Int32List Ainew = new Int32List(nzmax) ;
 	int length = math.min (nzmax, A.i.length) ;
 	//System.arraycopy (A.i, 0, Ainew, 0, length) ;
@@ -97,15 +70,10 @@ bool cs_sprealloc(DZcs A, int nzmax)
 	return (true) ;
 }
 
-/**
- * Allocate a Zcsd object (a Dulmage-Mendelsohn decomposition).
- *
- * @param m
- *            number of rows of the matrix A to be analyzed
- * @param n
- *            number of columns of the matrix A to be analyzed
- * @return Dulmage-Mendelsohn decomposition
- */
+/// Allocate a Dulmage-Mendelsohn decomposition.
+///
+/// [m] number of rows of the matrix A to be analyzed.
+/// [n] number of columns of the matrix A to be analyzed.
 DZcsd cs_dalloc(int m, int n)
 {
 	DZcsd D ;
@@ -119,81 +87,31 @@ DZcsd cs_dalloc(int m, int n)
 	return D ;
 }
 
-int _CS_FLIP(int i)
-{
-	return (-(i) - 2) ;
-}
+int _CS_FLIP(int i) => -i - 2;
 
-int _CS_UNFLIP(int i)
-{
-	return (((i) < 0) ? _CS_FLIP (i) : (i)) ;
-}
+int _CS_UNFLIP(int i) => (((i) < 0) ? _CS_FLIP (i) : (i)) ;
 
-bool _CS_MARKED(Int32List w, int j)
-{
-	return (w [j] < 0) ;
-}
+bool _CS_MARKED(Int32List w, int j) => w [j] < 0;
 
 void _CS_MARK(Int32List w, int j)
 {
 	w [j] = _CS_FLIP (w [j]) ;
 }
 
-/**
- * Returns true if A is in column-compressed form, false otherwise.
- *
- * @param A
- *            sparse matrix
- * @return true if A is in column-compressed form, false otherwise
- */
-bool CS_CSC(DZcs A)
-{
-	return (A != null && (A.nz == -1)) ;
-}
+/// Returns true if A is in column-compressed form, false otherwise.
+bool CS_CSC(DZcs A) => A != null && A.nz == -1;
 
-/**
- * Returns true if A is in triplet form, false otherwise.
- *
- * @param A
- *            sparse matrix
- * @return true if A is in triplet form, false otherwise
- */
-bool CS_TRIPLET(DZcs A)
-{
-	return (A != null && (A.nz >= 0)) ;
-}
+/// Returns true if A is in triplet form, false otherwise.
+bool CS_TRIPLET(DZcs A) => A != null && A.nz >= 0;
 
-/* free workspace and return a sparse matrix result */
-DZcs cs_done (DZcs C, Int32List w, DZcsa x, bool ok)
-{
-//        cs_free (w) ;                       /* free workspace */
-//        cs_free (x) ;
-	return (ok ? C : null) ;   /* return result if OK, else free it */
-}
+/// free workspace and return a sparse matrix result
+DZcs cs_done (DZcs C, Int32List w, DZcsa x, bool ok) => ok ? C : null;
 
-/* free workspace and return CS_INT array result */
-Int32List cs_idone (Int32List p, DZcs C, Int32List w, bool ok)
-{
-//        cs_spfree (C) ;                     /* free temporary matrix */
-//        cs_free (w) ;                       /* free workspace */
-	return (ok ? p : null) ; /* return result, or free it */
-}
+/// free workspace and return CS_INT array result
+Int32List cs_idone (Int32List p, DZcs C, Int32List w, bool ok) => ok ? p : null;
 
-/* free workspace and return a numeric factorization (Cholesky, LU, or QR) */
-DZcsn cs_ndone (DZcsn N, DZcs C, Int32List w, DZcsa x, bool ok)
-{
-//	    cs_spfree (C) ;                     /* free temporary matrix */
-//	    cs_free (w) ;                       /* free workspace */
-//	    cs_free (x) ;
-	return (ok ? N : null) ;    /* return result if OK, else free it */
-}
+/// free workspace and return a numeric factorization (Cholesky, LU, or QR)
+DZcsn cs_ndone (DZcsn N, DZcs C, Int32List w, DZcsa x, bool ok) => ok ? N : null;
 
-/* free workspace and return a csd result */
-DZcsd cs_ddone (DZcsd D, DZcs C, Int32List w, bool ok)
-{
-//	    cs_spfree (C) ;                     /* free temporary matrix */
-//	    cs_free (w) ;                       /* free workspace */
-	return (ok ? D : null) ;    /* return result if OK, else free it */
-}
-
-//}
+/// free workspace and return a csd result
+DZcsd cs_ddone (DZcsd D, DZcs C, Int32List w, bool ok) => ok ? D : null;

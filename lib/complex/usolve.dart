@@ -17,49 +17,28 @@
 /// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 part of edu.emory.mathcs.cxsparse;
 
-//import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa ;
-//import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
-
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_util.CS_CSC ;
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_complex.cs_cdiv ;
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_complex.cs_cminus ;
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_complex.cs_cmult ;
-
-/**
- * Solve an upper triangular system Ux=b.
- *
- * @author Piotr Wendykier (piotr.wendykier@gmail.com)
- * @author Richard Lincoln (r.w.lincoln@gmail.com)
- *
- */
-//public class DZcs_usolve {
-
-/**
- * Solves an upper triangular system Ux=b, where x and b are dense vectors.
- * The diagonal of U must be the last entry of each column.
- *
- * @param U
- *            upper triangular matrix in column-compressed form
- * @param x
- *            size n, right hand side on input, solution on output
- * @return true if successful, false on error
- */
-bool cs_usolve(DZcs U, DZcsa x)
-{
-	int p, j, n;
-	Int32List Up, Ui ;
-	DZcsa Ux = new DZcsa() ;
-	if (!CS_CSC(U) || x == null) return (false) ;	/* check inputs */
-	n = U.n ; Up = U.p ; Ui = U.i ; Ux.x = U.x ;
-	for (j = n - 1 ; j >= 0 ; j--)
-	{
-		x.set_list(j, cs_cdiv_list(x.get(j), Ux.get(Up [j+1] - 1))) ;
-		for (p = Up [j] ; p < Up [j+1] - 1 ; p++)
-		{
-			x.set_list(Ui [p], cs_cminus(x.get(Ui [p]), cs_cmult_list(Ux.get(p), x.get(j)))) ;
-		}
-	}
-	return (true) ;
+/// Solves an upper triangular system Ux=b, where x and b are dense vectors.
+/// The diagonal of U must be the last entry of each column.
+///
+/// [U] upper triangular matrix in column-compressed form.
+/// [x] size n, right hand side on input, solution on output.
+/// Returns true if successful, false on error.
+bool cs_usolve(DZcs U, DZcsa x) {
+  int n;
+  Int32List Up, Ui;
+  DZcsa Ux = new DZcsa();
+  if (!CS_CSC(U) || x == null) {
+    return false;
+  }
+  n = U.n;
+  Up = U.p;
+  Ui = U.i;
+  Ux.x = U.x;
+  for (int j = n - 1; j >= 0; j--) {
+    x.set_list(j, cs_cdiv_list(x.get(j), Ux.get(Up[j + 1] - 1)));
+    for (int p = Up[j]; p < Up[j + 1] - 1; p++) {
+      x.set_list(Ui[p], cs_cminus(x.get(Ui[p]), cs_cmult_list(Ux.get(p), x.get(j))));
+    }
+  }
+  return true;
 }
-
-//}

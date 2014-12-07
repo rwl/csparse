@@ -17,66 +17,40 @@
 /// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 part of edu.emory.mathcs.cxsparse;
 
-//import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa;
-//import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
-
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_util.CS_CSC ;
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_complex.cs_cmult ;
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_complex.cs_cplus ;
-
-/**
- * Scatter a sparse vector.
- *
- * @author Piotr Wendykier (piotr.wendykier@gmail.com)
- * @author Richard Lincoln (r.w.lincoln@gmail.com)
- *
- */
-//public class DZcs_scatter {
-
-/**
- * Scatters and sums a sparse vector A(:,j) into a dense vector,
- * x = x + beta * A(:,j).
- *
- * @param A
- *            the sparse vector is A(:,j)
- * @param j
- *            the column of A to use
- * @param beta
- *            scalar multiplied by A(:,j)
- * @param w
- *            size m, node i is marked if w[i] = mark
- * @param x
- *            size m, ignored if null
- * @param mark
- *            mark value of w
- * @param C
- *            pattern of x accumulated in C.i
- * @param nz
- *            pattern of x placed in C starting at C.i[nz]
- * @return new value of nz, -1 on error
- */
-int cs_scatter(DZcs A, int j, Float64List beta, Int32List w, DZcsa x, int mark, DZcs C, int nz)
-{
-	int i, p;
-	Int32List Ap, Ai, Ci ;
-	DZcsa Ax = new DZcsa() ;
-	if (!CS_CSC(A) || (w == null) || !CS_CSC(C)) return (-1) ;	/* check inputs */
-	Ap = A.p ; Ai = A.i ; Ax.x = A.x ; Ci = C.i ;
-	for (p = Ap [j]; p < Ap [j+1] ; p++)
-	{
-		i = Ai [p] ;		/* A(i,j) is nonzero */
-		if (w [i] < mark)
-		{
-			w [i] = mark ;	/* i is new entry in column j */
-			Ci [nz++] = i ;	/* add i to pattern of C(:,j) */
-			if (x != null)
-				x.set_list(i, cs_cmult_list(beta, Ax.get(p))) ;  /* x(i) = beta*A(i,j) */
-		}
-		else if (x != null)
-		{
-			x.set_list(i, cs_cplus(x.get(i), cs_cmult_list(beta, Ax.get(p))));  /* i exists in C(:,j) already */
-		}
-	}
-	return (nz) ;
+/// Scatters and sums a sparse vector A(:,j) into a dense vector,
+/// x = x + beta * A(:,j).
+///
+/// [A] the sparse vector is A(:,j).
+/// [j] the column of A to use.
+/// [beta] scalar multiplied by A(:,j).
+/// [w] size m, node i is marked if w[i] = mark.
+/// [x] size m, ignored if null.
+/// [mark] mark value of w.
+/// [C] pattern of x accumulated in C.i.
+/// [nz] pattern of x placed in C starting at C.i[nz].
+/// Returns new value of nz, -1 on error.
+int cs_scatter(DZcs A, int j, Float64List beta, Int32List w, DZcsa x, int mark, DZcs C, int nz) {
+  int i, p;
+  Int32List Ap, Ai, Ci;
+  DZcsa Ax = new DZcsa();
+  if (!CS_CSC(A) || (w == null) || !CS_CSC(C)) {
+    return -1;
+  }
+  Ap = A.p;
+  Ai = A.i;
+  Ax.x = A.x;
+  Ci = C.i;
+  for (p = Ap[j]; p < Ap[j + 1]; p++) {
+    i = Ai[p]; // A(i,j) is nonzero
+    if (w[i] < mark) {
+      w[i] = mark; // i is new entry in column j
+      Ci[nz++] = i; // add i to pattern of C(:,j)
+      if (x != null) {
+        x.set_list(i, cs_cmult_list(beta, Ax.get(p))); // x(i) = beta*A(i,j)
+      }
+    } else if (x != null) {
+      x.set_list(i, cs_cplus(x.get(i), cs_cmult_list(beta, Ax.get(p)))); // i exists in C(:,j) already
+    }
+  }
+  return nz;
 }
-//}

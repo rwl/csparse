@@ -17,77 +17,70 @@
 /// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 part of edu.emory.mathcs.cxsparse;
 
-//import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs ;
-//import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsd ;
-
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_util.CS_CSC ;
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_util.cs_dalloc ;
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_util.cs_ddone ;
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_util.CS_MARKED ;
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_util.CS_MARK ;
-
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_transpose.cs_transpose ;
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_dfs.cs_dfs ;
-
-/**
- * Strongly-connected components.
- *
- * @author Piotr Wendykier (piotr.wendykier@gmail.com)
- * @author Richard Lincoln (r.w.lincoln@gmail.com)
- *
- */
-//public class DZcs_scc {
-
-/**
- * Finds the strongly connected components of a square matrix.
- *
- * @param A
- *            column-compressed matrix (A.p modified then restored)
- * @return strongly connected components, null on error
- */
-DZcsd cs_scc(DZcs A)
-{
-	int n, i, k, b, nb = 0, top;
-	Int32List xi, pstack, p, r, Ap, ATp, rcopy, Blk ;
-	DZcs AT ;
-	DZcsd D ;
-	if (!CS_CSC (A)) return (null) ; 		/* check inputs */
-	n = A.n ; Ap = A.p ;
-	D = cs_dalloc (n, 0) ;				/* allocate result */
-	AT = cs_transpose (A, false) ;			/* AT = A' */
-	xi = new Int32List(2*n+1) ;				/* get workspace */
-	if (D == null || AT == null || xi == null)
-		return (cs_ddone (D, AT, xi, false)) ;
-	Blk = xi ; rcopy = xi ;
-	int rcopy_offset = n ;
-	pstack = xi ;
-	int pstack_offset = n ;
-	p = D.p ; r = D.r ; ATp = AT.p ;
-	top = n ;
-	for (i = 0 ; i < n ; i++)			/* first dfs(A) to find finish times (xi) */
-	{
-		if (!_CS_MARKED (Ap, i))
-		top = cs_dfs (i, A, top, xi, 0, pstack, pstack_offset, null, 0) ;
-	}
-	for (i = 0 ; i < n ; i++) _CS_MARK (Ap, i) ;	/* restore A; unmark all nodes*/
-	top = n ; nb = n ;
-	for (k = 0 ; k < n ; k++)			/* dfs(A') to find strongly connnected comp */
-	{
-		i = xi [k] ;				/* get i in reverse order of finish times */
-		if (_CS_MARKED (ATp, i)) continue ;	/* skip node i if already ordered */
-		r [nb--] = top ;			/* node i is the start of a component in p */
-		top = cs_dfs (i, AT, top, p, 0, pstack, pstack_offset, null, 0) ;
-	}
-	r [nb] = 0 ;					/* first block starts at zero; shift r up */
-	for (k = nb ; k <= n ; k++) r [k-nb] = r [k] ;
-	D.nb = nb = n - nb ;				/* nb = # of strongly connected components */
-	for (b = 0 ; b < nb ; b++)			/* sort each block in natural order */
-	{
-		for (k = r [b] ; k < r [b+1] ; k++) Blk [p [k]] = b ;
-	}
-	for (b = 0 ; b <= nb ; b++) rcopy [rcopy_offset + b] = r [b] ;
-	for (i = 0 ; i < n ; i++) p [rcopy [rcopy_offset + Blk [i]]++] = i ;
-	return (D) ;
+/// Finds the strongly connected components of a square matrix.
+///
+/// [A] column-compressed matrix (A.p modified then restored).
+/// Returns strongly connected components, null on error.
+DZcsd cs_scc(DZcs A) {
+  int n, i, k, b, top;
+  int nb = 0;
+  Int32List xi, pstack, p, r, Ap, ATp, rcopy, Blk;
+  DZcs AT;
+  DZcsd D;
+  if (!CS_CSC(A)) {
+    return null;
+  }
+  n = A.n;
+  Ap = A.p;
+  D = cs_dalloc(n, 0); // allocate result
+  AT = cs_transpose(A, false); // AT = A'
+  xi = new Int32List(2 * n + 1); // get workspace
+  if (D == null || AT == null || xi == null) {
+    return cs_ddone(D, AT, xi, false);
+  }
+  Blk = xi;
+  rcopy = xi;
+  int rcopy_offset = n;
+  pstack = xi;
+  int pstack_offset = n;
+  p = D.p;
+  r = D.r;
+  ATp = AT.p;
+  top = n;
+  for (i = 0; i < n; i++) // first dfs(A) to find finish times (xi)
+  {
+    if (!_CS_MARKED(Ap, i)) top = cs_dfs(i, A, top, xi, 0, pstack, pstack_offset, null, 0);
+  }
+  for (i = 0; i < n; i++) {
+    _CS_MARK(Ap, i); // restore A; unmark all nodes
+  }
+  top = n;
+  nb = n;
+  for (k = 0; k < n; k++) // dfs(A') to find strongly connnected comp
+  {
+    i = xi[k]; // get i in reverse order of finish times
+    if (_CS_MARKED(ATp, i)) {
+      continue; // skip node i if already ordered
+    }
+    r[nb--] = top; // node i is the start of a component in p
+    top = cs_dfs(i, AT, top, p, 0, pstack, pstack_offset, null, 0);
+  }
+  r[nb] = 0; // first block starts at zero; shift r up
+  for (k = nb; k <= n; k++) {
+    r[k - nb] = r[k];
+  }
+  D.nb = nb = n - nb; // nb = # of strongly connected components
+  for (b = 0; b < nb; b++) // sort each block in natural order
+  {
+    for (k = r[b]; k < r[b + 1]; k++) {
+      Blk[p[k]] = b;
+    }
+  }
+  for (b = 0; b <= nb; b++) {
+    rcopy[rcopy_offset + b] = r[b];
+  }
+  for (i = 0; i < n; i++) {
+    p[rcopy[rcopy_offset + Blk[i]]++] = i;
+  }
+  return D;
 }
-
-//}

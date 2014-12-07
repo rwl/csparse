@@ -17,55 +17,33 @@
 /// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 part of edu.emory.mathcs.cxsparse;
 
-//import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
-
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_util.CS_CSC ;
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_util.CS_MARKED ;
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_util.CS_MARK ;
-
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_dfs.cs_dfs ;
-
-/**
- * Find nonzero pattern of x=L\b for sparse L and b.
- *
- * @author Piotr Wendykier (piotr.wendykier@gmail.com)
- * @author Richard Lincoln (r.w.lincoln@gmail.com)
- *
- */
-//public class DZcs_reach {
-
-/**
- * Finds a nonzero pattern of x=L\b for sparse L and b.
- *
- * @param G
- *            graph to search (G.p modified, then restored)
- * @param B
- *            right hand side, b = B(:,k)
- * @param k
- *            use kth column of B
- * @param xi
- *            size 2*n, output in xi[top..n-1]
- * @param pinv
- *            mapping of rows to columns of G, ignored if null
- * @return top, -1 on error
- */
-int cs_reach(DZcs G, DZcs B, int k, Int32List xi, Int32List pinv)
-{
-	int p, n, top;
-	Int32List Bp, Bi, Gp ;
-	if (!CS_CSC (G) || !CS_CSC (B) || xi == null)
-		return (-1) ;	/* check inputs */
-	n = G.n ; Bp = B.p ; Bi = B.i ; Gp = G.p ;
-	top = n ;
-	for (p = Bp [k] ; p < Bp [k+1] ; p++)
-	{
-		if (!_CS_MARKED (Gp, Bi [p]))  /* start a dfs at unmarked node i */
-		{
-			top = cs_dfs (Bi [p], G, top, xi, 0, xi, n, pinv, 0) ;
-		}
-	}
-	for (p = top ; p < n ; p++) _CS_MARK (Gp, xi [p]) ;  /* restore G */
-	return (top) ;
+/// Finds a nonzero pattern of x=L\b for sparse L and b.
+///
+/// [G] graph to search (G.p modified, then restored).
+/// [B] right hand side, b = B(:,k).
+/// [k] use kth column of B.
+/// [xi] size 2*n, output in xi[top..n-1].
+/// [pinv] mapping of rows to columns of G, ignored if null.
+/// Returns top, -1 on error.
+int cs_reach(DZcs G, DZcs B, int k, Int32List xi, Int32List pinv) {
+  int p, n, top;
+  Int32List Bp, Bi, Gp;
+  if (!CS_CSC(G) || !CS_CSC(B) || xi == null) {
+    return -1;
+  }
+  n = G.n;
+  Bp = B.p;
+  Bi = B.i;
+  Gp = G.p;
+  top = n;
+  for (p = Bp[k]; p < Bp[k + 1]; p++) {
+    if (!_CS_MARKED(Gp, Bi[p])) // start a dfs at unmarked node i
+    {
+      top = cs_dfs(Bi[p], G, top, xi, 0, xi, n, pinv, 0);
+    }
+  }
+  for (p = top; p < n; p++) {
+    _CS_MARK(Gp, xi[p]); // restore G
+  }
+  return top;
 }
-
-//}
