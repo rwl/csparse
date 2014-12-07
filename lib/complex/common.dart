@@ -1,333 +1,190 @@
-/*
- * CXSparse: a Concise Sparse matrix package.
- * Copyright (C) 2006-2011, Timothy A. Davis.
- * Copyright (C) 2011-2012, Richard W. Lincoln.
- * http://www.cise.ufl.edu/research/sparse/CXSparse
- *
- * -------------------------------------------------------------------------
- *
- * CXSparseJ is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * CXSparseJ is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this Module; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
- *
- */
-
+/// CSparse: a Concise Sparse matrix package.
+/// Copyright (c) 2006, Timothy A. Davis.
+/// http://www.cise.ufl.edu/research/sparse/CSparse
+///
+/// CSparse is free software; you can redistribute it and/or
+/// modify it under the terms of the GNU Lesser General Public
+/// License as published by the Free Software Foundation; either
+/// version 2.1 of the License, or (at your option) any later version.
+///
+/// CSparse is distributed in the hope that it will be useful,
+/// but WITHOUT ANY WARRANTY; without even the implied warranty of
+/// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+/// Lesser General Public License for more details.
+///
+/// You should have received a copy of the GNU Lesser General Public
+/// License along with this Module; if not, write to the Free Software
+/// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 part of edu.emory.mathcs.cxsparse;
 
-//import java.io.ByteArrayOutputStream;
-//import java.io.UnsupportedEncodingException;
-//import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_print.cs_print;
-
-/**
- * Common data structures.
- *
- * @author Piotr Wendykier (piotr.wendykier@gmail.com)
- * @author Richard Lincoln (r.w.lincoln@gmail.com)
- *
- */
-//class DZcs_common {
-
-const int CS_VER = 2; /* CXSparseJ Version 2.2.6 */
+const int CS_VER = 2; // CXSparse Version 2.2.6
 const int CS_SUBVER = 2;
 const int CS_SUBSUB = 6;
-const String CS_DATE = "Dec 15, 2011"; /* CXSparseJ release date */
+const String CS_DATE = "Dec 15, 2011";
 const String CS_COPYRIGHT = "Copyright (C) Timothy A. Davis, 2006-2011";
 
-/**
- *
- * Complex array.
- *
- */
-class DZcsa
-{
+/// Complex array.
+class DZcsa {
+  /// Numerical values.
+  Float64List x;
 
-	/**
-	 * numerical values
-	 */
-	Float64List x;
+  DZcsa([this.x = null]);
 
-	DZcsa([Float64List x=null])
-	{
-		this.x = x ;
-	}
+  /// Constructs an array of the given length.
+  factory DZcsa.sized(int len) {
+    return new DZcsa(new Float64List(2 * len));
+  }
 
-	/**
-	 * Constructs an array of the given length.
-	 */
-	factory DZcsa.sized(int len)
-	{
-		return new DZcsa(new Float64List(2*len)) ;
-	}
+  Float64List get(final int idx) {
+    final offset = 2 * idx;
+    return new Float64List.fromList([x[offset], x[offset + 1]]);
+  }
 
-	/**
-	 *
-	 * @param idx
-	 * @return
-	 */
-	Float64List get(final int idx)
-	{
-		int offset = 2 * idx ;
-		return new Float64List.fromList([x [offset], x [offset + 1]]) ;
-	}
+  double real(final int idx) => x[2 * idx];
 
-	double real(final int idx) {
-		return x [2 * idx] ;
-	}
+  double imag(final int idx) => x[(2 * idx) + 1];
 
-	double imag(final int idx) {
-		return x [(2 * idx) + 1] ;
-	}
+  void set_list(final int idx, final Float64List val) {
+    final offset = 2 * idx;
 
-	/**
-	 *
-	 * @param idx
-	 * @param val
-	 */
-	void set_list(final int idx, final Float64List val)
-	{
-		int offset = 2 * idx ;
+    x[offset] = val[0];
+    x[offset + 1] = val[1];
+  }
 
-		x [offset] = val [0] ;
-		x [offset + 1] = val [1] ;
-	}
+  void set(final int idx, final double re, final double im) {
+    final offset = 2 * idx;
 
-	void set(final int idx, final double re, final double im) {
-		int offset = 2 * idx ;
+    x[offset] = re;
+    x[offset + 1] = im;
+  }
 
-		x [offset] = re ;
-		x [offset + 1] = im ;
-	}
-
-	String toString() {
-		String s = "DZcsa [" ;
-		for (int i = 0; i < x.length; i+=2) {
-			if (i != 0) s += ", " ;
-			s += "${x[i]}+j${x[i + 1]}" ;
-		}
-		return s + "]" ;
-	}
+  String toString() {
+    String s = "DZcsa [";
+    for (int i = 0; i < x.length; i += 2) {
+      if (i != 0) s += ", ";
+      s += "${x[i]}+j${x[i + 1]}";
+    }
+    return s + "]";
+  }
 }
 
-/**
- *
- * Complex matrix in compressed-column or triplet form.
- *
- */
-class DZcs
-{
+/// Complex matrix in compressed-column or triplet form.
+class DZcs {
+  /// Show a few entries in string representation.
+  static bool BRIEF_PRINT = true;
 
-	/**
-	 * show a few entries in string representation
-	 */
-	static bool BRIEF_PRINT = true;
+  /// Maximum number of entries.
+  int nzmax;
 
-	/**
-	 * maximum number of entries
-	 */
-	int nzmax ;
+  /// Number of rows.
+  int m;
 
-	/**
-	 * number of rows
-	 */
-	int m ;
+  /// Number of columns.
+  int n;
 
-	/**
-	 * number of columns
-	 */
-	int n ;
+  /// Column pointers (size n+1) or col indices (size nzmax).
+  Int32List p;
 
-	/**
-	 * column pointers (size n+1) or col indices (size nzmax)
-	 */
-	Int32List p ;
+  /// Row indices, size nzmax.
+  Int32List i;
 
-	/**
-	 * row indices, size nzmax
-	 */
-	Int32List i ;
+  /// Numerical values, size 2 * nzmax.
+  Float64List x;
 
-	/**
-	 * numerical values, size 2 * nzmax
-	 */
-	Float64List x ;
+  /// # of entries in triplet matrix, -1 for compressed-col.
+  int nz;
 
-	/**
-	 * # of entries in triplet matrix, -1 for compressed-col
-	 */
-	int nz ;
+  DZcs();
 
-	DZcs()
-	{
+  Float64List get(final int idx) {
+    final offset = 2 * idx;
+    return new Float64List.fromList([x[offset], x[offset + 1]]);
+  }
 
-	}
+  void set_list(final int idx, final Float64List val) {
+    set(idx, val[0], val[1]);
+  }
 
-	Float64List get(final int idx)
-	{
-		int offset = 2 * idx ;
-		return new Float64List.fromList([x [offset], x [offset + 1]]) ;
-	}
+  void set(final int idx, final double re, final double im) {
+    final offset = 2 * idx;
 
-	void set_list(final int idx, final Float64List val) {
-		set(idx, val [0], val [1]);
-	}
+    x[offset] = re;
+    x[offset + 1] = im;
+  }
 
-	void set(final int idx, final double re, final double im)
-	{
-		int offset = 2 * idx ;
-
-		x [offset] = re ;
-		x [offset + 1] = im ;
-	}
-
-	String toString() {
-		//ByteArrayOutputStream out = new ByteArrayOutputStream();
-	  StringBuffer out = new StringBuffer();
-		cs_print(this, BRIEF_PRINT, out);
-	  return out.toString();
-	}
-
+  String toString() {
+    StringBuffer out = new StringBuffer();
+    cs_print(this, BRIEF_PRINT, out);
+    return out.toString();
+  }
 }
 
-/**
- *
- * Output of symbolic Cholesky, LU, or QR analysis.
- *
- */
-class DZcss
-{
-	/**
-	 * inverse row perm. for QR, fill red. perm for Chol
-	 */
-	Int32List pinv ;
+/// Output of symbolic Cholesky, LU, or QR analysis.
+class DZcss {
+  /// Inverse row perm. for QR, fill red. perm for Chol.
+  Int32List pinv;
 
-	/**
-	 * fill-reducing column permutation for LU and QR
-	 */
-	Int32List q ;
+  /// Fill-reducing column permutation for LU and QR.
+  Int32List q;
 
-	/**
-	 * elimination tree for Cholesky and QR
-	 */
-	Int32List parent ;
+  /// Elimination tree for Cholesky and QR.
+  Int32List parent;
 
-	/**
-	 * column pointers for Cholesky, row counts for QR
-	 */
-	Int32List cp ;
+  /// Column pointers for Cholesky, row counts for QR.
+  Int32List cp;
 
-	/**
-	 * leftmost[i] = min(find(A(i,:))), for QR
-	 */
-	Int32List leftmost ;
+  /// leftmost[i] = min(find(A(i,:))), for QR.
+  Int32List leftmost;
 
-	/**
-	 * # of rows for QR, after adding fictitious rows
-	 */
-	int m2 ;
+  /// # of rows for QR, after adding fictitious rows.
+  int m2;
 
-	/**
-	 * # entries in L for LU or Cholesky; in V for QR
-	 */
-	int lnz ;
+  /// # entries in L for LU or Cholesky; in V for QR.
+  int lnz;
 
-	/**
-	 * # entries in U for LU; in R for QR
-	 */
-	int unz ;
+  /// # entries in U for LU; in R for QR.
+  int unz;
 
-	DZcss()
-	{
-
-	}
+  DZcss();
 }
 
-/**
- *
- * Output of numeric Cholesky, LU, or QR factorization
- *
- */
-class DZcsn
-{
+/// Output of numeric Cholesky, LU, or QR factorization.
+class DZcsn {
+  /// L for LU and Cholesky, V for QR.
+  DZcs L;
 
-	/**
-	 * L for LU and Cholesky, V for QR
-	 */
-	DZcs L ;
+  /// U for LU, R for QR, not used for Cholesky.
+  DZcs U;
 
-	/**
-	 * U for LU, R for QR, not used for Cholesky
-	 */
-	DZcs U ;
+  /// Partial pivoting for LU.
+  Int32List pinv;
 
-	/**
-	 * partial pivoting for LU
-	 */
-	Int32List pinv ;
+  /// Beta [0..n-1] for QR.
+  Float64List B;
 
-	/**
-	 * beta [0..n-1] for QR
-	 */
-	Float64List B ;
-
-	DZcsn()
-	{
-
-	}
-
+  DZcsn();
 }
 
-/**
- *
- * Output of Dulmage-Mendelsohn decomposition.
- *
- */
-class DZcsd
-{
+/// Output of Dulmage-Mendelsohn decomposition.
+class DZcsd {
+  /// Size m, row permutation.
+  Int32List p;
 
-	/**
-	 * size m, row permutation
-	 */
-	Int32List p ;
+  /// Size n, column permutation.
+  Int32List q;
 
-	/**
-	 * size n, column permutation
-	 */
-	Int32List q ;
+  /// Size nb+1, block k is rows r[k] to r[k+1]-1 in A(p,q).
+  Int32List r;
 
-	/**
-	 * size nb+1, block k is rows r[k] to r[k+1]-1 in A(p,q)
-	 */
-	Int32List r ;
+  /// Size nb+1, block k is cols s[k] to s[k+1]-1 in A(p,q).
+  Int32List s;
 
-	/**
-	 * size nb+1, block k is cols s[k] to s[k+1]-1 in A(p,q)
-	 */
-	Int32List s ;
+  /// # of blocks in fine dmperm decomposition.
+  int nb;
 
-	/**
-	 * # of blocks in fine dmperm decomposition
-	 */
-	int nb ;
+  /// Coarse row decomposition.
+  Int32List rr;
 
-	/**
-	 * coarse row decomposition
-	 */
-	Int32List rr ;
-
-	/**
-	 * coarse column decomposition
-	 */
-	Int32List cc ;
+  /// Coarse column decomposition.
+  Int32List cc;
 }
-
-//}
