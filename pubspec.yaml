@@ -1,5 +1,5 @@
 name: csparse
-version: 0.3.0
+version: 0.4.0
 author: Richard Lincoln <r.w.lincoln@gmail.com>
 description: A concise sparse matrix package.
 homepage: https://github.com/rwl/csparse
