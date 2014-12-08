@@ -18,11 +18,11 @@
 part of edu.emory.mathcs.cxsparse;
 
 bool _nonzero(int i, int j, Float64List aij, Object other) {
-  return ((cs_creal(aij) != 0) || (cs_cimag(aij) != 0));
+  return ((_creal(aij) != 0) || (_cimag(aij) != 0));
 }
 
 /// Drop zeros from a sparse matrix.
 ///
 /// Removes numerically zero entries from a matrix.
 /// Returns the new number of entries in A, -1 on error.
-int cs_dropzeros(DZcs A) => cs_fkeep(A, _nonzero, null);
+int dropzeros(Matrix A) => fkeep(A, _nonzero, null);

@@ -25,10 +25,10 @@ part of edu.emory.mathcs.cxsparse;
 /// [xi] size 2*n, output in xi[top..n-1].
 /// [pinv] mapping of rows to columns of G, ignored if null.
 /// Returns top, -1 on error.
-int cs_reach(DZcs G, DZcs B, int k, Int32List xi, Int32List pinv) {
+int reach(Matrix G, Matrix B, int k, Int32List xi, Int32List pinv) {
   int p, n, top;
   Int32List Bp, Bi, Gp;
-  if (!CS_CSC(G) || !CS_CSC(B) || xi == null) {
+  if (!csc(G) || !csc(B) || xi == null) {
     return -1;
   }
   n = G.n;
@@ -37,13 +37,13 @@ int cs_reach(DZcs G, DZcs B, int k, Int32List xi, Int32List pinv) {
   Gp = G.p;
   top = n;
   for (p = Bp[k]; p < Bp[k + 1]; p++) {
-    if (!_CS_MARKED(Gp, Bi[p])) // start a dfs at unmarked node i
+    if (!_marked(Gp, Bi[p])) // start a dfs at unmarked node i
     {
-      top = cs_dfs(Bi[p], G, top, xi, 0, xi, n, pinv, 0);
+      top = dfs(Bi[p], G, top, xi, 0, xi, n, pinv, 0);
     }
   }
   for (p = top; p < n; p++) {
-    _CS_MARK(Gp, xi[p]); // restore G
+    _mark(Gp, xi[p]); // restore G
   }
   return top;
 }

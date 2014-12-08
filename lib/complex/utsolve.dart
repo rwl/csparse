@@ -22,11 +22,11 @@ part of edu.emory.mathcs.cxsparse;
 ///
 /// [U] upper triangular matrix in column-compressed form.
 /// [x] size n, right hand side on input, solution on output.
-bool cs_utsolve(DZcs U, DZcsa x) {
+bool utsolve(Matrix U, Vector x) {
   int n;
   Int32List Up, Ui;
-  DZcsa Ux = new DZcsa();
-  if (!CS_CSC(U) || x == null) {
+  Vector Ux = new Vector();
+  if (!csc(U) || x == null) {
     return false;
   }
   n = U.n;
@@ -35,9 +35,9 @@ bool cs_utsolve(DZcs U, DZcsa x) {
   Ux.x = U.x;
   for (int j = 0; j < n; j++) {
     for (int p = Up[j]; p < Up[j + 1] - 1; p++) {
-      x.set_list(j, cs_cminus(x.get(j), cs_cmult_list(cs_conj(Ux.get(p)), x.get(Ui[p]))));
+      x.setList(j, cminus(x.get(j), cmult_list(conj(Ux.get(p)), x.get(Ui[p]))));
     }
-    x.set_list(j, cs_cdiv_list(x.get(j), cs_conj(Ux.get(Up[j + 1] - 1))));
+    x.setList(j, cdiv_list(x.get(j), conj(Ux.get(Up[j + 1] - 1))));
   }
   return true;
 }

@@ -22,10 +22,10 @@ part of edu.emory.mathcs.cxsparse;
 /// [A] column-compressed matrix.
 /// [ata] analyze A if false, A'A oterwise.
 /// Returns elimination tree, null on error.
-Int32List cs_etree(DZcs A, bool ata) {
+Int32List etree(Matrix A, bool ata) {
   int i, k, p, m, n, inext;
   Int32List Ap, Ai, w, parent, ancestor, prev;
-  if (!CS_CSC(A)) {
+  if (!csc(A)) {
     return null;
   }
   m = A.m;
@@ -35,7 +35,7 @@ Int32List cs_etree(DZcs A, bool ata) {
   parent = new Int32List(n); // allocate result
   w = new Int32List(n + (ata ? m : 0)); // get workspace
   if (w == null || parent == null) {
-    return (cs_idone(parent, null, w, false));
+    return (_idone(parent, null, w, false));
   }
   ancestor = w;
   prev = w;
@@ -61,5 +61,5 @@ Int32List cs_etree(DZcs A, bool ata) {
       }
     }
   }
-  return cs_idone(parent, null, w, true);
+  return _idone(parent, null, w, true);
 }

@@ -22,13 +22,13 @@ part of edu.emory.mathcs.cxsparse;
 /// [A] sparse matrix (triplet ot column-compressed).
 /// [brief] print all of A if false, a few entries otherwise.
 /// Returns true if successful, false on error.
-bool cs_print(DZcs A, bool brief, StringBuffer out) {
+bool print(Matrix A, bool brief, StringBuffer out) {
   int p, j, m, n, nzmax, nz;
   Int32List Ap, Ai;
-  DZcsa Ax = new DZcsa();
+  Vector Ax = new Vector();
   if (A == null) {
     out.write("(null)\n");
-    return (false);
+    return false;
   }
   m = A.m;
   n = A.n;
@@ -37,30 +37,30 @@ bool cs_print(DZcs A, bool brief, StringBuffer out) {
   Ax.x = A.x;
   nzmax = A.nzmax;
   nz = A.nz;
-  /*out.printf("CXSparseJ Version %d.%d.%d, %s.  %s\n",
+  /*out.printf("CXSparse Version %d.%d.%d, %s.  %s\n",
 		DZcs_common.CS_VER, DZcs_common.CS_SUBVER, DZcs_common.CS_SUBSUB,
 		DZcs_common.CS_DATE, DZcs_common.CS_COPYRIGHT) ;*/
   if (nz < 0) {
-    out.write("$m-by-$n, nzmax: $nzmax nnz: ${Ap[n]}, 1-norm: ${cs_norm (A)}\n");
+    out.write("$m-by-$n, nzmax: $nzmax nnz: ${Ap[n]}, 1-norm: ${norm (A)}\n");
     for (j = 0; j < n; j++) {
       out.write("    col $j : locations ${Ap [j]} to ${Ap [j+1] - 1}\n");
       for (p = Ap[j]; p < Ap[j + 1]; p++) {
-        out.write("      ${Ai [p]} : (${Ax.x != null ? cs_creal (Ax.get(p)) : 1}, ${Ax.x != null ? cs_cimag (Ax.get(p)) : 0})\n");
+        out.write("      ${Ai [p]} : (${Ax.x != null ? _creal (Ax.get(p)) : 1}, ${Ax.x != null ? _cimag (Ax.get(p)) : 0})\n");
         if (brief && p > 20) {
           out.write("  ...\n");
-          return (true);
+          return true;
         }
       }
     }
   } else {
     out.write("triplet: $m-by-$n, nzmax: $nzmax nnz: $nz\n");
     for (p = 0; p < nz; p++) {
-      out.write("    ${Ai [p]} ${Ap [p]} : (${Ax.x != null ? cs_creal (Ax.get(p)) : 1}, ${Ax.x != null ? cs_cimag (Ax.get(p)) : 0})\n");
+      out.write("    ${Ai [p]} ${Ap [p]} : (${Ax.x != null ? _creal (Ax.get(p)) : 1}, ${Ax.x != null ? _cimag (Ax.get(p)) : 0})\n");
       if (brief && p > 20) {
         out.write("  ...\n");
-        return (true);
+        return true;
       }
     }
   }
-  return (true);
+  return true;
 }

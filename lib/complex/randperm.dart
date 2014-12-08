@@ -24,7 +24,7 @@ part of edu.emory.mathcs.cxsparse;
 /// [n] length of p.
 /// [seed] 0: natural, -1: reverse, random p otherwise.
 /// Returns p, null on error or for natural order.
-Int32List cs_randperm(int n, int seed) {
+Int32List randperm(int n, int seed) {
   Int32List p;
   int k, j, t;
   math.Random r;

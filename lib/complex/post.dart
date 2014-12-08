@@ -22,7 +22,7 @@ part of edu.emory.mathcs.cxsparse;
 /// [parent] defines a tree of n nodes.
 /// [n] length of parent.
 /// Returns post[k]=i, null on error.
-Int32List cs_post(Int32List parent, int n) {
+Int32List post(Int32List parent, int n) {
   int k = 0;
   Int32List post, w, head, next, stack;
   if (parent == null) {
@@ -31,7 +31,7 @@ Int32List cs_post(Int32List parent, int n) {
   post = new Int32List(n); // allocate result
   w = new Int32List(3 * n); // get workspace
   if (w == null || post == null) {
-    return cs_idone(post, null, w, false);
+    return _idone(post, null, w, false);
   }
   head = w;
   next = w;
@@ -49,7 +49,7 @@ Int32List cs_post(Int32List parent, int n) {
   }
   for (int j = 0; j < n; j++) {
     if (parent[j] != -1) continue; // skip j if it is not a root
-    k = cs_tdfs(j, k, head, 0, next, next_offset, post, 0, stack, stack_offset);
+    k = tdfs(j, k, head, 0, next, next_offset, post, 0, stack, stack_offset);
   }
   return post;
 }

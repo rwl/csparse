@@ -24,11 +24,11 @@ part of edu.emory.mathcs.cxsparse;
 /// [i] v = V(:,i), the ith column of V.
 /// [x] vector of size m.
 /// Returns true if successful, false on error.
-bool cs_happly(DZcs V, int i, double beta, DZcsa x) {
+bool happly(Matrix V, int i, double beta, Vector x) {
   Int32List Vp, Vi;
-  DZcsa Vx = new DZcsa();
-  Float64List tau = cs_czero();
-  if (!CS_CSC(V) || x == null) {
+  Vector Vx = new Vector();
+  Float64List tau = czero();
+  if (!csc(V) || x == null) {
     return false;
   }
   Vp = V.p;
@@ -36,12 +36,12 @@ bool cs_happly(DZcs V, int i, double beta, DZcsa x) {
   Vx.x = V.x;
   for (int p = Vp[i]; p < Vp[i + 1]; p++) // tau = v'*x
   {
-    tau = cs_cplus(tau, cs_cmult_list(cs_conj(Vx.get(p)), x.get(Vi[p])));
+    tau = cplus(tau, cmult_list(conj(Vx.get(p)), x.get(Vi[p])));
   }
-  tau = cs_cmult(tau, beta); // tau = beta*(v'*x)
+  tau = cmult(tau, beta); // tau = beta*(v'*x)
   for (int p = Vp[i]; p < Vp[i + 1]; p++) // x = x - v*tau
   {
-    x.set_list(Vi[p], cs_cminus(x.get(Vi[p]), cs_cmult_list(Vx.get(p), tau)));
+    x.setList(Vi[p], cminus(x.get(Vi[p]), cmult_list(Vx.get(p), tau)));
   }
   return true;
 }

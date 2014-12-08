@@ -17,28 +17,28 @@
 /// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 part of edu.emory.mathcs.cxsparse;
 
-Float64List cs_czero() => new Float64List.fromList([0.0, 0.0]);
+Float64List czero() => new Float64List.fromList([0.0, 0.0]);
 
-Float64List cs_cone() => new Float64List.fromList([1.0, 0.0]);
+Float64List cone() => new Float64List.fromList([1.0, 0.0]);
 
-double cs_creal(Float64List x) => x[0];
+double _creal(Float64List x) => x[0];
 
-double cs_cimag(Float64List x) => x[1];
+double _cimag(Float64List x) => x[1];
 
-Float64List cs_cget(Float64List x, int idx) {
+Float64List _cget(Float64List x, int idx) {
   return new Float64List.fromList([x[idx], x[idx + 1]]);
 }
 
-void cs_cset(Float64List x, int idx, Float64List val) {
+void _cset(Float64List x, int idx, Float64List val) {
   x[idx] = val[0];
   x[idx + 1] = val[1];
 }
 
-bool cs_cequal(Float64List x, Float64List y, [double tol = 1e-14]) {
-  return cs_cabs(x[0] - y[0], x[1] - y[1]) <= tol.abs();
+bool cequal(Float64List x, Float64List y, [double tol = 1e-14]) {
+  return cabs(x[0] - y[0], x[1] - y[1]) <= tol.abs();
 }
 
-double cs_cabs_list(Float64List x) {
+double cabs_list(Float64List x) {
   double absX = x[0].abs();
   double absY = x[1].abs();
 
@@ -53,7 +53,7 @@ double cs_cabs_list(Float64List x) {
   }
 }
 
-double cs_cabs(double re, double im) {
+double cabs(double re, double im) {
   double absX = re.abs();
   double absY = im.abs();
 
@@ -68,11 +68,11 @@ double cs_cabs(double re, double im) {
   }
 }
 
-Float64List cs_conj(Float64List x) {
+Float64List conj(Float64List x) {
   return new Float64List.fromList([x[0], -x[1]]);
 }
 
-Float64List cs_cdiv(Float64List x, double re, double im) {
+Float64List cdiv(Float64List x, double re, double im) {
   Float64List z = new Float64List(2);
   double scalar;
 
@@ -91,34 +91,34 @@ Float64List cs_cdiv(Float64List x, double re, double im) {
   return z;
 }
 
-Float64List cs_cdiv_list(Float64List x, Float64List y) {
-  return cs_cdiv(x, y[0], y[1]);
+Float64List cdiv_list(Float64List x, Float64List y) {
+  return cdiv(x, y[0], y[1]);
 }
 
-Float64List cs_cplus(Float64List x, Float64List y) {
+Float64List cplus(Float64List x, Float64List y) {
   return new Float64List.fromList([x[0] + y[0], x[1] + y[1]]);
 }
 
-Float64List cs_cminus(final Float64List x, final Float64List y) {
+Float64List cminus(final Float64List x, final Float64List y) {
   return new Float64List.fromList([x[0] - y[0], x[1] - y[1]]);
 }
 
-Float64List cs_cmult(Float64List x, double y) {
+Float64List cmult(Float64List x, double y) {
   return new Float64List.fromList([x[0] * y, x[1] * y]);
 }
 
-Float64List cs_cmult_list(Float64List x, Float64List y) {
+Float64List cmult_list(Float64List x, Float64List y) {
   return new Float64List.fromList([x[0] * y[0] - x[1] * y[1], x[1] * y[0] + x[0] * y[1]]);
 }
 
-Float64List cs_cneg(Float64List x) {
+Float64List cneg(Float64List x) {
   Float64List neg_one = new Float64List.fromList([-1.0, 0.0]);
-  return cs_cmult_list(neg_one, x);
+  return cmult_list(neg_one, x);
 }
 
-Float64List cs_csqrt(Float64List x) {
+Float64List csqrt(Float64List x) {
   Float64List z = new Float64List(2);
-  double absx = cs_cabs_list(x);
+  double absx = cabs_list(x);
   double tmp;
   if (absx > 0.0) {
     if (x[0] > 0.0) {
@@ -140,6 +140,6 @@ Float64List cs_csqrt(Float64List x) {
   return z;
 }
 
-Float64List cs_csquare(Float64List x) {
-  return cs_cmult_list(x, x);
+Float64List csquare(Float64List x) {
+  return cmult_list(x, x);
 }

@@ -20,13 +20,13 @@ part of edu.emory.mathcs.cxsparse;
 /// Computes the transpose of a sparse matrix, C =A';
 ///
 /// [values] pattern only if false, both pattern and values otherwise.
-DZcs cs_transpose(DZcs A, bool values) {
+Matrix transpose(Matrix A, bool values) {
   int q, n, m;
   Int32List Cp, Ci, Ap, Ai, w;
-  DZcsa Cx = new DZcsa(),
-      Ax = new DZcsa();
-  DZcs C;
-  if (!CS_CSC(A)) {
+  Vector Cx = new Vector(),
+      Ax = new Vector();
+  Matrix C;
+  if (!csc(A)) {
     return null;
   }
   m = A.m;
@@ -34,18 +34,18 @@ DZcs cs_transpose(DZcs A, bool values) {
   Ap = A.p;
   Ai = A.i;
   Ax.x = A.x;
-  C = cs_spalloc(n, m, Ap[n], values && (Ax.x != null), false); // allocate result
+  C = spalloc(n, m, Ap[n], values && (Ax.x != null), false); // allocate result
   w = new Int32List(m); // get workspace
   Cp = C.p;
   Ci = C.i;
   Cx.x = C.x;
   for (int p = 0; p < Ap[n]; p++) w[Ai[p]]++; // row counts
-  cs_cumsum(Cp, w, m); // row pointers
+  cumsum(Cp, w, m); // row pointers
   for (int j = 0; j < n; j++) {
     for (int p = Ap[j]; p < Ap[j + 1]; p++) {
       Ci[q = w[Ai[p]]++] = j; // place A(i,j) as entry C(j,i)
       if (Cx.x != null) {
-        Cx.set_list(q, (values) ? cs_conj(Ax.get(p)) : Ax.get(p));
+        Cx.setList(q, (values) ? conj(Ax.get(p)) : Ax.get(p));
       }
     }
   }

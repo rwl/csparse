@@ -18,7 +18,7 @@
 part of edu.emory.mathcs.cxsparse;
 
 /// clear w
-int _cs_wclear(int mark, int lemax, Int32List w, int w_offset, int n) {
+int _wclear(int mark, int lemax, Int32List w, int w_offset, int n) {
   if (mark < 2 || (mark + lemax < 0)) {
     for (int k = 0; k < n; k++) {
       if (w[w_offset + k] != 0) {
@@ -40,8 +40,8 @@ bool _diag(int i, int j, aij, other) => i != j;
 /// [order] 0:natural, 1:Chol, 2:LU, 3:QR
 /// Returns amd(A+A') if A is symmetric, or amd(A'A) otherwise, null on error
 /// or for natural ordering
-Int32List cs_amd(int order, DZcs A) {
-  DZcs C, A2, AT;
+Int32List amd(int order, Matrix A) {
+  Matrix C, A2, AT;
   Int32List Cp, Ci, last, W, len, nv, next, P, head, elen, degree, w, hhead, ATp, ATi;
   int lemax = 0,
       mindeg = 0,
@@ -50,10 +50,10 @@ Int32List cs_amd(int order, DZcs A) {
   /* FIXME: unsigned */int h;
   bool ok;
   /* Construct matrix C */
-  if (!CS_CSC(A) || order <= 0 || order > 3) {
+  if (!csc(A) || order <= 0 || order > 3) {
     return null;
   }
-  AT = cs_transpose(A, false); // compute A'
+  AT = transpose(A, false); // compute A'
   if (AT == null) {
     return null;
   }
@@ -62,7 +62,7 @@ Int32List cs_amd(int order, DZcs A) {
   dense = math.max(16, 10 * math.sqrt(n).toInt()); // find dense threshold
   dense = math.min(n - 2, dense);
   if (order == 1 && n == m) {
-    C = cs_add(A, AT, cs_czero(), cs_czero()); // C = A+A'
+    C = add(A, AT, czero(), czero()); // C = A+A'
   } else if (order == 2) {
     ATp = AT.p; // drop dense columns from AT
     ATi = AT.i;
@@ -76,24 +76,24 @@ Int32List cs_amd(int order, DZcs A) {
       }
     }
     ATp[m] = p2; // finalize AT
-    A2 = cs_transpose(AT, false); // A2 = AT'
-    C = (A2 != null) ? cs_multiply(AT, A2) : null; // C=A'*A with no dense rows
+    A2 = transpose(AT, false); // A2 = AT'
+    C = (A2 != null) ? multiply(AT, A2) : null; // C=A'*A with no dense rows
     A2 = null;
   } else {
-    C = cs_multiply(AT, A); // C=A'*A
+    C = multiply(AT, A); // C=A'*A
   }
   AT = null;
   if (C == null) {
     return null;
   }
-  cs_fkeep(C, _diag, null); // drop diagonal entries
+  fkeep(C, _diag, null); // drop diagonal entries
   Cp = C.p;
   cnz = Cp[n];
   P = new Int32List(n + 1); // allocate result
   W = new Int32List(8 * (n + 1)); // get workspace
   t = cnz + cnz ~/ 5 + 2 * n; // add elbow room to C
-  if (P == null || W == null || !cs_sprealloc(C, t)) {
-    return (cs_idone(P, C, W, false));
+  if (P == null || W == null || !sprealloc(C, t)) {
+    return (_idone(P, C, W, false));
   }
   len = W;
   nv = W;
@@ -129,7 +129,7 @@ Int32List cs_amd(int order, DZcs A) {
     elen[elen_offset + i] = 0; // Ek of node i is empty
     degree[degree_offset + i] = len[i]; // degree of node i
   }
-  mark = _cs_wclear(0, 0, w, w_offset, n); // clear w
+  mark = _wclear(0, 0, w, w_offset, n); // clear w
   elen[elen_offset + n] = -2; // n is a dead element
   Cp[n] = -1; // n is a root of assembly tree
   w[w_offset + n] = 0; // n is a dead element
@@ -147,7 +147,7 @@ Int32List cs_amd(int order, DZcs A) {
       nv[nv_offset + i] = 0; // absorb i into element n
       elen[elen_offset + i] = -1; // node i is dead
       nel++;
-      Cp[i] = _CS_FLIP(n);
+      Cp[i] = _flip(n);
       nv[nv_offset + n]++;
     } else {
       if (head[head_offset + d] != -1) last[head[head_offset + d]] = i;
@@ -172,13 +172,13 @@ Int32List cs_amd(int order, DZcs A) {
         if ((p = Cp[j]) >= 0) // j is a live node or element
         {
           Cp[j] = Ci[p]; // save first entry of object
-          Ci[p] = _CS_FLIP(j); // first entry is now CS_FLIP(j)
+          Ci[p] = _flip(j); // first entry is now CS_FLIP(j)
         }
       }
       q = 0;
       for (p = 0; p < cnz; ) // scan all of memory
       {
-        if ((j = _CS_FLIP(Ci[p++])) >= 0) // found object j
+        if ((j = _flip(Ci[p++])) >= 0) // found object j
         {
           Ci[q] = Cp[j]; // restore first entry of object
           Cp[j] = q++; // new pointer to object j
@@ -224,7 +224,7 @@ Int32List cs_amd(int order, DZcs A) {
         }
       }
       if (e != k) {
-        Cp[e] = _CS_FLIP(k); // absorb e into k
+        Cp[e] = _flip(k); // absorb e into k
         w[w_offset + e] = 0; // e is now a dead element
       }
     }
@@ -234,7 +234,7 @@ Int32List cs_amd(int order, DZcs A) {
     len[k] = pk2 - pk1;
     elen[elen_offset + k] = -2; // k is now an element
     /* Find set differences */
-    mark = _cs_wclear(mark, lemax, w, w_offset, n); // clear w if necessary
+    mark = _wclear(mark, lemax, w, w_offset, n); // clear w if necessary
     for (pk = pk1; pk < pk2; pk++) // scan 1: find |Le\Lk|
     {
       i = Ci[pk];
@@ -274,7 +274,7 @@ Int32List cs_amd(int order, DZcs A) {
             Ci[pn++] = e; // keep e in Ei
             h += e; // compute the hash of node i
           } else {
-            Cp[e] = _CS_FLIP(k); // aggressive absorb. e.k
+            Cp[e] = _flip(k); // aggressive absorb. e.k
             w[w_offset + e] = 0; // e is a dead element
           }
         }
@@ -292,7 +292,7 @@ Int32List cs_amd(int order, DZcs A) {
       }
       if (d == 0) // check for mass elimination
       {
-        Cp[i] = _CS_FLIP(k); // absorb i into k
+        Cp[i] = _flip(k); // absorb i into k
         nvi = -nv[nv_offset + i];
         dk -= nvi; // |Lk| -= |i|
         nvk += nvi; // |k| += nv[nv_offset+i]
@@ -313,7 +313,7 @@ Int32List cs_amd(int order, DZcs A) {
     } // scan2 is done
     degree[degree_offset + k] = dk; // finalize |Lk|
     lemax = math.max(lemax, dk);
-    mark = _cs_wclear(mark + lemax, lemax, w, w_offset, n); // clear w
+    mark = _wclear(mark + lemax, lemax, w, w_offset, n); // clear w
     /* Supernode detection */
     for (pk = pk1; pk < pk2; pk++) {
       i = Ci[pk];
@@ -338,7 +338,7 @@ Int32List cs_amd(int order, DZcs A) {
           }
           if (ok) // i and j are identical
           {
-            Cp[j] = _CS_FLIP(i); // absorb j into i
+            Cp[j] = _flip(i); // absorb j into i
             nv[nv_offset + i] += nv[nv_offset + j];
             nv[nv_offset + j] = 0;
             elen[elen_offset + j] = -1; // node j is dead
@@ -382,7 +382,7 @@ Int32List cs_amd(int order, DZcs A) {
   }
   /* Postordering */
   for (i = 0; i < n; i++) {
-    Cp[i] = _CS_FLIP(Cp[i]); // fix assembly tree
+    Cp[i] = _flip(Cp[i]); // fix assembly tree
   }
   for (j = 0; j <= n; j++) {
     head[head_offset + j] = -1;
@@ -409,8 +409,8 @@ Int32List cs_amd(int order, DZcs A) {
   for (i = 0; i <= n; i++) // postorder the assembly tree
   {
     if (Cp[i] == -1) {
-      k = cs_tdfs(i, k, head, head_offset, next, next_offset, P, 0, w, w_offset);
+      k = tdfs(i, k, head, head_offset, next, next_offset, P, 0, w, w_offset);
     }
   }
-  return (cs_idone(P, C, W, true));
+  return (_idone(P, C, W, true));
 }

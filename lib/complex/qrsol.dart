@@ -24,46 +24,46 @@ part of edu.emory.mathcs.cxsparse;
 /// [A] column-compressed matrix.
 /// [b] size max(m,n), b (size m) on input, x(size n) on output.
 /// Returns true if successful, false on error.
-bool cs_qrsol(int order, DZcs A, DZcsa b) {
-  DZcsa x;
-  DZcss S;
-  DZcsn N;
-  DZcs AT = null;
+bool qrsol(int order, Matrix A, Vector b) {
+  Vector x;
+  Symbolic S;
+  Numeric N;
+  Matrix AT = null;
   int k, m, n;
   bool ok;
-  if (!CS_CSC(A) || b == null) {
+  if (!csc(A) || b == null) {
     return false;
   }
   n = A.n;
   m = A.m;
   if (m >= n) {
-    S = cs_sqr(order, A, true); // ordering and symbolic analysis
-    N = cs_qr(A, S); // numeric QR factorization
-    x = new DZcsa.sized(S != null ? S.m2 : 1); // get workspace
+    S = sqr(order, A, true); // ordering and symbolic analysis
+    N = qr(A, S); // numeric QR factorization
+    x = new Vector.sized(S != null ? S.m2 : 1); // get workspace
     ok = (S != null && N != null);
     if (ok) {
-      cs_ipvec(S.pinv, b, x, m); // x(0:m-1) = b(p(0:m-1)
+      ipvec(S.pinv, b, x, m); // x(0:m-1) = b(p(0:m-1)
       for (k = 0; k < n; k++) // apply Householder refl. to x
       {
-        cs_happly(N.L, k, N.B[k], x);
+        happly(N.L, k, N.B[k], x);
       }
-      cs_usolve(N.U, x); // x = R\x
-      cs_ipvec(S.q, x, b, n); // b(q(0:n-1)) = x(0:n-1)
+      usolve(N.U, x); // x = R\x
+      ipvec(S.q, x, b, n); // b(q(0:n-1)) = x(0:n-1)
     }
   } else {
-    AT = cs_transpose(A, true); // Ax=b is underdetermined
-    S = cs_sqr(order, AT, true); // ordering and symbolic analysis
-    N = cs_qr(AT, S); // numeric QR factorization of A'
-    x = new DZcsa.sized(S != null ? S.m2 : 1); // get workspace
+    AT = transpose(A, true); // Ax=b is underdetermined
+    S = sqr(order, AT, true); // ordering and symbolic analysis
+    N = qr(AT, S); // numeric QR factorization of A'
+    x = new Vector.sized(S != null ? S.m2 : 1); // get workspace
     ok = (AT != null && S != null && N != null);
     if (ok) {
-      cs_pvec(S.q, b, x, m); // x(q(0:m-1)) = b(0:m-1)
-      cs_utsolve(N.U, x); // x = R'\x
+      pvec(S.q, b, x, m); // x(q(0:m-1)) = b(0:m-1)
+      utsolve(N.U, x); // x = R'\x
       for (k = m - 1; k >= 0; k--) // apply Householder refl. to x
       {
-        cs_happly(N.L, k, N.B[k], x);
+        happly(N.L, k, N.B[k], x);
       }
-      cs_pvec(S.pinv, x, b, n); // b(0:n-1) = x(p(0:n-1))
+      pvec(S.pinv, x, b, n); // b(0:n-1) = x(p(0:n-1))
     }
   }
   x = null;

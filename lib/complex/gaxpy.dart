@@ -23,11 +23,11 @@ part of edu.emory.mathcs.cxsparse;
 /// [x] size n vector.
 /// [y] size m vector.
 /// Returns true if successful, false on error.
-bool cs_gaxpy(DZcs A, DZcsa x, DZcsa y) {
+bool gaxpy(Matrix A, Vector x, Vector y) {
   int n;
   Int32List Ap, Ai;
-  DZcsa Ax = new DZcsa();
-  if (!CS_CSC(A) || x == null || y == null) {
+  Vector Ax = new Vector();
+  if (!csc(A) || x == null || y == null) {
     return false;
   }
   n = A.n;
@@ -36,7 +36,7 @@ bool cs_gaxpy(DZcs A, DZcsa x, DZcsa y) {
   Ax.x = A.x;
   for (int j = 0; j < n; j++) {
     for (int p = Ap[j]; p < Ap[j + 1]; p++) {
-      y.set_list(Ai[p], cs_cplus(y.get(Ai[p]), cs_cmult_list(Ax.get(p), x.get(j))));
+      y.setList(Ai[p], cplus(y.get(Ai[p]), cmult_list(Ax.get(p), x.get(j))));
     }
   }
   return true;

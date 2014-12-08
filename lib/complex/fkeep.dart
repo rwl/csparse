@@ -23,12 +23,12 @@ part of edu.emory.mathcs.cxsparse;
 /// [fkeep] drop aij if fkeep.fkeep(i,j,aij,other) is false.
 /// [other] optional parameter to fkeep.
 /// Returns the new number of entries in A, -1 on error.
-int cs_fkeep(DZcs A, ifkeep fkeep, Object other) {
+int fkeep(Matrix A, ifkeep fkeep, Object other) {
   int nz = 0,
       n;
   Int32List Ap, Ai;
-  DZcsa Ax = new DZcsa();
-  if (!CS_CSC(A)) {
+  Vector Ax = new Vector();
+  if (!csc(A)) {
     return -1;
   }
   n = A.n;
@@ -39,13 +39,13 @@ int cs_fkeep(DZcs A, ifkeep fkeep, Object other) {
     int p = Ap[j]; // get current location of col j
     Ap[j] = nz; // record new location of col j
     for ( ; p < Ap[j + 1]; p++) {
-      if (fkeep(Ai[p], j, Ax.x != null ? Ax.get(p) : cs_cone(), other)) {
-        if (Ax.x != null) Ax.set_list(nz, Ax.get(p)); // keep A(i,j)
+      if (fkeep(Ai[p], j, Ax.x != null ? Ax.get(p) : cone(), other)) {
+        if (Ax.x != null) Ax.setList(nz, Ax.get(p)); // keep A(i,j)
         Ai[nz++] = Ai[p];
       }
     }
   }
   Ap[n] = nz; // finalize A
-  cs_sprealloc(A, 0); // remove extra space from A
+  sprealloc(A, 0); // remove extra space from A
   return nz;
 }

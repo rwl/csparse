@@ -23,8 +23,8 @@ part of edu.emory.mathcs.cxsparse;
 /// [nzmax] maximum number of entries.
 /// [values] allocate pattern only if false, values and pattern otherwise.
 /// [triplet] compressed-column if false, triplet form otherwise.
-DZcs cs_spalloc(int m, int n, int nzmax, bool values, bool triplet) {
-  DZcs A = new DZcs(); // allocate the DZcs struct
+Matrix spalloc(int m, int n, int nzmax, bool values, bool triplet) {
+  Matrix A = new Matrix(); // allocate the DZcs struct
   A.m = m; // define dimensions and nzmax
   A.n = n;
   A.nzmax = nzmax = math.max(nzmax, 1);
@@ -36,12 +36,12 @@ DZcs cs_spalloc(int m, int n, int nzmax, bool values, bool triplet) {
 }
 
 /// Change the max # of entries a sparse matrix can hold.
-bool cs_sprealloc(DZcs A, int nzmax) {
+bool sprealloc(Matrix A, int nzmax) {
   if (A == null) {
     return false;
   }
   if (nzmax <= 0) {
-    nzmax = (CS_CSC(A)) ? (A.p[A.n]) : A.nz;
+    nzmax = (csc(A)) ? (A.p[A.n]) : A.nz;
   }
   Int32List Ainew = new Int32List(nzmax);
   int length = math.min(nzmax, A.i.length);
@@ -49,7 +49,7 @@ bool cs_sprealloc(DZcs A, int nzmax) {
   //Ainew.setAll(0, A.i);
   for (int i = 0; i < length; i++) Ainew[i] = A.i[i];
   A.i = Ainew;
-  if (CS_TRIPLET(A)) {
+  if (triplet(A)) {
     Int32List Apnew = new Int32List(nzmax);
     length = math.min(nzmax, A.p.length);
     //System.arraycopy (A.p, 0, Apnew, 0, length) ;
@@ -73,9 +73,9 @@ bool cs_sprealloc(DZcs A, int nzmax) {
 ///
 /// [m] number of rows of the matrix A to be analyzed.
 /// [n] number of columns of the matrix A to be analyzed.
-DZcsd cs_dalloc(int m, int n) {
-  DZcsd D;
-  D = new DZcsd();
+Decomposition dalloc(int m, int n) {
+  Decomposition D;
+  D = new Decomposition();
   D.p = new Int32List(m);
   D.r = new Int32List(m + 6);
   D.q = new Int32List(n);
@@ -85,30 +85,30 @@ DZcsd cs_dalloc(int m, int n) {
   return D;
 }
 
-int _CS_FLIP(int i) => -i - 2;
+int _flip(int i) => -i - 2;
 
-int _CS_UNFLIP(int i) => (((i) < 0) ? _CS_FLIP(i) : (i));
+int _unflip(int i) => (((i) < 0) ? _flip(i) : (i));
 
-bool _CS_MARKED(Int32List w, int j) => w[j] < 0;
+bool _marked(Int32List w, int j) => w[j] < 0;
 
-void _CS_MARK(Int32List w, int j) {
-  w[j] = _CS_FLIP(w[j]);
+void _mark(Int32List w, int j) {
+  w[j] = _flip(w[j]);
 }
 
 /// Returns true if A is in column-compressed form, false otherwise.
-bool CS_CSC(DZcs A) => A != null && A.nz == -1;
+bool csc(Matrix A) => A != null && A.nz == -1;
 
 /// Returns true if A is in triplet form, false otherwise.
-bool CS_TRIPLET(DZcs A) => A != null && A.nz >= 0;
+bool triplet(Matrix A) => A != null && A.nz >= 0;
 
 /// free workspace and return a sparse matrix result
-DZcs cs_done(DZcs C, Int32List w, DZcsa x, bool ok) => ok ? C : null;
+Matrix _done(Matrix C, Int32List w, Vector x, bool ok) => ok ? C : null;
 
 /// free workspace and return CS_INT array result
-Int32List cs_idone(Int32List p, DZcs C, Int32List w, bool ok) => ok ? p : null;
+Int32List _idone(Int32List p, Matrix C, Int32List w, bool ok) => ok ? p : null;
 
 /// free workspace and return a numeric factorization (Cholesky, LU, or QR)
-DZcsn cs_ndone(DZcsn N, DZcs C, Int32List w, DZcsa x, bool ok) => ok ? N : null;
+Numeric _ndone(Numeric N, Matrix C, Int32List w, Vector x, bool ok) => ok ? N : null;
 
 /// free workspace and return a csd result
-DZcsd cs_ddone(DZcsd D, DZcs C, Int32List w, bool ok) => ok ? D : null;
+Decomposition _ddone(Decomposition D, Matrix C, Int32List w, bool ok) => ok ? D : null;

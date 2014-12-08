@@ -18,12 +18,12 @@
 part of edu.emory.mathcs.cxsparse;
 
 /// Breadth-first search for coarse decomposition (C0,C1,R1 or R0,R3,C3)
-bool _cs_bfs(DZcs A, int n, Int32List wi, Int32List wj, Int32List queue,
+bool _bfs(Matrix A, int n, Int32List wi, Int32List wj, Int32List queue,
              Int32List imatch, int imatch_offset, Int32List jmatch, int jmatch_offset, int mark) {
   Int32List Ap, Ai;
   int head = 0,
       tail = 0;
-  DZcs C;
+  Matrix C;
   for (int j = 0; j < n; j++) // place all unmatched nodes in queue
   {
     if (imatch[imatch_offset + j] >= 0) {
@@ -35,7 +35,7 @@ bool _cs_bfs(DZcs A, int n, Int32List wi, Int32List wj, Int32List queue,
   if (tail == 0) {
     return true; // quick return if no unmatched nodes
   }
-  C = (mark == 1) ? A : cs_transpose(A, false);
+  C = (mark == 1) ? A : transpose(A, false);
   if (C == null) {
     return false; // bfs of C=A' to find R3,C3 from R0
   }
@@ -65,7 +65,7 @@ bool _cs_bfs(DZcs A, int n, Int32List wi, Int32List wj, Int32List queue,
 }
 
 /// Collect matched rows and columns into p and q.
-void _cs_matched(int n, Int32List wj, Int32List imatch, int imatch_offset,
+void _matched(int n, Int32List wj, Int32List imatch, int imatch_offset,
                  Int32List p, Int32List q, Int32List cc, Int32List rr, int set, int mark) {
   int kc = cc[set],
       j;
@@ -82,7 +82,7 @@ void _cs_matched(int n, Int32List wj, Int32List imatch, int imatch_offset,
 }
 
 /// Collect unmatched rows into the permutation vector p.
-void _cs_unmatched(int m, Int32List wi, Int32List p, Int32List rr, int set) {
+void _unmatched(int m, Int32List wi, Int32List p, Int32List rr, int set) {
   int i,
       kr = rr[set];
   for (i = 0; i < m; i++) if (wi[i] == 0) p[kr++] = i;
@@ -103,19 +103,19 @@ bool _rprune(int i, int j, Float64List aij, Object other) {
 ///
 /// [seed] 0: natural, -1: reverse, random order otherwise
 /// Returns Dulmage-Mendelsohn analysis, null on error.
-DZcsd cs_dmperm(DZcs A, int seed) {
+Decomposition dmperm(Matrix A, int seed) {
   int m, n, i, j, k, cnz, nc, nb1, nb2;
-  Int32List jmatch, imatch, wi, wj, pinv, Cp, Ci, ps, rs, p, q, cc, rr, r, s;
+  Int32List jmatch, imatch, wi, wj, _pinv, Cp, Ci, ps, rs, p, q, cc, rr, r, s;
   bool ok;
-  DZcs C;
-  DZcsd D, scc;
+  Matrix C;
+  Decomposition D, _scc;
   /* Maximum matching */
-  if (!CS_CSC(A)) {
+  if (!csc(A)) {
     return null;
   }
   m = A.m;
   n = A.n;
-  D = cs_dalloc(m, n); // allocate result
+  D = dalloc(m, n); // allocate result
   if (D == null) {
     return null;
   }
@@ -125,37 +125,37 @@ DZcsd cs_dmperm(DZcs A, int seed) {
   s = D.s;
   cc = D.cc;
   rr = D.rr;
-  jmatch = cs_maxtrans(A, seed); // max transversal
+  jmatch = maxtrans(A, seed); // max transversal
   imatch = jmatch; // imatch = inverse of jmatch
   int imatch_offset = m;
   if (jmatch == null) {
-    return cs_ddone(D, null, jmatch, false);
+    return _ddone(D, null, jmatch, false);
   }
   /* Coarse decomposition */
   wi = r;
   wj = s; // use r and s as workspace
   for (j = 0; j < n; j++) wj[j] = -1; // unmark all cols for bfs
   for (i = 0; i < m; i++) wi[i] = -1; // unmark all rows for bfs
-  _cs_bfs(A, n, wi, wj, q, imatch, imatch_offset, jmatch, 0, 1); // find C1, R1 from C0
-  ok = _cs_bfs(A, m, wj, wi, p, jmatch, 0, imatch, imatch_offset, 3); // find R3, C3 from R0
+  _bfs(A, n, wi, wj, q, imatch, imatch_offset, jmatch, 0, 1); // find C1, R1 from C0
+  ok = _bfs(A, m, wj, wi, p, jmatch, 0, imatch, imatch_offset, 3); // find R3, C3 from R0
   if (!ok) {
-    return cs_ddone(D, null, jmatch, false);
+    return _ddone(D, null, jmatch, false);
   }
-  _cs_unmatched(n, wj, q, cc, 0); // unmatched set C0
-  _cs_matched(n, wj, imatch, imatch_offset, p, q, cc, rr, 1, 1); // set R1 and C1
-  _cs_matched(n, wj, imatch, imatch_offset, p, q, cc, rr, 2, -1); // set R2 and C2
-  _cs_matched(n, wj, imatch, imatch_offset, p, q, cc, rr, 3, 3); // set R3 and C3
-  _cs_unmatched(m, wi, p, rr, 3); // unmatched set R0
+  _unmatched(n, wj, q, cc, 0); // unmatched set C0
+  _matched(n, wj, imatch, imatch_offset, p, q, cc, rr, 1, 1); // set R1 and C1
+  _matched(n, wj, imatch, imatch_offset, p, q, cc, rr, 2, -1); // set R2 and C2
+  _matched(n, wj, imatch, imatch_offset, p, q, cc, rr, 3, 3); // set R3 and C3
+  _unmatched(m, wi, p, rr, 3); // unmatched set R0
   jmatch = null;
   /* Fine decomposition */
-  pinv = cs_pinv(p, m); // pinv=p'
+  _pinv = pinv(p, m); // pinv=p'
   if (pinv == null) {
-    return cs_ddone(D, null, null, false);
+    return _ddone(D, null, null, false);
   }
-  C = cs_permute(A, pinv, q, false); // C=A(p,q) (it will hold A(R2,C2))
-  pinv = null;
+  C = permute(A, _pinv, q, false); // C=A(p,q) (it will hold A(R2,C2))
+  _pinv = null;
   if (C == null) {
-    return cs_ddone(D, null, null, false);
+    return _ddone(D, null, null, false);
   }
   Cp = C.p;
   nc = cc[3] - cc[2]; // delete cols C0, C1, and C3 from C
@@ -167,7 +167,7 @@ DZcsd cs_dmperm(DZcs A, int seed) {
   C.n = nc;
   if (rr[2] - rr[1] < m) // delete rows R0, R1, and R3 from C
   {
-    cs_fkeep(C, _rprune, rr);
+    fkeep(C, _rprune, rr);
     cnz = Cp[nc];
     Ci = C.i;
     if (rr[1] > 0) {
@@ -177,14 +177,14 @@ DZcsd cs_dmperm(DZcs A, int seed) {
     }
   }
   C.m = nc;
-  scc = cs_scc(C); // find strongly connected components of C
-  if (scc == null) {
-    return cs_ddone(D, C, null, false);
+  _scc = scc(C); // find strongly connected components of C
+  if (_scc == null) {
+    return _ddone(D, C, null, false);
   }
   /* Combine coarse and fine decompositions */
-  ps = scc.p; // C(ps,ps) is the permuted matrix
-  rs = scc.r; // kth block is rs[k]..rs[k+1]-1
-  nb1 = scc.nb; // # of blocks of A(R2,C2)
+  ps = _scc.p; // C(ps,ps) is the permuted matrix
+  rs = _scc.r; // kth block is rs[k]..rs[k+1]-1
+  nb1 = _scc.nb; // # of blocks of A(R2,C2)
   for (k = 0; k < nc; k++) wj[k] = q[ps[k] + cc[2]];
   for (k = 0; k < nc; k++) q[k + cc[2]] = wj[k];
   for (k = 0; k < nc; k++) wi[k] = p[ps[k] + rr[1]];
@@ -208,6 +208,6 @@ DZcsd cs_dmperm(DZcs A, int seed) {
   r[nb2] = m;
   s[nb2] = n;
   D.nb = nb2;
-  scc = null;
-  return cs_ddone(D, C, null, true);
+  _scc = null;
+  return _ddone(D, C, null, true);
 }

@@ -20,12 +20,12 @@ part of edu.emory.mathcs.cxsparse;
 /// Removes and sums duplicate entries in a sparse matrix.
 ///
 /// Returns true if successful, false on error.
-bool cs_dupl(DZcs A) {
+bool dupl(Matrix A) {
   int p, q, n, m;
   int nz = 0;
   Int32List Ap, Ai, w;
-  DZcsa Ax = new DZcsa();
-  if (!CS_CSC(A)) {
+  Vector Ax = new Vector();
+  if (!csc(A)) {
     return false;
   }
   m = A.m;
@@ -42,16 +42,16 @@ bool cs_dupl(DZcs A) {
     for (p = Ap[j]; p < Ap[j + 1]; p++) {
       final i = Ai[p]; // A(i,j) is nonzero
       if (w[i] >= q) {
-        Ax.set_list(w[i], cs_cplus(Ax.get(w[i]), Ax.get(p))); // A(i,j) is a duplicate
+        Ax.setList(w[i], cplus(Ax.get(w[i]), Ax.get(p))); // A(i,j) is a duplicate
       } else {
         w[i] = nz; // record where row i occurs
         Ai[nz] = i; // keep A(i,j)
-        Ax.set_list(nz++, Ax.get(p));
+        Ax.setList(nz++, Ax.get(p));
       }
     }
     Ap[j] = q; // record start of column j
   }
   Ap[n] = nz; // finalize A
   w = null;
-  return (cs_sprealloc(A, 0)); // remove extra space from A
+  return (sprealloc(A, 0)); // remove extra space from A
 }

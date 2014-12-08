@@ -21,13 +21,13 @@ part of edu.emory.mathcs.cxsparse;
 ///
 /// C = compressed-column form of a triplet matrix T. The columns of C are
 /// not sorted, and duplicate entries may be present in C.
-DZcs cs_compress(DZcs T) {
+Matrix compress(Matrix T) {
   int m, n, nz, p, k;
   Int32List Cp, Ci, w, Ti, Tj;
-  DZcsa Cx = new DZcsa(),
-      Tx = new DZcsa();
-  DZcs C;
-  if (!CS_TRIPLET(T)) {
+  Vector Cx = new Vector(),
+      Tx = new Vector();
+  Matrix C;
+  if (!triplet(T)) {
     return null;
   }
   m = T.m;
@@ -36,21 +36,21 @@ DZcs cs_compress(DZcs T) {
   Tj = T.p;
   Tx.x = T.x;
   nz = T.nz;
-  C = cs_spalloc(m, n, nz, Tx.x != null, false); // allocate result
+  C = spalloc(m, n, nz, Tx.x != null, false); // allocate result
   w = new Int32List(n); // get workspace
   if (C == null || w == null) {
-    return cs_done(C, w, null, false); // out of memory
+    return _done(C, w, null, false); // out of memory
   }
   Cp = C.p;
   Ci = C.i;
   Cx.x = C.x;
   for (k = 0; k < nz; k++) w[Tj[k]]++; // column counts
-  cs_cumsum(Cp, w, n); // column pointers
+  cumsum(Cp, w, n); // column pointers
   for (k = 0; k < nz; k++) {
     Ci[p = w[Tj[k]]++] = Ti[k]; // A(i,j) is the pth entry in C
     if (Cx.x != null) {
-      Cx.set_list(p, Tx.get(k));
+      Cx.setList(p, Tx.get(k));
     }
   }
-  return cs_done(C, w, null, true); // success; free w and return C
+  return _done(C, w, null, true); // success; free w and return C
 }

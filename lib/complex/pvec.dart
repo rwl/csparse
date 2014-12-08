@@ -24,12 +24,12 @@ part of edu.emory.mathcs.cxsparse;
 /// [x] output vector, x=P*b.
 /// [n] length of p, b and x.
 /// Returns true if successful, false otherwise.
-bool cs_pvec(Int32List p, DZcsa b, DZcsa x, int n) {
+bool pvec(Int32List p, Vector b, Vector x, int n) {
   if (x == null || b == null) {
     return false;
   }
   for (int k = 0; k < n; k++) {
-    x.set_list(k, b.get(p != null ? p[k] : k));
+    x.setList(k, b.get(p != null ? p[k] : k));
   }
   return true;
 }

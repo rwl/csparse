@@ -23,20 +23,20 @@ part of edu.emory.mathcs.cxsparse;
 /// [pinv] size n, inverse permutation.
 /// [values] allocate pattern only if false, values and pattern otherwise.
 /// Returns C = PAP', null on error.
-DZcs cs_symperm(DZcs A, Int32List pinv, bool values) {
+Matrix symperm(Matrix A, Int32List pinv, bool values) {
   int i, j, p, q, i2, j2, n;
   Int32List Ap, Ai, Cp, Ci, w;
-  DZcsa Cx = new DZcsa(),
-      Ax = new DZcsa();
-  DZcs C;
-  if (!CS_CSC(A)) {
+  Vector Cx = new Vector(),
+      Ax = new Vector();
+  Matrix C;
+  if (!csc(A)) {
     return null;
   }
   n = A.n;
   Ap = A.p;
   Ai = A.i;
   Ax.x = A.x;
-  C = cs_spalloc(n, n, Ap[n], values && (Ax.x != null), false); // alloc result
+  C = spalloc(n, n, Ap[n], values && (Ax.x != null), false); // alloc result
   w = new Int32List(n); // get workspace
   Cp = C.p;
   Ci = C.i;
@@ -53,7 +53,7 @@ DZcs cs_symperm(DZcs A, Int32List pinv, bool values) {
       w[math.max(i2, j2)]++; // column count of C
     }
   }
-  cs_cumsum(Cp, w, n); // compute column pointers of C
+  cumsum(Cp, w, n); // compute column pointers of C
   for (j = 0; j < n; j++) {
     j2 = pinv != null ? pinv[j] : j; // column j of A is column j2 of C
     for (p = Ap[j]; p < Ap[j + 1]; p++) {
@@ -64,7 +64,7 @@ DZcs cs_symperm(DZcs A, Int32List pinv, bool values) {
       i2 = pinv != null ? pinv[i] : i; // row i of A is row i2 of C
       Ci[q = w[math.max(i2, j2)]++] = math.min(i2, j2);
       if (Cx.x != null) {
-        Cx.set_list(q, (i2 <= j2) ? Ax.get(p) : cs_conj(Ax.get(p)));
+        Cx.setList(q, (i2 <= j2) ? Ax.get(p) : conj(Ax.get(p)));
       }
     }
   }

@@ -15,6 +15,7 @@
 /// You should have received a copy of the GNU Lesser General Public
 /// License along with this Module; if not, write to the Free Software
 /// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
+library cxsparse.test.benchmark;
 
 import 'dart:io';
 import 'dart:typed_data';
@@ -29,13 +30,13 @@ final int ORDER = 0;
 void main() {
   int m;
   double tol;
-  DZcs A, C;
-  DZcsa b, x;
+  Matrix A, C;
+  Vector b, x;
 
-  DZproblem prob;
+  Problem prob;
 
-  final file = get_file(C_IBM32B);
-  prob = get_problem(file, DROP_TOL);
+  final file = getFile(C_IBM32B);
+  prob = getProblem(file, DROP_TOL);
 
   A = prob.A;
   C = prob.C;
@@ -53,21 +54,21 @@ void main() {
   benchmark(C, x, b, m, tol, ORDER);
 }
 
-void benchmark(DZcs C, DZcsa x, DZcsa b, int m, double tol, int order) {
+void benchmark(Matrix C, Vector x, Vector b, int m, double tol, int order) {
   int t;
   final t_lu = new Float64List(N);
   final t_qr = new Float64List(N);
 
   for (int i = 0; i < N; i++) {
     t = tic();
-    cs_lusol(order, C, x, tol);
+    lusol(order, C, x, tol);
     t_lu[i] = toc(t);
 
     //System.arraycopy(b.x, 0, x.x, 0, m) ;
     x.x.setAll(0, b.x);
 
     t = tic();
-    cs_qrsol(order, C, x);
+    qrsol(order, C, x);
     t_qr[i] = toc(t);
 
     //System.arraycopy(b.x, 0, x.x, 0, m) ;

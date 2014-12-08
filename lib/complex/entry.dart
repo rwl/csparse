@@ -25,8 +25,8 @@ part of edu.emory.mathcs.cxsparse;
 /// [j] column index of new entry.
 /// [x] numerical value of new entry.
 /// Returns true if successful, false otherwise.
-bool cs_entry_list(DZcs T, int i, int j, Float64List x) {
-  return cs_entry(T, i, j, x[0], x[1]);
+bool entry(Matrix T, int i, int j, Float64List x) {
+  return entryParts(T, i, j, x[0], x[1]);
 }
 
 /// Adds an entry to a triplet matrix. Memory-space and dimension of T are
@@ -38,15 +38,15 @@ bool cs_entry_list(DZcs T, int i, int j, Float64List x) {
 /// [re] real value of new entry.
 /// [im] imaginary value of new entry.
 /// Returns true if successful, false otherwise.
-bool cs_entry(DZcs T, int i, int j, double re, double im) {
-  if (!CS_TRIPLET(T) || i < 0 || j < 0) {
+bool entryParts(Matrix T, int i, int j, double re, double im) {
+  if (!triplet(T) || i < 0 || j < 0) {
     return false;
   }
-  if ((T.nz >= T.nzmax) && !cs_sprealloc(T, 2 * (T.nzmax))) {
+  if ((T.nz >= T.nzmax) && !sprealloc(T, 2 * (T.nzmax))) {
     return false;
   }
   if (T.x != null) {
-    T.set(T.nz, re, im);
+    T.setParts(T.nz, re, im);
   }
   T.i[T.nz] = i;
   T.p[T.nz++] = j;

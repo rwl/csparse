@@ -18,7 +18,7 @@
 part of edu.emory.mathcs.cxsparse;
 
 /// Find an augmenting path starting at column k and extend the match if found.
-void _cs_augment(int k, DZcs A, Int32List jmatch, int jmatch_offset, Int32List cheap, int cheap_offset, Int32List w, int w_offset, Int32List js, int js_offset, Int32List is_, int is_offset, Int32List ps, int ps_offset) {
+void _augment(int k, Matrix A, Int32List jmatch, int jmatch_offset, Int32List cheap, int cheap_offset, Int32List w, int w_offset, Int32List js, int js_offset, Int32List is_, int is_offset, Int32List ps, int ps_offset) {
   int p,
       i = -1,
       head = 0,
@@ -72,14 +72,14 @@ void _cs_augment(int k, DZcs A, Int32List jmatch, int jmatch_offset, Int32List c
 /// [A] column-compressed matrix.
 /// [seed] 0: natural, -1: reverse, randomized otherwise.
 /// Returns row and column matching, size m+n.
-Int32List cs_maxtrans(DZcs A, int seed) // [jmatch [0..m-1]; imatch [0..n-1]]
+Int32List maxtrans(Matrix A, int seed) // [jmatch [0..m-1]; imatch [0..n-1]]
 {
   int i, j, k, n, m, p;
   int n2 = 0,
       m2 = 0;
   Int32List Ap, jimatch, w, cheap, js, is_, ps, Ai, Cp, jmatch, imatch, q;
-  DZcs C;
-  if (!CS_CSC(A)) {
+  Matrix C;
+  if (!csc(A)) {
     return null;
   }
   n = A.n;
@@ -118,14 +118,14 @@ Int32List cs_maxtrans(DZcs A, int seed) // [jmatch [0..m-1]; imatch [0..n-1]]
     for ( ; j < n; j++) {
       imatch[imatch_offset + j] = -1;
     }
-    return cs_idone(jimatch, null, null, true);
+    return _idone(jimatch, null, null, true);
   }
   for (i = 0; i < m; i++) {
     m2 += w[i];
   }
-  C = (m2 < n2) ? cs_transpose(A, false) : A; // transpose if needed
+  C = (m2 < n2) ? transpose(A, false) : A; // transpose if needed
   if (C == null) {
-    return cs_idone(jimatch, (m2 < n2) ? C : null, null, false);
+    return _idone(jimatch, (m2 < n2) ? C : null, null, false);
   }
   n = C.n;
   m = C.m;
@@ -141,7 +141,7 @@ Int32List cs_maxtrans(DZcs A, int seed) // [jmatch [0..m-1]; imatch [0..n-1]]
   }
   w = new Int32List(5 * n); // get workspace
   if (w == null) {
-    return cs_idone(jimatch, (m2 < n2) ? C : null, w, false);
+    return _idone(jimatch, (m2 < n2) ? C : null, w, false);
   }
   cheap = w;
   int cheap_offset = n;
@@ -160,10 +160,10 @@ Int32List cs_maxtrans(DZcs A, int seed) // [jmatch [0..m-1]; imatch [0..n-1]]
   for (i = 0; i < m; i++) {
     jmatch[jmatch_offset + i] = -1; // nothing matched yet
   }
-  q = cs_randperm(n, seed); // q = random permutation
+  q = randperm(n, seed); // q = random permutation
   for (k = 0; k < n; k++) // augment, starting at column q[k]
   {
-    _cs_augment(q != null ? q[k] : k, C, jmatch, jmatch_offset, cheap, cheap_offset, w, 0, js, js_offset, is_, is_offset, ps, ps_offset);
+    _augment(q != null ? q[k] : k, C, jmatch, jmatch_offset, cheap, cheap_offset, w, 0, js, js_offset, is_, is_offset, ps, ps_offset);
   }
   q = null;
   for (j = 0; j < n; j++) imatch[imatch_offset + j] = -1; // find row match
@@ -172,5 +172,5 @@ Int32List cs_maxtrans(DZcs A, int seed) // [jmatch [0..m-1]; imatch [0..n-1]]
       imatch[imatch_offset + jmatch[jmatch_offset + i]] = i;
     }
   }
-  return cs_idone(jimatch, (m2 < n2) ? C : null, w, true);
+  return _idone(jimatch, (m2 < n2) ? C : null, w, true);
 }

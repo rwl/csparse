@@ -29,11 +29,11 @@ part of edu.emory.mathcs.cxsparse;
 /// [C] pattern of x accumulated in C.i.
 /// [nz] pattern of x placed in C starting at C.i[nz].
 /// Returns new value of nz, -1 on error.
-int cs_scatter(DZcs A, int j, Float64List beta, Int32List w, DZcsa x, int mark, DZcs C, int nz) {
+int scatter(Matrix A, int j, Float64List beta, Int32List w, Vector x, int mark, Matrix C, int nz) {
   int i, p;
   Int32List Ap, Ai, Ci;
-  DZcsa Ax = new DZcsa();
-  if (!CS_CSC(A) || (w == null) || !CS_CSC(C)) {
+  Vector Ax = new Vector();
+  if (!csc(A) || (w == null) || !csc(C)) {
     return -1;
   }
   Ap = A.p;
@@ -46,10 +46,10 @@ int cs_scatter(DZcs A, int j, Float64List beta, Int32List w, DZcsa x, int mark, 
       w[i] = mark; // i is new entry in column j
       Ci[nz++] = i; // add i to pattern of C(:,j)
       if (x != null) {
-        x.set_list(i, cs_cmult_list(beta, Ax.get(p))); // x(i) = beta*A(i,j)
+        x.setList(i, cmult_list(beta, Ax.get(p))); // x(i) = beta*A(i,j)
       }
     } else if (x != null) {
-      x.set_list(i, cs_cplus(x.get(i), cs_cmult_list(beta, Ax.get(p)))); // i exists in C(:,j) already
+      x.setList(i, cplus(x.get(i), cmult_list(beta, Ax.get(p)))); // i exists in C(:,j) already
     }
   }
   return nz;

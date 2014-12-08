@@ -24,8 +24,8 @@ import 'cxsparse.dart' as cx;
 /// Loads a triplet matrix T from a file. Each line of the file contains
 /// four values: a row index i, a column index j, a real value aij, and an
 /// imaginary value aij.
-cx.DZcs cs_load(File file, [int base = 0]) {
-  final T = cx.cs_spalloc(0, 0, 1, true, true); // allocate result
+cx.Matrix load(File file, [int base = 0]) {
+  final T = cx.spalloc(0, 0, 1, true, true); // allocate result
 
   try {
     for (String line in file.readAsLinesSync()) {
@@ -35,7 +35,7 @@ cx.DZcs cs_load(File file, [int base = 0]) {
       final j = int.parse(tokens[1]) - base;
       final x_re = double.parse(tokens[2]);
       final x_im = double.parse(tokens[3]);
-      if (!cx.cs_entry(T, i, j, x_re, x_im)) return (null);
+      if (!cx.entryParts(T, i, j, x_re, x_im)) return (null);
     }
   } on FileSystemException catch (e) {
     print(e.message);

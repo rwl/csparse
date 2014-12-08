@@ -19,7 +19,7 @@ part of edu.emory.mathcs.cxsparse;
 
 /// Determines if j is a leaf of the skeleton matrix and find lowest common
 /// ancestor (lca).
-int cs_leaf(int i, int j, Int32List first, int first_offset, Int32List maxfirst, int maxfirst_offset,
+int leaf(int i, int j, Int32List first, int first_offset, Int32List maxfirst, int maxfirst_offset,
             Int32List prevleaf, int prevleaf_offset, Int32List ancestor, int ancestor_offset, Int32List jleaf) {
   int q, s, sparent, jprev;
   if (first == null || maxfirst == null || prevleaf == null || ancestor == null || jleaf == null) {

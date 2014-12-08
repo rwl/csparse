@@ -26,28 +26,28 @@ part of edu.emory.mathcs.cxsparse;
 /// [x] x on output, v on input.
 /// [n] the length of x.
 /// Returns norm2(x), -1 on error.
-Float64List cs_house(DZcsa x, int x_offset, Float64List beta, int n) {
-  Float64List s = cs_czero();
+Float64List house(Vector x, int x_offset, Float64List beta, int n) {
+  Float64List s = czero();
   int i;
   if (x == null) {
     return new Float64List.fromList([-1.0, 0.0]);
   }
   /* s = norm(x) */
   for (i = 0; i < n; i++) { // TODO: check i = 1
-    s = cs_cplus(s, cs_cmult_list(x.get(x_offset + i), cs_conj(x.get(x_offset + i))));
+    s = cplus(s, cmult_list(x.get(x_offset + i), conj(x.get(x_offset + i))));
   }
-  s = cs_csqrt(s);
-  if (cs_cequal(s, cs_czero())) {
+  s = csqrt(s);
+  if (cequal(s, czero())) {
     beta[0] = 0.0;
-    x.set(x_offset + 0, 1.0, 0.0);
+    x.setParts(x_offset + 0, 1.0, 0.0);
   } else {
     /* s = sign(x[0]) * norm (x) ; */
-    if (!cs_cequal(x.get(x_offset + 0), cs_czero())) {
-      s = cs_cmult_list(s, cs_cdiv_list(x.get(x_offset + 0),
-          new Float64List.fromList([cs_cabs_list(x.get(x_offset + 0)), 0.0])));
+    if (!cequal(x.get(x_offset + 0), czero())) {
+      s = cmult_list(s, cdiv_list(x.get(x_offset + 0),
+          new Float64List.fromList([cabs_list(x.get(x_offset + 0)), 0.0])));
     }
-    x.set_list(x_offset + 0, cs_cplus(x.get(x_offset + 0), s));
-    beta[0] = 1 / cs_creal(cs_cmult_list(cs_conj(s), x.get(x_offset + 0)));
+    x.setList(x_offset + 0, cplus(x.get(x_offset + 0), s));
+    beta[0] = 1 / _creal(cmult_list(conj(s), x.get(x_offset + 0)));
   }
-  return cs_cmult(s, -1.0);
+  return cmult(s, -1.0);
 }

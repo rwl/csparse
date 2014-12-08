@@ -60,11 +60,11 @@ final String C_IBM32B = "c_ibm32b";
 final String YOUNG1C = "young1c";
 
 
-File get_file(String name, [String dir = DIR]) {
+File getFile(String name, [String dir = DIR]) {
   return new File([Uri.base.toFilePath() + dir, name].join('/'));
 }
 
-void assert_dimensions(DZcs A, int m, int n, int nzmax, int nnz, [double norm1 = null]) {
+void assertDimensions(Matrix A, int m, int n, int nzmax, int nnz, [double norm1 = null]) {
   expect(m, equals(A.m));
   expect(n, equals(A.n));
   expect(nzmax, equals(A.nzmax));
@@ -73,38 +73,38 @@ void assert_dimensions(DZcs A, int m, int n, int nzmax, int nnz, [double norm1 =
   expect(nnz, equals(nz));
 
   if (norm1 != null) {
-    expect(norm1, closeTo(cs_norm(A), DELTA));
+    expect(norm1, closeTo(norm(A), DELTA));
   }
 }
 
-void assert_problem(DZproblem prob, int m, int n, int nnz, int sym, int sym_nnz, double norm) {
+void assertProblem(Problem prob, int m, int n, int nnz, int sym, int sym_nnz, double _norm) {
   expect(m, equals(prob.A.m));
   expect(n, equals(prob.A.n));
   expect(nnz, equals(prob.A.p[n]));
   expect(sym, equals(prob.sym));
   expect(sym_nnz, equals(sym != 0 ? prob.C.p[n] : 0));
-  expect(norm, closeTo(cs_norm(prob.C), 1e-2));
+  expect(_norm, closeTo(norm(prob.C), 1e-2));
 }
 
-void assert_structure(DZproblem prob, int blocks, int singletons, int rank) {
+void assertStructure(Problem prob, int blocks, int singletons, int rank) {
   expect(blocks, equals(prob.nb));
   expect(singletons, equals(prob.ns));
   expect(rank, equals(prob.sprank));
 }
 
-void assert_dropped(DZproblem prob, int dropped_zeros, int dropped_tiny) {
+void assertDropped(Problem prob, int dropped_zeros, int dropped_tiny) {
   expect(dropped_zeros, equals(prob.dropped_zeros));
   expect(dropped_tiny, equals(prob.dropped_tiny));
 }
 
 /// A structure for a demo problem.
-class DZproblem {
-  DZcs A;
-  DZcs C;
+class Problem {
+  Matrix A;
+  Matrix C;
   int sym;
-  DZcsa x;
-  DZcsa b;
-  DZcsa resid;
+  Vector x;
+  Vector b;
+  Vector resid;
 
   List<double> norms = new List<double>();
 
@@ -115,11 +115,11 @@ class DZproblem {
   int dropped_zeros;
   int dropped_tiny;
 
-  DZproblem();
+  Problem();
 }
 
 /// 1 if A is square & upper tri., -1 if square & lower tri., 0 otherwise
-int is_sym(DZcs A) {
+int isSym(Matrix A) {
   int n = A.n,
       m = A.m;
   Int32List Ap = A.p,
@@ -141,36 +141,36 @@ int is_sym(DZcs A) {
 bool dropdiag(int i, int j, aij, other) => i != j;
 
 /// C = A + triu(A,1)'
-DZcs make_sym(DZcs A) {
-  DZcs AT, C;
-  AT = cs_transpose(A, true); // AT = A'
-  cs_fkeep(AT, dropdiag, null); // drop diagonal entries from AT
-  C = cs_add(A, AT, cs_cone(), cs_cone()); // C = A+AT
+Matrix makeSym(Matrix A) {
+  Matrix AT, C;
+  AT = transpose(A, true); // AT = A'
+  fkeep(AT, dropdiag, null); // drop diagonal entries from AT
+  C = add(A, AT, cone(), cone()); // C = A+AT
   AT = null;
   return C;
 }
 
 /// Create a right-hand side.
-void rhs(DZcsa x, DZcsa b, int m) {
+void rhs(Vector x, Vector b, int m) {
   for (int i = 0; i < m; i++) {
-    b.set_list(i, new Float64List.fromList([1 + (i.toDouble()) / m, 0.0]));
+    b.setList(i, new Float64List.fromList([1 + (i.toDouble()) / m, 0.0]));
   }
   for (int i = 0; i < m; i++) {
-    x.set_list(i, b.get(i));
+    x.setList(i, b.get(i));
   }
 }
 
 /// Infinity-norm of x.
-double norm(DZcsa x, int n) {
+double normInf(Vector x, int n) {
   double normx = 0.0;
   for (int i = 0; i < n; i++) {
-    normx = math.max(normx, cs_cabs_list(x.get(i)));
+    normx = math.max(normx, cabs_list(x.get(i)));
   }
   return normx;
 }
 
 /// Compute residual, norm(A*x-b,inf) / (norm(A,1)*norm(x,inf) + norm(b,inf)).
-void print_resid(bool ok, DZcs A, DZcsa x, DZcsa b, DZcsa resid, DZproblem prob) {
+void printResid(bool ok, Matrix A, Vector x, Vector b, Vector resid, Problem prob) {
   int m = A.m,
       n = A.n;
   if (!ok) {
@@ -178,15 +178,15 @@ void print_resid(bool ok, DZcs A, DZcsa x, DZcsa b, DZcsa resid, DZproblem prob)
     return;
   }
   for (int i = 0; i < m; i++) {
-    resid.set_list(i, cs_cneg(b.get(i))); // resid = -b
+    resid.setList(i, cneg(b.get(i))); // resid = -b
   }
-  cs_gaxpy(A, x, resid); // resid = resid + A*x
+  gaxpy(A, x, resid); // resid = resid + A*x
 
-  double r = norm(resid, m) / ((n == 0) ? 1 : (cs_norm(A) * norm(x, n) + norm(b, m)));
+  double r = normInf(resid, m) / ((n == 0) ? 1 : (norm(A) * normInf(x, n) + normInf(b, m)));
   stdout.write("resid: $r");
 
-  double nrm = norm(x, n);
-  stdout.write(" (norm: $nrm, ${norm (b, m)})\n");
+  double nrm = normInf(x, n);
+  stdout.write(" (norm: $nrm, ${normInf(b, m)})\n");
   prob.norms.add(nrm);
 }
 
@@ -194,7 +194,7 @@ int tic() => new DateTime.now().millisecondsSinceEpoch;
 
 int toc(int t) => math.max(0, tic() - t);// / 1000000.0 ;
 
-void print_order(int order) {
+void printOrder(int order) {
   switch (order) {
     case 0:
       stdout.write("natural    ");
@@ -212,34 +212,34 @@ void print_order(int order) {
 }
 
 /// Reads a problem from a file.
-DZproblem get_problem(File file, double tol) {
-  DZcs T, A, C;
+Problem getProblem(File file, double tol) {
+  Matrix T, A, C;
   int sym, m, n, mn, nz1, nz2;
-  DZproblem prob;
-  prob = new DZproblem();
-  T = cs_load(file); // load triplet matrix T from a file
-  prob.A = A = cs_compress(T); // A = compressed-column form of T
+  Problem prob;
+  prob = new Problem();
+  T = load(file); // load triplet matrix T from a file
+  prob.A = A = compress(T); // A = compressed-column form of T
   T = null; // clear T
-  if (!cs_dupl(A)) {
+  if (!dupl(A)) {
     return null; // sum up duplicates
   }
-  prob.sym = sym = is_sym(A); // determine if A is symmetric
+  prob.sym = sym = isSym(A); // determine if A is symmetric
   m = A.m;
   n = A.n;
   mn = math.max(m, n);
   nz1 = A.p[n];
   if (tol > 0) {
-    cs_dropzeros(A); // drop zero entries
+    dropzeros(A); // drop zero entries
   }
   nz2 = A.p[n];
   if (tol > 0) {
-    cs_droptol(A, tol); // drop tiny entries (just to test)
+    droptol(A, tol); // drop tiny entries (just to test)
   }
-  prob.C = C = sym != 0 ? make_sym(A) : A; // C = A + triu(A,1)', or C=A
+  prob.C = C = sym != 0 ? makeSym(A) : A; // C = A + triu(A,1)', or C=A
   if (C == null) {
     return null;
   }
-  stdout.write("\n--- Matrix: $m-by-$n, nnz: ${A.p [n]} (sym: $sym: nnz ${sym != 0 ? C.p [n] : 0}), norm: ${cs_norm (C)}\n");
+  stdout.write("\n--- Matrix: $m-by-$n, nnz: ${A.p [n]} (sym: $sym: nnz ${sym != 0 ? C.p [n] : 0}), norm: ${norm (C)}\n");
   prob.dropped_zeros = nz1 - nz2;
   if (nz1 != nz2) {
     stdout.write("zero entries dropped: ${nz1 - nz2}\n");
@@ -248,8 +248,8 @@ DZproblem get_problem(File file, double tol) {
   if (nz2 != A.p[n]) {
     stdout.write("tiny entries dropped: ${nz2 - A.p [n]}\n");
   }
-  prob.b = new DZcsa.sized(mn);
-  prob.x = new DZcsa.sized(mn);
-  prob.resid = new DZcsa.sized(mn);
+  prob.b = new Vector.sized(mn);
+  prob.x = new Vector.sized(mn);
+  prob.resid = new Vector.sized(mn);
   return prob;
 }

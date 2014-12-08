@@ -20,17 +20,17 @@ part of edu.emory.mathcs.cxsparse;
 /// Add sparse matrices.
 ///
 /// C = alpha*A + beta*B
-DZcs cs_add(DZcs A, DZcs B, Float64List alpha, Float64List beta) {
+Matrix add(Matrix A, Matrix B, Float64List alpha, Float64List beta) {
   int nz = 0,
       anz;
   Int32List Cp, Ci, Bp, w;
   int m, n, bnz;
-  DZcsa x,
-      Bx = new DZcsa(),
-      Cx = new DZcsa();
+  Vector x,
+      Bx = new Vector(),
+      Cx = new Vector();
   bool values;
-  DZcs C;
-  if (!CS_CSC(A) || !CS_CSC(B)) {
+  Matrix C;
+  if (!csc(A) || !csc(B)) {
     return null;
   }
   if (A.m != B.m || A.n != B.n) {
@@ -44,23 +44,23 @@ DZcs cs_add(DZcs A, DZcs B, Float64List alpha, Float64List beta) {
   bnz = Bp[n];
   w = new Int32List(m); // get workspace
   values = (A.x != null) && (Bx.x != null);
-  x = values ? new DZcsa.sized(m) : null;
+  x = values ? new Vector.sized(m) : null;
   /// get workspace
-  C = cs_spalloc(m, n, anz + bnz, values, false); // allocate result
+  C = spalloc(m, n, anz + bnz, values, false); // allocate result
   Cp = C.p;
   Ci = C.i;
   Cx.x = C.x;
   for (int j = 0; j < n; j++) {
     Cp[j] = nz; // column j of C starts here
-    nz = cs_scatter(A, j, alpha, w, x, j + 1, C, nz); // alpha*A(:,j)
-    nz = cs_scatter(B, j, beta, w, x, j + 1, C, nz); // beta*B(:,j)
+    nz = scatter(A, j, alpha, w, x, j + 1, C, nz); // alpha*A(:,j)
+    nz = scatter(B, j, beta, w, x, j + 1, C, nz); // beta*B(:,j)
     if (values) {
       for (int p = Cp[j]; p < nz; p++) {
-        Cx.set_list(p, x.get(Ci[p]));
+        Cx.setList(p, x.get(Ci[p]));
       }
     }
   }
   Cp[n] = nz; // finalize the last column of C
-  cs_sprealloc(C, 0); // remove extra space from C
+  sprealloc(C, 0); // remove extra space from C
   return C; // success; free workspace, return C
 }

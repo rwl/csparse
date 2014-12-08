@@ -18,7 +18,7 @@
 part of edu.emory.mathcs.cxsparse;
 
 bool _tol(int i, int j, Float64List aij, Object other) {
-  return (cs_cabs_list(aij) > (other as double));
+  return (cabs_list(aij) > (other as double));
 }
 
 /// Drop small entries from a sparse matrix.
@@ -26,4 +26,4 @@ bool _tol(int i, int j, Float64List aij, Object other) {
 /// Removes entries from a matrix with absolute value <= [tol].
 ///
 /// Returns the new number of entries in A, -1 on error
-int cs_droptol(DZcs A, double tol) => cs_fkeep(A, _tol, tol);
+int droptol(Matrix A, double tol) => fkeep(A, _tol, tol);

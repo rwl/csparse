@@ -24,15 +24,15 @@ const String CS_DATE = "Dec 15, 2011";
 const String CS_COPYRIGHT = "Copyright (C) Timothy A. Davis, 2006-2011";
 
 /// Complex array.
-class DZcsa {
+class Vector {
   /// Numerical values.
   Float64List x;
 
-  DZcsa([this.x = null]);
+  Vector([this.x = null]);
 
   /// Constructs an array of the given length.
-  factory DZcsa.sized(int len) {
-    return new DZcsa(new Float64List(2 * len));
+  factory Vector.sized(int len) {
+    return new Vector(new Float64List(2 * len));
   }
 
   Float64List get(final int idx) {
@@ -44,14 +44,14 @@ class DZcsa {
 
   double imag(final int idx) => x[(2 * idx) + 1];
 
-  void set_list(final int idx, final Float64List val) {
+  void setList(final int idx, final Float64List val) {
     final offset = 2 * idx;
 
     x[offset] = val[0];
     x[offset + 1] = val[1];
   }
 
-  void set(final int idx, final double re, final double im) {
+  void setParts(final int idx, final double re, final double im) {
     final offset = 2 * idx;
 
     x[offset] = re;
@@ -69,7 +69,7 @@ class DZcsa {
 }
 
 /// Complex matrix in compressed-column or triplet form.
-class DZcs {
+class Matrix {
   /// Show a few entries in string representation.
   static bool BRIEF_PRINT = true;
 
@@ -94,18 +94,18 @@ class DZcs {
   /// # of entries in triplet matrix, -1 for compressed-col.
   int nz;
 
-  DZcs();
+  Matrix();
 
   Float64List get(final int idx) {
     final offset = 2 * idx;
     return new Float64List.fromList([x[offset], x[offset + 1]]);
   }
 
-  void set_list(final int idx, final Float64List val) {
-    set(idx, val[0], val[1]);
+  void setList(final int idx, final Float64List val) {
+    setParts(idx, val[0], val[1]);
   }
 
-  void set(final int idx, final double re, final double im) {
+  void setParts(final int idx, final double re, final double im) {
     final offset = 2 * idx;
 
     x[offset] = re;
@@ -114,13 +114,13 @@ class DZcs {
 
   String toString() {
     StringBuffer out = new StringBuffer();
-    cs_print(this, BRIEF_PRINT, out);
+    print(this, BRIEF_PRINT, out);
     return out.toString();
   }
 }
 
 /// Output of symbolic Cholesky, LU, or QR analysis.
-class DZcss {
+class Symbolic {
   /// Inverse row perm. for QR, fill red. perm for Chol.
   Int32List pinv;
 
@@ -145,16 +145,16 @@ class DZcss {
   /// # entries in U for LU; in R for QR.
   int unz;
 
-  DZcss();
+  Symbolic();
 }
 
 /// Output of numeric Cholesky, LU, or QR factorization.
-class DZcsn {
+class Numeric {
   /// L for LU and Cholesky, V for QR.
-  DZcs L;
+  Matrix L;
 
   /// U for LU, R for QR, not used for Cholesky.
-  DZcs U;
+  Matrix U;
 
   /// Partial pivoting for LU.
   Int32List pinv;
@@ -162,11 +162,11 @@ class DZcsn {
   /// Beta [0..n-1] for QR.
   Float64List B;
 
-  DZcsn();
+  Numeric();
 }
 
 /// Output of Dulmage-Mendelsohn decomposition.
-class DZcsd {
+class Decomposition {
   /// Size m, row permutation.
   Int32List p;
 

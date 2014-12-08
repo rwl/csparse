@@ -24,14 +24,14 @@ part of edu.emory.mathcs.cxsparse;
 /// [q] a permutation vector of length n.
 /// [values] allocate pattern only if false, values and pattern otherwise.
 /// Returns C = PAQ, null on error.
-DZcs cs_permute(DZcs A, Int32List pinv, Int32List q, bool values) {
+Matrix permute(Matrix A, Int32List pinv, Int32List q, bool values) {
   int t, j, k, m, n;
   int nz = 0;
   Int32List Ap, Ai, Cp, Ci;
-  DZcsa Cx = new DZcsa(),
-      Ax = new DZcsa();
-  DZcs C;
-  if (!CS_CSC(A)) {
+  Vector Cx = new Vector(),
+      Ax = new Vector();
+  Matrix C;
+  if (!csc(A)) {
     return null;
   }
   m = A.m;
@@ -39,7 +39,7 @@ DZcs cs_permute(DZcs A, Int32List pinv, Int32List q, bool values) {
   Ap = A.p;
   Ai = A.i;
   Ax.x = A.x;
-  C = cs_spalloc(m, n, Ap[n], values && Ax.x != null, false); // alloc result
+  C = spalloc(m, n, Ap[n], values && Ax.x != null, false); // alloc result
   Cp = C.p;
   Ci = C.i;
   Cx.x = C.x;
@@ -48,7 +48,7 @@ DZcs cs_permute(DZcs A, Int32List pinv, Int32List q, bool values) {
     j = q != null ? (q[k]) : k;
     for (t = Ap[j]; t < Ap[j + 1]; t++) {
       if (Cx.x != null) {
-        Cx.set_list(nz, Ax.get(t)); // row i of A is row pinv[i] of C
+        Cx.setList(nz, Ax.get(t)); // row i of A is row pinv[i] of C
       }
       Ci[nz++] = pinv != null ? (pinv[Ai[t]]) : Ai[t];
     }

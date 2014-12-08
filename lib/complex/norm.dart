@@ -19,13 +19,13 @@ part of edu.emory.mathcs.cxsparse;
 
 /// Computes the 1-norm of a sparse matrix = max (sum (abs (A))), largest
 /// column sum. Returns -1 on error.
-double cs_norm(DZcs A) {
+double norm(Matrix A) {
   int n;
   Int32List Ap;
-  DZcsa Ax = new DZcsa();
+  Vector Ax = new Vector();
   double norm = 0.0,
       s;
-  if (!CS_CSC(A) || A.x == null) {
+  if (!csc(A) || A.x == null) {
     return -1.0;
   }
   n = A.n;
@@ -34,9 +34,9 @@ double cs_norm(DZcs A) {
   for (int j = 0; j < n; j++) {
     s = 0.0;
     for (int p = Ap[j]; p < Ap[j + 1]; p++) {
-      s += cs_cabs_list(Ax.get(p));
+      s += cabs_list(Ax.get(p));
     }
     norm = math.max(norm, s);
   }
-  return (norm);
+  return norm;
 }

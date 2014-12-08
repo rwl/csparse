@@ -23,11 +23,11 @@ part of edu.emory.mathcs.cxsparse;
 /// [L] column-compressed, lower triangular matrix.
 /// [x] size n, right hand side on input, solution on output.
 /// Returns true if successful, false on error.
-bool cs_ltsolve(DZcs L, DZcsa x) {
+bool ltsolve(Matrix L, Vector x) {
   int n;
   Int32List Lp, Li;
-  DZcsa Lx = new DZcsa();
-  if (!CS_CSC(L) || x == null) {
+  Vector Lx = new Vector();
+  if (!csc(L) || x == null) {
     return false;
   }
   n = L.n;
@@ -36,9 +36,9 @@ bool cs_ltsolve(DZcs L, DZcsa x) {
   Lx.x = L.x;
   for (int j = n - 1; j >= 0; j--) {
     for (int p = Lp[j] + 1; p < Lp[j + 1]; p++) {
-      x.set_list(j, cs_cminus(x.get(j), cs_cmult_list(cs_conj(Lx.get(p)), x.get(Li[p]))));
+      x.setList(j, cminus(x.get(j), cmult_list(conj(Lx.get(p)), x.get(Li[p]))));
     }
-    x.set_list(j, cs_cdiv_list(x.get(j), cs_conj(Lx.get(Lp[j]))));
+    x.setList(j, cdiv_list(x.get(j), conj(Lx.get(Lp[j]))));
   }
   return true;
 }

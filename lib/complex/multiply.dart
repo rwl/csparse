@@ -18,16 +18,16 @@
 part of edu.emory.mathcs.cxsparse;
 
 /// Sparse matrix multiplication, C = A*B.
-DZcs cs_multiply(DZcs A, DZcs B) {
+Matrix multiply(Matrix A, Matrix B) {
   int p, j, anz, m, n, bnz;
   int nz = 0;
   Int32List Cp, Ci, Bp, w, Bi;
-  DZcsa x,
-      Bx = new DZcsa(),
-      Cx = new DZcsa();
+  Vector x,
+      Bx = new Vector(),
+      Cx = new Vector();
   bool values;
-  DZcs C;
-  if (!CS_CSC(A) || !CS_CSC(B)) {
+  Matrix C;
+  if (!csc(A) || !csc(B)) {
     return null;
   }
   if (A.n != B.m) {
@@ -42,29 +42,29 @@ DZcs cs_multiply(DZcs A, DZcs B) {
   bnz = Bp[n];
   w = new Int32List(m); // get workspace
   values = (A.x != null) && (Bx.x != null);
-  x = values ? new DZcsa.sized(m) : null; // get workspace
-  C = cs_spalloc(m, n, anz + bnz, values, false); // allocate result
+  x = values ? new Vector.sized(m) : null; // get workspace
+  C = spalloc(m, n, anz + bnz, values, false); // allocate result
   if (C == null || w == null || (values && x == null)) {
-    return cs_done(C, w, x, false);
+    return _done(C, w, x, false);
   }
   Cp = C.p;
   for (j = 0; j < n; j++) {
-    if (nz + m > C.nzmax && !cs_sprealloc(C, 2 * (C.nzmax) + m)) {
-      return cs_done(C, w, x, false); // out of memory
+    if (nz + m > C.nzmax && !sprealloc(C, 2 * (C.nzmax) + m)) {
+      return _done(C, w, x, false); // out of memory
     }
     Ci = C.i;
     Cx.x = C.x; // C.i and C.x may be reallocated
     Cp[j] = nz; // column j of C starts here
     for (p = Bp[j]; p < Bp[j + 1]; p++) {
-      nz = cs_scatter(A, Bi[p], (Bx.x != null) ? Bx.get(p) : cs_cone(), w, x, j + 1, C, nz);
+      nz = scatter(A, Bi[p], (Bx.x != null) ? Bx.get(p) : cone(), w, x, j + 1, C, nz);
     }
     if (values) {
       for (p = Cp[j]; p < nz; p++) {
-        Cx.set_list(p, x.get(Ci[p]));
+        Cx.setList(p, x.get(Ci[p]));
       }
     }
   }
   Cp[n] = nz; // finalize the last column of C
-  cs_sprealloc(C, 0); // remove extra space from C
-  return (cs_done(C, w, x, true)); // success; free workspace, return C
+  sprealloc(C, 0); // remove extra space from C
+  return (_done(C, w, x, true)); // success; free workspace, return C
 }

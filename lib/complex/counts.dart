@@ -25,7 +25,7 @@ int _next(int J, Int32List next, int next_offset, bool ata) {
   return ata ? next[next_offset + J] : -1;
 }
 
-List<int> _init_ata(DZcs AT, Int32List post, Int32List w) {
+List<int> _init_ata(Matrix AT, Int32List post, Int32List w) {
   int m = AT.n,
       n = AT.m;
   Int32List ATp = AT.p,
@@ -56,7 +56,7 @@ List<int> _init_ata(DZcs AT, Int32List post, Int32List w) {
 /// [post] postordering of parent.
 /// [ata] analyze A if false, A'A otherwise.
 /// Returns column counts of LL'=A or LL'=A'A, null on error.
-Int32List cs_counts(DZcs A, Int32List parent, Int32List post, bool ata) {
+Int32List counts(Matrix A, Int32List parent, Int32List post, bool ata) {
   int i, j, k, n, m, J, s, p, q;
   Int32List ATp, ATi, maxfirst, prevleaf, ancestor, colcount, w, first, delta;
   Int32List head = null,
@@ -64,8 +64,8 @@ Int32List cs_counts(DZcs A, Int32List parent, Int32List post, bool ata) {
   Int32List jleaf = new Int32List(1);
   int head_offset = 0,
       next_offset = 0;
-  DZcs AT;
-  if (!CS_CSC(A) || parent == null || post == null) {
+  Matrix AT;
+  if (!csc(A) || parent == null || post == null) {
     return (null);
   }
   m = A.m;
@@ -73,9 +73,9 @@ Int32List cs_counts(DZcs A, Int32List parent, Int32List post, bool ata) {
   s = 4 * n + (ata ? (n + m + 1) : 0);
   delta = colcount = new Int32List(n); // allocate result
   w = new Int32List(s); // get workspace
-  AT = cs_transpose(A, false); // AT = A'
+  AT = transpose(A, false); // AT = A'
   if (AT == null || colcount == null || w == null) {
-    return cs_idone(colcount, AT, w, false);
+    return _idone(colcount, AT, w, false);
   }
   ancestor = w;
   maxfirst = w;
@@ -116,7 +116,7 @@ Int32List cs_counts(DZcs A, Int32List parent, Int32List post, bool ata) {
     {
       for (p = ATp[J]; p < ATp[J + 1]; p++) {
         i = ATi[p];
-        q = cs_leaf(i, j, first, first_offset, maxfirst, maxfirst_offset, prevleaf, prevleaf_offset, ancestor, 0, jleaf);
+        q = leaf(i, j, first, first_offset, maxfirst, maxfirst_offset, prevleaf, prevleaf_offset, ancestor, 0, jleaf);
         if (jleaf[0] >= 1) {
           delta[j]++; // A(i,j) is in skeleton
         }
@@ -135,5 +135,5 @@ Int32List cs_counts(DZcs A, Int32List parent, Int32List post, bool ata) {
       colcount[parent[j]] += colcount[j];
     }
   }
-  return cs_idone(colcount, AT, w, true); // success: free workspace
+  return _idone(colcount, AT, w, true); // success: free workspace
 }
