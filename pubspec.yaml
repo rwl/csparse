@@ -1,7 +1,7 @@
 name: csparse
-version: 0.2.0
+version: 0.3.0
 author: Richard Lincoln <r.w.lincoln@gmail.com>
 description: A concise sparse matrix package.
-homepage: https://www.cise.ufl.edu/research/sparse/CSparse/
-dependencies:
+homepage: https://github.com/rwl/csparse
+dev_dependencies:
   unittest: '>=0.11.0+3 <0.12.0'
