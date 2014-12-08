@@ -43,7 +43,7 @@ bool test2(DZproblem prob) {
   resid = prob.resid;
   m = A.m;
   n = A.n;
-  tol = prob.sym != 0 ? 0.001 : 1; // partial pivoting tolerance
+  tol = prob.sym != 0 ? 0.001 : 1.0; // partial pivoting tolerance
   D = cs_dmperm(C, 1); // randomized dmperm analysis
   if (D == null) {
     return false;
@@ -197,8 +197,8 @@ main() {
     assert_dropped(prob, 1, 0);
     assert_structure(prob, 2, 0, 0);
 
-    expect(double.NAN, equals(prob.norms[0]));
-    expect(double.NAN, equals(prob.norms[1]));
+    expect(prob.norms[0].isNaN, isTrue);
+    expect(prob.norms[1].isNaN, isTrue);
   });
 
   test('mhd1280b', () {
